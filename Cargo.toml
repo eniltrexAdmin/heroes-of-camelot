@@ -3,4 +3,9 @@ name = "heroes-of-camelot"
 version = "0.1.0"
 edition = "2024"
 
+
+[features]
+local-data = []
+
 [dependencies]
+uuid = { version = "1.16.0", features = ["v4"] }
