@@ -1,3 +1,5 @@
+use heroes_of_camelot::start_game;
+
 fn main() {
-    println!("Hello, world!");
+ start_game()
 }
