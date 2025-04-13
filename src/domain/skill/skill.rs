@@ -1,28 +1,36 @@
 use super::*;
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum Skill {
-    Passive(PassiveSkill),
-    Active(ActiveSkill),
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct PassiveSkill {
+pub struct Skill {
     name: SkillName,
     description: SkillDescription,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct ActiveSkill {
-    name: SkillName,
-    description: SkillDescription,
+    effect: SkillEffect,
 }
 
 impl Skill {
-    pub fn new_passive(name: SkillName, description: SkillDescription) -> Self {
-        Skill::Passive(PassiveSkill { name, description })
+    pub fn new(name: SkillName, description: SkillDescription, effect: SkillEffect) -> Self {
+        Skill{
+            name,
+            description,
+            effect
+        }
+    }
+
+    pub fn name(&self) -> &SkillName {
+        &self.name
+    }
+
+    pub fn description(&self) -> &SkillDescription {
+        &self.description
+    }
+
+    pub fn effect(&self) -> &SkillEffect {
+        &self.effect
     }
 }
+
+
+
 
 #[cfg(test)]
 mod tests {
@@ -34,15 +42,11 @@ mod tests {
         let name = SkillName::new(value.clone());
         let value = "Increases HP 100%".to_string();
         let description = SkillDescription::new(value.clone());
+        let effect = SkillEffect::Passive(AttackIncrease(100));
 
-        let passive_skill = Skill::new_passive(name.clone(), description.clone());
-        match passive_skill {
-            Skill::Passive(ref passive) => {
-                // Assert that the name and description are correctly set
-                assert_eq!(name, passive.name);
-                assert_eq!(description, passive.description);
-            }
-            _ => panic!("Expected a Passive skill!"),
-        }
+        let skill = Skill::new(name.clone(), description.clone(), effect.clone());
+        assert_eq!(&name, skill.name());
+        assert_eq!(&description, skill.description());
+        assert_eq!(&effect, skill.effect());
     }
 }

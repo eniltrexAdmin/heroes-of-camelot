@@ -44,6 +44,7 @@ impl Card {
 
 #[cfg(test)]
 mod tests {
+    use crate::domain::PassiveSkill::HealthPointsIncrease;
     use super::*;
     #[test]
     fn test_new() {
@@ -51,10 +52,10 @@ mod tests {
         let name = Name::new("Bard".to_string());
         let attack = Attack::new(100);
         let hp = HealthPoints::new(100);
-
-        let passive_skill = Skill::new_passive(
+        let passive_skill = Skill::new(
             SkillName::new("Heavy body".to_string()),
             SkillDescription::new("Increases HP 100%".to_string()),
+            SkillEffect::Passive(HealthPointsIncrease(25))
         );
 
         let skills = vec![passive_skill];
