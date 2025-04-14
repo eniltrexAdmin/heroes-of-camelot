@@ -4,8 +4,13 @@ use crate::domain::Stars;
 pub struct Tier(u8);
 
 impl Tier{
-    pub fn new() -> Self{
+    pub fn init() -> Self{
         Tier(1)
+    }
+
+    // I'm just lazy this function shouldn't exist but... it's handy.
+    pub fn new(value: u8) -> Self{
+        Tier(value)
     }
 
     pub fn value(&self)->u8 {
@@ -49,7 +54,7 @@ mod tests {
 
     #[test]
     fn default_tier_is_one() {
-        let tier = Tier::new();
+        let tier = Tier::init();
         assert_eq!(tier.value(), 1);
     }
 
@@ -93,18 +98,18 @@ mod tests {
 
     #[test]
     fn test_evolve() {
-        let tier = Tier::new();
-        let tier2 = Tier::new();
+        let tier = Tier::init();
+        let tier2 = Tier::init();
         let evolved_tier = Tier::evolve(tier, tier2).unwrap();
         assert_eq!(evolved_tier.value(), 2);
     }
 
     #[test]
     fn cannot_evolve_different_tiers() {
-        let tier = Tier::new();
-        let tier2 = Tier::new();
+        let tier = Tier::init();
+        let tier2 = Tier::init();
         let evolved_tier = Tier::evolve(tier, tier2).unwrap();
-        let result = Tier::evolve(Tier::new(), evolved_tier);
+        let result = Tier::evolve(Tier::init(), evolved_tier);
         assert_eq!(result, Err(TierError::MismatchedTiers));
     }
 }

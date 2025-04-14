@@ -22,6 +22,18 @@ impl Stars {
             _ => Err(StarError::InvalidNumberOfStars)
         }
     }
+
+    pub fn value(&self) -> u8 {
+        match *self {
+            Self::OneStar => 1,
+            Self::TwoStars => 2,
+            Self::ThreeStars => 3,
+            Self::FourStars => 4,
+            Self::FiveStars => 5,
+            Self::SixStars => 6,
+            Self::SevenStars => 7,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq)]

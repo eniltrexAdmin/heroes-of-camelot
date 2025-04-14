@@ -1,6 +1,7 @@
 use crate::domain::*;
 use super::*;
 
+#[derive(Debug, PartialEq)]
 pub struct CardTemplate {
     name: Name,
     attack: Attack,
@@ -46,7 +47,7 @@ impl CardTemplate {
         &self.name
     }
 
-    pub fn start(&self) -> &Stars {
+    pub fn stars(&self) -> &Stars {
         &self.stars
     }
 
@@ -112,7 +113,7 @@ mod tests {
             GrowthCurve::Percentage(2),
             GrowthCurve::Percentage(2)
         );
-
+        assert_eq!(template.stars(), &Stars::OneStar);
         assert_eq!(template.name(), &name);
         assert_eq!(template.attack(), &attack);
         assert_eq!(template.health_points(), &health_points);

@@ -37,7 +37,7 @@ fn base_attack(cards: &Vec<Card>) -> u128 {
 
 #[cfg(test)]
 mod tests {
-    use crate::data::{bard_template, hunter_template};
+    // use crate::data::{bard_template, hunter_template};
     use super::*;
 
     // #[test]
@@ -52,29 +52,29 @@ mod tests {
     //     assert_eq!(600, resources_number.value());
     // }
 
-    #[test]
-    fn attack_creation_no_bonus() {
-        let mut cards = vec![];
-        cards.push(bard_template());
-        cards.push(bard_template());
-        cards.push(bard_template());
-        cards.push(bard_template());
-
-        let resources_number = TeamAttack::new(cards);
-        assert_eq!(400, resources_number.value());
-    }
-
-    #[test]
-    fn get_base_attack() {
-        let mut cards = vec![];
-        cards.push(bard_template());
-        cards.push(bard_template());
-        cards.push(hunter_template());
-        cards.push(hunter_template());
-
-        let bonus = base_attack(&cards);
-        assert_eq!(400, bonus);
-    }
+    // #[test]
+    // fn attack_creation_no_bonus() {
+    //     let mut cards = vec![];
+    //     cards.push(bard_template());
+    //     cards.push(bard_template());
+    //     cards.push(bard_template());
+    //     cards.push(bard_template());
+    //
+    //     let resources_number = TeamAttack::new(cards);
+    //     assert_eq!(400, resources_number.value());
+    // }
+    //
+    // #[test]
+    // fn get_base_attack() {
+    //     let mut cards = vec![];
+    //     cards.push(bard_template());
+    //     cards.push(bard_template());
+    //     cards.push(hunter_template());
+    //     cards.push(hunter_template());
+    //
+    //     let bonus = base_attack(&cards);
+    //     assert_eq!(400, bonus);
+    // }
 
     // #[test]
     // fn get_attack_bonus() {

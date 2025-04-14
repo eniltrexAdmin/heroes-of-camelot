@@ -1,6 +1,7 @@
 use std::collections::BTreeMap;
 use crate::domain::*;
 
+#[derive(Debug, PartialEq)]
 pub struct TemplateActiveSkills {
     value: BTreeMap<Tier, ActiveSkill>
 }

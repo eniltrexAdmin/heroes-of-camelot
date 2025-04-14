@@ -1,21 +1,21 @@
 
 use crate::domain::*;
 
-pub fn bard_template() -> Card {
-    let id = Id::new();
-    let name = Name::new("Bard".to_string());
-    let attack = Attack::new(100);
-    let hp = HealthPoints::new(100);
-    Card::new(id, name, attack, hp, vec![])
-}
-
-pub fn hunter_template() -> Card {
-    let id = Id::new();
-    let name = Name::new("Hunter".to_string());
-    let attack = Attack::new(100);
-    let hp = HealthPoints::new(100);
-    Card::new(id, name, attack, hp, vec![])
-}
+// pub fn bard_template() -> Card {
+//     let id = Id::new();
+//     let name = Name::new("Bard".to_string());
+//     let attack = Attack::new(100);
+//     let hp = HealthPoints::new(100);
+//     Card::new(id, name, attack, hp, vec![])
+// }
+//
+// pub fn hunter_template() -> Card {
+//     let id = Id::new();
+//     let name = Name::new("Hunter".to_string());
+//     let attack = Attack::new(100);
+//     let hp = HealthPoints::new(100);
+//     Card::new(id, name, attack, hp, vec![])
+// }
 
 // pub fn passive_skill_25_hp() -> ActiveSkillEffect {
 //     let description = SkillDescription::new("Increases HP 25%".to_string());
