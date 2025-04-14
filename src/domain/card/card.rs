@@ -7,7 +7,7 @@ pub struct Card {
     name: Name,
     attack: Attack,
     health_points: HealthPoints,
-    skills: Vec<Skill>,
+    skills: Vec<ActiveSkillEffect>,
 }
 impl Card {
     pub fn new(
@@ -15,7 +15,7 @@ impl Card {
         name: Name,
         attack: Attack,
         health_points: HealthPoints,
-        skills: Vec<Skill>,
+        skills: Vec<ActiveSkillEffect>,
     ) -> Self {
         Card {
             id,
@@ -37,7 +37,7 @@ impl Card {
     pub fn health_points(&self) -> &HealthPoints {
         &self.health_points
     }
-    pub fn skills(&self) -> &Vec<Skill> {
+    pub fn skills(&self) -> &Vec<ActiveSkillEffect> {
         &self.skills
     }
 }
@@ -52,13 +52,13 @@ mod tests {
         let name = Name::new("Bard".to_string());
         let attack = Attack::new(100);
         let hp = HealthPoints::new(100);
-        let passive_skill = Skill::new(
-            SkillName::new("Heavy body".to_string()),
-            SkillDescription::new("Increases HP 100%".to_string()),
-            SkillEffect::Passive(HealthPointsIncrease(25))
-        );
+        // let passive_skill = ActiveSkillEffect::new(
+        //     SkillName::new("Heavy body".to_string()),
+        //     SkillDescription::new("Increases HP 100%".to_string()),
+        //     SkillEffect::Passive(HealthPointsIncrease(25))
+        // );
 
-        let skills = vec![passive_skill];
+        let skills = vec![];
 
         let card = Card::new(id.clone(), name.clone(), attack, hp, skills.clone());
 

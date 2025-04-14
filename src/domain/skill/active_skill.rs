@@ -1,15 +1,15 @@
 use super::*;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Skill {
+pub struct ActiveSkill {
     name: SkillName,
     description: SkillDescription,
-    effect: SkillEffect,
+    effect: ActiveSkillEffect,
 }
 
-impl Skill {
-    pub fn new(name: SkillName, description: SkillDescription, effect: SkillEffect) -> Self {
-        Skill{
+impl ActiveSkill {
+    pub fn new(name: SkillName, description: SkillDescription, effect: ActiveSkillEffect) -> Self {
+        ActiveSkill {
             name,
             description,
             effect
@@ -24,7 +24,7 @@ impl Skill {
         &self.description
     }
 
-    pub fn effect(&self) -> &SkillEffect {
+    pub fn effect(&self) -> &ActiveSkillEffect {
         &self.effect
     }
 }
@@ -42,9 +42,9 @@ mod tests {
         let name = SkillName::new(value.clone());
         let value = "Increases HP 100%".to_string();
         let description = SkillDescription::new(value.clone());
-        let effect = SkillEffect::Passive(AttackIncrease(100));
+        let effect = IncreaseThisTurnAttack(100);
 
-        let skill = Skill::new(name.clone(), description.clone(), effect.clone());
+        let skill = ActiveSkill::new(name.clone(), description.clone(), effect.clone());
         assert_eq!(&name, skill.name());
         assert_eq!(&description, skill.description());
         assert_eq!(&effect, skill.effect());

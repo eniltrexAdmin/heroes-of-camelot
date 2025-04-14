@@ -1,7 +1,7 @@
 #[derive(Debug, Clone, PartialEq)]
 pub enum SkillEffect {
     Passive(PassiveSkill),
-    Active(ActiveSkill),
+    Active(ActiveSkillEffect),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -11,7 +11,8 @@ pub enum PassiveSkill {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct ActiveSkill {
+pub enum ActiveSkillEffect {
+    IncreaseThisTurnAttack(u32)
 }
 
 
