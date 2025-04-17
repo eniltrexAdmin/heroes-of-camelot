@@ -59,6 +59,10 @@ impl Card {
         &self.current_level
     }
 
+    pub fn combo_skills(&self) -> &[ComboSkill] {
+        self.template.combo_skills()
+    }
+
     pub fn level_up(&mut self, num_levels: u8) -> Result<(), CardManagementError> {
         if self.current_level.value() + num_levels > self.max_level.value() {
             return Err(CardManagementError::ExceededMaxLevel)

@@ -1,4 +1,4 @@
-use crate::domain::Card;
+use crate::domain::{Card, ComboSkill};
 use super::*;
 
 enum Team {
@@ -11,7 +11,8 @@ pub struct DefaultTeam{
     second: Option<Card>,
     third: Option<Card>,
     fourth: Option<Card>,
-    attack: TeamAttack
+    attack: TeamAttack,
+    combo_skills: Vec<ComboSkill>
 }
 
 impl DefaultTeam {
@@ -29,6 +30,7 @@ impl DefaultTeam {
             third,
             fourth,
             attack,
+            combo_skills: vec![]
         }
     }
 }

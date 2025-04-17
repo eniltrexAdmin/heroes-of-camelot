@@ -90,7 +90,7 @@ impl CardTemplate {
         &self.card_skills
     }
 
-    pub fn combo_skills(&self) -> &[ComboSkill] {
+    pub fn combo_skills(&self) -> &Vec<ComboSkill> {
         &self.combo_skills
     }
 

@@ -1,4 +1,4 @@
-use crate::domain::{Card, PassiveSkill, ComboSkillEffect};
+use crate::domain::*;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct TeamAttack(u128);
@@ -23,68 +23,50 @@ fn base_attack(cards: &Vec<Card>) -> u128 {
         .sum()
 }
 
-// fn get_card_attack_bonus(cards: &Vec<Card>) -> u32 {
-//     cards
-//     .iter()
-//     .flat_map(|card| card.skills().iter())
-//     .filter_map(|skill| match skill.effect()
-//     {
-//         SkillEffect::Passive(PassiveSkill::AttackIncrease(percent)) => Some(*percent),
-//         _ => None,
-//     })
-//     .sum()
-// }
+fn get_card_attack_bonus(cards: &Vec<Card>) -> u32 {
+    cards
+    .iter()
+    .flat_map(|card| card.combo_skills().iter())
+    .filter_map(|skill| match skill.effect()
+    {
+        ComboSkillEffect::Passive(AttackIncrease(percent)) => Some(*percent),
+        _ => None,
+    })
+    .sum()
+}
 
 #[cfg(test)]
 mod tests {
-    // use crate::data::{bard_template, hunter_template};
+    use std::rc::Rc;
+    use crate::data::{apprentice_template, card_with_combo};
+    use crate::domain::Id;
     use super::*;
 
-    // #[test]
-    // fn attack_creation() {
-    //     let mut cards = vec![];
-    //     cards.push(bard_template());
-    //     cards.push(bard_template());
-    //     cards.push(hunter_template());
-    //     cards.push(hunter_template());
-    //
-    //     let resources_number = TeamAttack::new(cards);
-    //     assert_eq!(600, resources_number.value());
-    // }
+    #[test]
+    fn attack_creation() {
+        let mut cards = vec![];
+        let apprentice_template = apprentice_template();
+        let apprentice_card = Card::new(Id::new(), Rc::new(apprentice_template));
+        cards.push(apprentice_card.clone());
+        cards.push(apprentice_card.clone());
+        cards.push(apprentice_card.clone());
+        cards.push(apprentice_card.clone());
 
-    // #[test]
-    // fn attack_creation_no_bonus() {
-    //     let mut cards = vec![];
-    //     cards.push(bard_template());
-    //     cards.push(bard_template());
-    //     cards.push(bard_template());
-    //     cards.push(bard_template());
-    //
-    //     let resources_number = TeamAttack::new(cards);
-    //     assert_eq!(400, resources_number.value());
-    // }
-    //
-    // #[test]
-    // fn get_base_attack() {
-    //     let mut cards = vec![];
-    //     cards.push(bard_template());
-    //     cards.push(bard_template());
-    //     cards.push(hunter_template());
-    //     cards.push(hunter_template());
-    //
-    //     let bonus = base_attack(&cards);
-    //     assert_eq!(400, bonus);
-    // }
+        let resources_number = TeamAttack::new(cards);
+        assert_eq!(285 * 4, resources_number.value());
+    }
 
-    // #[test]
-    // fn get_attack_bonus() {
-    //     let mut cards = vec![];
-    //     cards.push(bard_template());
-    //     cards.push(bard_template());
-    //     cards.push(hunter_template());
-    //     cards.push(hunter_template());
-    //
-    //     let bonus = get_card_attack_bonus(&cards);
-    //     assert_eq!(50, bonus);
-    // }
+    #[test]
+    fn get_attack_bonus() {
+        let mut cards = vec![];
+        let apprentice_template = card_with_combo();
+        let combo_card = Card::new(Id::new(), Rc::new(apprentice_template));
+        cards.push(combo_card.clone());
+        cards.push(combo_card.clone());
+        cards.push(combo_card.clone());
+        cards.push(combo_card.clone());
+
+        let bonus = get_card_attack_bonus(&cards);
+        assert_eq!(100, bonus);
+    }
 }
