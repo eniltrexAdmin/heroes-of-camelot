@@ -1,35 +1,32 @@
 use crate::domain::Stars;
 
 #[derive(Debug, PartialEq, Clone, Ord, PartialOrd, Eq)]
-pub struct Tier(u8);
+pub enum Tier{
+    Tier1,
+    Tier2,
+    Tier3,
+    Tier4
+}
 
 impl Tier{
     pub fn init() -> Self{
-        Tier(1)
+        Tier::Tier1
     }
 
-    // I'm just lazy this function shouldn't exist but... it's handy.
-    pub fn new(value: u8) -> Self{
-        Tier(value)
-    }
-
-    pub fn value(&self)->u8 {
-        self.0
-    }
-
-    pub fn max_tier(stars: &Stars) -> Self {
-        match stars{
-            Stars::OneStar => Tier(2),
-            Stars::TwoStars => Tier(3),
-            _  => Tier(4),
+    pub fn int_value(&self)->u8 {
+        match self {
+            Tier::Tier1 => 1,
+            Tier::Tier2 => 2,
+            Tier::Tier3 => 3,
+            Tier::Tier4 => 4,
         }
     }
 
     pub fn vec_tier(stars: &Stars) -> Vec<Tier> {
         match stars{
-            Stars::OneStar => vec![Tier(1), Tier(2)],
-            Stars::TwoStars => vec![Tier(1), Tier(2), Tier(3)],
-            _  => vec![Tier(1), Tier(2), Tier(3), Tier(4)]
+            Stars::OneStar => vec![Tier::Tier1, Tier::Tier2],
+            Stars::TwoStars => vec![Tier::Tier1, Tier::Tier2, Tier::Tier3],
+            _  => vec![Tier::Tier1, Tier::Tier2, Tier::Tier3, Tier::Tier4]
         }
     }
 
@@ -37,7 +34,12 @@ impl Tier{
         if tier != tier2 {
             return Err(TierError::MismatchedTiers)
         }
-        Ok(Tier{0: tier.0 + 1})
+        match tier {
+            Tier::Tier1 => Ok(Tier::Tier2),
+            Tier::Tier2 => Ok(Tier::Tier3),
+            Tier::Tier3 => Ok(Tier::Tier4),
+            Tier::Tier4 => Err(TierError::MaxTierReached),
+        }
     }
 }
 
@@ -55,26 +57,7 @@ mod tests {
     #[test]
     fn default_tier_is_one() {
         let tier = Tier::init();
-        assert_eq!(tier.value(), 1);
-    }
-
-    #[test]
-    fn test_max_tier() {
-        let stars = Stars::OneStar;
-        let tier = Tier::max_tier(&stars);
-        assert_eq!(tier.value(), 2);
-
-        let stars = Stars::TwoStars;
-        let tier = Tier::max_tier(&stars);
-        assert_eq!(tier.value(), 3);
-
-        let stars = Stars::ThreeStars;
-        let tier = Tier::max_tier(&stars);
-        assert_eq!(tier.value(), 4);
-
-        let stars = Stars::FiveStars;
-        let tier = Tier::max_tier(&stars);
-        assert_eq!(tier.value(), 4);
+        assert_eq!(tier, Tier::Tier1);
     }
 
     #[test]
@@ -101,15 +84,18 @@ mod tests {
         let tier = Tier::init();
         let tier2 = Tier::init();
         let evolved_tier = Tier::evolve(tier, tier2).unwrap();
-        assert_eq!(evolved_tier.value(), 2);
+        assert_eq!(evolved_tier, Tier::Tier2);
     }
 
     #[test]
     fn cannot_evolve_different_tiers() {
-        let tier = Tier::init();
-        let tier2 = Tier::init();
-        let evolved_tier = Tier::evolve(tier, tier2).unwrap();
-        let result = Tier::evolve(Tier::init(), evolved_tier);
+        let result = Tier::evolve(Tier::Tier1, Tier::Tier2);
         assert_eq!(result, Err(TierError::MismatchedTiers));
+    }
+
+    #[test]
+    fn cannot_evolve_max_tier() {
+        let result = Tier::evolve(Tier::Tier4, Tier::Tier4);
+        assert_eq!(result, Err(TierError::MaxTierReached));
     }
 }

@@ -1,7 +1,7 @@
 #[derive(Debug, Clone, PartialEq)]
-pub enum SkillEffect {
+pub enum ComboSkillEffect {
     Passive(PassiveSkill),
-    Active(ActiveSkillEffect),
+    Active(SkillEffect),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -11,8 +11,15 @@ pub enum PassiveSkill {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum ActiveSkillEffect {
-    IncreaseThisTurnAttack(u32)
+pub enum SkillEffect {
+    IncreaseThisTurnAttack(ValueFormula),
+    MagicDamage(ValueFormula)
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum ValueFormula{
+    BasedOnCardAttack(u32),
+    BasedOnCardHealthPoints(u32),
+    BasedOnCardLevel(u32),
+}
 

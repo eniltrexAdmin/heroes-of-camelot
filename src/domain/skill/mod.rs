@@ -6,11 +6,12 @@ pub mod description;
 pub use description::SkillDescription;
 
 pub mod skill_effect;
-pub use skill_effect::SkillEffect;
+pub use skill_effect::ComboSkillEffect;
 pub use skill_effect::PassiveSkill;
 pub use skill_effect::PassiveSkill::*;
-pub use skill_effect::ActiveSkillEffect;
-pub use skill_effect::ActiveSkillEffect::*;
+pub use skill_effect::SkillEffect;
+pub use skill_effect::ValueFormula;
+pub use skill_effect::ValueFormula::*;
 
 pub mod combo_skill;
 pub use combo_skill::ComboSkill;

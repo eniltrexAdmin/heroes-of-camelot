@@ -9,7 +9,7 @@ pub struct Card {
     attack: Attack,
     health_points: HealthPoints,
     current_level: CardLevel,
-    active_skill: ActiveSkill,
+    active_skill: CardSkill,
     tier: Tier,
     max_level: CardLevel,
 }

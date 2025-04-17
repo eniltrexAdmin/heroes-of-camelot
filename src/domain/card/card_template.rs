@@ -6,7 +6,7 @@ pub struct CardTemplate {
     name: Name,
     attack: Attack,
     health_points: HealthPoints,
-    active_skills: TemplateActiveSkills,
+    card_skills: TemplateSkills,
     combo_skills: Vec<ComboSkill>, // one exercise would be to have different of those per tier!
     card_type: CardType,
     stars: Stars,
@@ -19,28 +19,51 @@ impl CardTemplate {
         card_type: CardType,
         stars: Stars,
         name: Name,
-        attack: Attack,
         health_points: HealthPoints,
-        active_skills: ActiveSkill,
+        attack: Attack,
+        card_skills: TemplateSkills,
         combo_skills: Vec<ComboSkill>,
         hp_growth_curve: GrowthCurve,
         attack_growth_curve: GrowthCurve,
-    ) -> Self {
-        let active_skills = TemplateActiveSkills::new_from_one(
-            active_skills,
-            Tier::vec_tier(&stars)
-        );
+    ) -> Self{
         Self{
             card_type,
             stars,
             name,
             health_points,
             attack,
-            active_skills,
+            card_skills,
             combo_skills,
             hp_growth_curve,
             attack_growth_curve,
         }
+    }
+    pub fn new_replicate_active_skill(
+        card_type: CardType,
+        stars: Stars,
+        name: Name,
+        health_points: HealthPoints,
+        attack: Attack,
+        card_skill: CardSkill,
+        combo_skills: Vec<ComboSkill>,
+        hp_growth_curve: GrowthCurve,
+        attack_growth_curve: GrowthCurve,
+    ) -> Self {
+        let card_skills = TemplateSkills::new_from_one(
+            card_skill,
+            Tier::vec_tier(&stars)
+        );
+        CardTemplate::new(
+            card_type,
+            stars,
+            name,
+            health_points,
+            attack,
+            card_skills,
+            combo_skills,
+            hp_growth_curve,
+            attack_growth_curve
+        )
     }
 
     pub fn name(&self) -> &Name {
@@ -63,8 +86,8 @@ impl CardTemplate {
         &self.attack
     }
 
-    pub fn active_skills(&self) -> &TemplateActiveSkills {
-        &self.active_skills
+    pub fn active_skills(&self) -> &TemplateSkills {
+        &self.card_skills
     }
 
     pub fn combo_skills(&self) -> &[ComboSkill] {
@@ -96,18 +119,18 @@ mod tests {
         let name = Name::new("nymph".to_string());
         let attack = Attack::new(300);
         let health_points = HealthPoints::new(1080);
-        let active_skill = ActiveSkill::new(
+        let active_skill = CardSkill::new(
             SkillName::new("Some skill".to_string()),
             SkillDescription::new("Some description".to_string()),
-            IncreaseThisTurnAttack(300)
+            SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(300))
         );
 
-        let template = CardTemplate::new(
+        let template = CardTemplate::new_replicate_active_skill(
             CardType::Camelot,
             Stars::OneStar,
             name.clone(),
-            attack.clone(),
             health_points.clone(),
+            attack.clone(),
             active_skill.clone(),
             vec![],
             GrowthCurve::Percentage(2),

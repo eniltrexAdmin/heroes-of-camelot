@@ -1,4 +1,4 @@
 pub mod template_3_stars;
-mod template_1_star;
+mod common_cards;
 
 pub use template_3_stars::*;

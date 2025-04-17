@@ -1,4 +1,4 @@
-use crate::domain::{Card, PassiveSkill, SkillEffect};
+use crate::domain::{Card, PassiveSkill, ComboSkillEffect};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct TeamAttack(u128);

@@ -17,11 +17,12 @@ impl CardLevel {
     }
 
     pub fn max_level(stars: &Stars, tier: &Tier) -> Self {
-        let level = (stars.value() + tier.value() - 1) * 10;
-        if tier.value() == 4 {
-            return Self(level + 10)
+        let mut ten_levels = stars.value() + tier.int_value() - 1;
+
+        if tier == &Tier::Tier4{
+            ten_levels = ten_levels + 1
         }
-        Self(level)
+        Self(ten_levels * 10)
     }
 }
 
@@ -44,17 +45,16 @@ mod tests {
 
     #[test]
     fn test_max_level() {
-        let stars = Stars::OneStar;
-        let tier = Tier::init();
-        let level = CardLevel::max_level(&stars, &tier);
+        let level = CardLevel::max_level(&Stars::OneStar, &Tier::Tier1);
         assert_eq!(level.value(), 10);
 
-        let tier_2 = Tier::new(2);
-        let level = CardLevel::max_level(&stars, &tier_2);
+        let level = CardLevel::max_level(&Stars::OneStar, &Tier::Tier2);
         assert_eq!(level.value(), 20);
 
-        let tier_4 = Tier::new(4);
-        let level = CardLevel::max_level(&Stars::SevenStars, &tier_4);
+        let level = CardLevel::max_level(&Stars::TwoStars, &Tier::Tier3);
+        assert_eq!(level.value(), 40);
+
+        let level = CardLevel::max_level(&Stars::SevenStars, &Tier::Tier4);
         assert_eq!(level.value(), 110);
     }
 }

@@ -1,3 +1,5 @@
+use crate::domain::Tier;
+
 #[derive(Debug, PartialEq)]
 pub enum Stars {
     OneStar,
@@ -24,7 +26,7 @@ impl Stars {
     }
 
     pub fn value(&self) -> u8 {
-        match *self {
+        match self {
             Self::OneStar => 1,
             Self::TwoStars => 2,
             Self::ThreeStars => 3,
@@ -32,6 +34,14 @@ impl Stars {
             Self::FiveStars => 5,
             Self::SixStars => 6,
             Self::SevenStars => 7,
+        }
+    }
+
+    pub fn max_tier(&self) -> &Tier {
+        match self{
+            Stars::OneStar => &Tier::Tier2,
+            Stars::TwoStars => &Tier::Tier3,
+            _  => &Tier::Tier4,
         }
     }
 }
@@ -57,5 +67,21 @@ mod tests {
         let result = Stars::new(20);
         assert!(result.is_err());
         assert_eq!(StarError::InvalidNumberOfStars, result.unwrap_err());
+    }
+
+
+    #[test]
+    fn test_max_tier() {
+        let stars = Stars::OneStar;
+        assert_eq!(stars.max_tier(), &Tier::Tier2);
+
+        let stars = Stars::TwoStars;
+        assert_eq!(stars.max_tier(), &Tier::Tier3);
+
+        let stars = Stars::ThreeStars;
+        assert_eq!(stars.max_tier(), &Tier::Tier4);
+
+        let stars = Stars::FiveStars;
+        assert_eq!(stars.max_tier(), &Tier::Tier4);
     }
 }

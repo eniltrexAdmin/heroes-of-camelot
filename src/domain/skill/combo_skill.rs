@@ -4,11 +4,11 @@ use super::*;
 pub struct ComboSkill {
     name: SkillName,
     description: SkillDescription,
-    effect: SkillEffect,
+    effect: ComboSkillEffect,
 }
 
 impl ComboSkill {
-    pub fn new(name: SkillName, description: SkillDescription, effect: SkillEffect) -> Self {
+    pub fn new(name: SkillName, description: SkillDescription, effect: ComboSkillEffect) -> Self {
         ComboSkill {
             name,
             description,
@@ -24,7 +24,7 @@ impl ComboSkill {
         &self.description
     }
 
-    pub fn effect(&self) -> &SkillEffect {
+    pub fn effect(&self) -> &ComboSkillEffect {
         &self.effect
     }
 }
@@ -42,7 +42,7 @@ mod tests {
         let name = SkillName::new(value.clone());
         let value = "Increases HP 100%".to_string();
         let description = SkillDescription::new(value.clone());
-        let effect = SkillEffect::Passive(AttackIncrease(100));
+        let effect = ComboSkillEffect::Passive(AttackIncrease(100));
 
         let skill = ComboSkill::new(name.clone(), description.clone(), effect.clone());
         assert_eq!(&name, skill.name());
