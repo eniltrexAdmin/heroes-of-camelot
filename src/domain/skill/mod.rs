@@ -14,4 +14,6 @@ pub use skill_effect::ValueFormula;
 pub use skill_effect::ValueFormula::*;
 
 pub mod combo_skill;
+mod skill_target;
+
 pub use combo_skill::ComboSkill;
