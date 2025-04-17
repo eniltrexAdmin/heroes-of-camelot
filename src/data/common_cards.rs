@@ -11,8 +11,8 @@ pub fn apprentice_template() -> CardTemplate {
         HealthPoints::new(1200),
         Attack::new(285),
         CardSkill::new(
-            SkillName::new("Magic Bold".to_string()),
-            SkillDescription::new("Bold".to_string()),
+            SkillName::new("Magic Bolt".to_string()),
+            SkillDescription::new("Magic damage to enemy team".to_string()),
             SkillEffect::MagicDamage(BasedOnCardAttack(200))
         ),
         vec![],

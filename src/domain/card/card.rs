@@ -2,7 +2,7 @@ use std::rc::Rc;
 use super::*;
 use crate::domain::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Card {
     id: Id,
     template: Rc<CardTemplate>,
@@ -11,6 +11,7 @@ pub struct Card {
     current_level: CardLevel,
     active_skill: CardSkill,
     tier: Tier,
+    stars: Stars,
     max_level: CardLevel,
 }
 impl Card {
@@ -25,6 +26,7 @@ impl Card {
             id,
             attack: template.attack().clone(),
             health_points: template.health_points().clone(),
+            stars: template.stars().clone(),
             template,
             current_level: CardLevel::init(),
             tier,
@@ -44,33 +46,39 @@ impl Card {
     pub fn health_points(&self) -> &HealthPoints {
         &self.health_points
     }
+    pub fn card_type(&self) -> &CardType {
+        self.template.card_type()
+    }
+    pub fn tier(&self) -> &Tier {
+        &self.tier
+    }
+    pub fn max_level(&self) -> &CardLevel {
+        &self.max_level
+    }
+    pub fn current_level(&self) -> &CardLevel {
+        &self.current_level
+    }
 
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::PassiveSkill::HealthPointsIncrease;
+    use crate::data::apprentice_template;
+    use crate::domain::*;
     use super::*;
     #[test]
     fn test_new() {
-        // let id = Id::new();
-        // let name = Name::new("Bard".to_string());
-        // let attack = Attack::new(100);
-        // let hp = HealthPoints::new(100);
-        // // let passive_skill = ActiveSkillEffect::new(
-        // //     SkillName::new("Heavy body".to_string()),
-        // //     SkillDescription::new("Increases HP 100%".to_string()),
-        // //     SkillEffect::Passive(HealthPointsIncrease(25))
-        // // );
-        //
-        // let skills = vec![];
-        //
-        // let card = Card::new(id.clone(), name.clone(), attack, hp, skills.clone());
-        //
-        // assert_eq!(card.id, id);
-        // assert_eq!(card.name(), &name);
-        // assert_eq!(card.attack, attack);
-        // assert_eq!(card.health_points, hp);
-        // assert_eq!(card.skills, skills);
+        let apprentice_template = apprentice_template();
+
+        let card = Card::new(Id::new(), Rc::new(apprentice_template));
+
+        assert_eq!(card.template.name().value(), &"Apprentice".to_string());
+        assert_eq!(&CardType::Camelot, card.card_type());
+        assert_eq!(1200, card.health_points.value());
+        assert_eq!(285, card.attack.value());
+        assert_eq!(&Tier::Tier1, card.tier());
+        assert_eq!(10, card.max_level().value());
+        assert_eq!(1, card.current_level().value());
+        assert_eq!("Magic Bolt", card.active_skill.name().value())
     }
 }

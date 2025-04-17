@@ -1,6 +1,6 @@
 use crate::domain::Tier;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Stars {
     OneStar,
     TwoStars,
