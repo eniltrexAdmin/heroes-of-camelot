@@ -12,7 +12,6 @@ pub fn druid_initiate() -> CardTemplate {
             SkillDescription::new("Recover HP to this card's if enemy team has squire - NOT IMPLEMENTED".to_string()),
             SkillEffect::MagicDamage(BasedOnCardAttack(200))
         ),
-        vec![],
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3)
     )

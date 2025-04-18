@@ -15,7 +15,6 @@ pub fn apprentice_template() -> CardTemplate {
             SkillDescription::new("Magic damage to enemy team".to_string()),
             SkillEffect::MagicDamage(BasedOnCardAttack(200))
         ),
-        vec![],
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3)
     )
@@ -33,7 +32,6 @@ pub fn spy_template() -> CardTemplate {
             SkillDescription::new("Lower ATK of enemy team with the highest ATK - NOT IMPLEMENTED".to_string()),
             SkillEffect::MagicDamage(BasedOnCardAttack(200))
         ),
-        vec![],
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3)
     )
@@ -51,7 +49,6 @@ pub fn crossbowman() -> CardTemplate {
             SkillDescription::new("Damage enemy team with the highest HP - NOT IMPLEMENTED".to_string()),
             SkillEffect::MagicDamage(BasedOnCardAttack(200))
         ),
-        vec![],
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3)
     )

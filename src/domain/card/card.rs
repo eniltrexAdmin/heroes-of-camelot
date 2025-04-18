@@ -59,10 +59,6 @@ impl Card {
         &self.current_level
     }
 
-    pub fn combo_skills(&self) -> &[ComboSkill] {
-        self.template.combo_skills()
-    }
-
     pub fn level_up(&mut self, num_levels: u8) -> Result<(), CardManagementError> {
         if self.current_level.value() + num_levels > self.max_level.value() {
             return Err(CardManagementError::ExceededMaxLevel)
@@ -106,7 +102,7 @@ pub enum CardManagementError{
     ExceededMaxLevel
 }
 
-// TODO mybe refactor to do calculation instead of data? move that inside struct.
+// TODO maybe refactor to do calculation instead of data? move that inside struct.
 fn max_level(stars: &Stars, tier: &Tier) -> CardLevel {
     let mut ten_levels = stars.value() + tier.int_value() - 1;
 

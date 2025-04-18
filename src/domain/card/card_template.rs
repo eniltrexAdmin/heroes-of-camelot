@@ -7,7 +7,6 @@ pub struct CardTemplate {
     attack: Attack,
     health_points: HealthPoints,
     card_skills: TemplateSkills,
-    combo_skills: Vec<ComboSkill>, // one exercise would be to have different of those per tier!
     card_type: CardType,
     stars: Stars,
     hp_growth_curve: GrowthCurve,
@@ -22,7 +21,6 @@ impl CardTemplate {
         health_points: HealthPoints,
         attack: Attack,
         card_skills: TemplateSkills,
-        combo_skills: Vec<ComboSkill>,
         hp_growth_curve: GrowthCurve,
         attack_growth_curve: GrowthCurve,
     ) -> Self{
@@ -33,7 +31,6 @@ impl CardTemplate {
             health_points,
             attack,
             card_skills,
-            combo_skills,
             hp_growth_curve,
             attack_growth_curve,
         }
@@ -45,7 +42,6 @@ impl CardTemplate {
         health_points: HealthPoints,
         attack: Attack,
         card_skill: CardSkill,
-        combo_skills: Vec<ComboSkill>,
         hp_growth_curve: GrowthCurve,
         attack_growth_curve: GrowthCurve,
     ) -> Self {
@@ -60,7 +56,6 @@ impl CardTemplate {
             health_points,
             attack,
             card_skills,
-            combo_skills,
             hp_growth_curve,
             attack_growth_curve
         )
@@ -88,10 +83,6 @@ impl CardTemplate {
 
     pub fn active_skills(&self) -> &TemplateSkills {
         &self.card_skills
-    }
-
-    pub fn combo_skills(&self) -> &Vec<ComboSkill> {
-        &self.combo_skills
     }
 
     pub fn hp_growth_curve(&self) -> &GrowthCurve {
@@ -132,7 +123,6 @@ mod tests {
             health_points.clone(),
             attack.clone(),
             active_skill.clone(),
-            vec![],
             GrowthCurve::Percentage(2),
             GrowthCurve::Percentage(2)
         );
