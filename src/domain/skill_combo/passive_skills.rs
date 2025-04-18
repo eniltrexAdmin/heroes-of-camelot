@@ -9,5 +9,5 @@ pub enum ComboSkillEffect {
 #[derive(Debug, Clone, PartialEq)]
 pub enum PassiveSkill {
     AttackIncrease(u32),
-    HealthPointsIncrease(u32)
+    HealthPointsIncrease(u32),
 }

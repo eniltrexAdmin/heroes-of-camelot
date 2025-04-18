@@ -1,4 +1,4 @@
 #[derive(Debug, PartialEq)]
 pub enum GrowthCurve {
-    Percentage(u8)
+    Percentage(u8),
 }

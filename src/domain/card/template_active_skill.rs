@@ -1,9 +1,9 @@
-use std::collections::BTreeMap;
 use crate::domain::*;
+use std::collections::BTreeMap;
 
 #[derive(Debug, PartialEq)]
 pub struct TemplateSkills {
-    value: BTreeMap<Tier, CardSkill>
+    value: BTreeMap<Tier, CardSkill>,
 }
 
 impl TemplateSkills {
@@ -20,26 +20,26 @@ impl TemplateSkills {
     }
 }
 
-
-
-
 #[cfg(test)]
 mod tests {
-    use crate::domain::Stars::ThreeStars;
     use super::*;
+    use crate::domain::Stars::ThreeStars;
 
     #[test]
     fn test_constructor_single() {
         let active_skill = CardSkill::new(
             SkillName::new("Some skill".to_string()),
             SkillDescription::new("Some description".to_string()),
-            SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(300))
+            SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(300)),
         );
 
         let template_active_skill =
             TemplateSkills::new_from_one(active_skill.clone(), Tier::vec_tier(&ThreeStars));
 
         assert_eq!(template_active_skill.value().len(), 4);
-        assert!(template_active_skill.value().values().all(|s| s == &active_skill));
+        assert!(template_active_skill
+            .value()
+            .values()
+            .all(|s| s == &active_skill));
     }
 }

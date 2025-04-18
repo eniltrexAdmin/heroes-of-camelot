@@ -9,10 +9,12 @@ pub fn druid_initiate() -> CardTemplate {
         Attack::new(285),
         CardSkill::new(
             SkillName::new("Alleviate Pain".to_string()),
-            SkillDescription::new("Recover HP to this card's if enemy team has squire - NOT IMPLEMENTED".to_string()),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200))
+            SkillDescription::new(
+                "Recover HP to this card's if enemy team has squire - NOT IMPLEMENTED".to_string(),
+            ),
+            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
         ),
         GrowthCurve::Percentage(3),
-        GrowthCurve::Percentage(3)
+        GrowthCurve::Percentage(3),
     )
 }

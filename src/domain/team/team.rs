@@ -50,5 +50,5 @@ impl Team {
 #[derive(Debug, PartialEq)]
 pub enum TeamCreationError {
     NotEnoughCards,
-    TooManyCards
+    TooManyCards,
 }

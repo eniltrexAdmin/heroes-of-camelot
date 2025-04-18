@@ -10,7 +10,4 @@ pub use skill_effect::SkillEffect;
 pub use skill_effect::ValueFormula;
 pub use skill_effect::ValueFormula::*;
 
-
 mod skill_target;
-
-

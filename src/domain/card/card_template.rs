@@ -1,5 +1,5 @@
-use crate::domain::*;
 use super::*;
+use crate::domain::*;
 
 #[derive(Debug, PartialEq)]
 pub struct CardTemplate {
@@ -23,8 +23,8 @@ impl CardTemplate {
         card_skills: TemplateSkills,
         hp_growth_curve: GrowthCurve,
         attack_growth_curve: GrowthCurve,
-    ) -> Self{
-        Self{
+    ) -> Self {
+        Self {
             card_type,
             stars,
             name,
@@ -45,10 +45,7 @@ impl CardTemplate {
         hp_growth_curve: GrowthCurve,
         attack_growth_curve: GrowthCurve,
     ) -> Self {
-        let card_skills = TemplateSkills::new_from_one(
-            card_skill,
-            Tier::vec_tier(&stars)
-        );
+        let card_skills = TemplateSkills::new_from_one(card_skill, Tier::vec_tier(&stars));
         CardTemplate::new(
             card_type,
             stars,
@@ -57,7 +54,7 @@ impl CardTemplate {
             attack,
             card_skills,
             hp_growth_curve,
-            attack_growth_curve
+            attack_growth_curve,
         )
     }
 
@@ -95,16 +92,16 @@ impl CardTemplate {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum CardType{
+pub enum CardType {
     Camelot,
     Druid,
-    Demon
+    Demon,
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::*;
     use super::*;
+    use crate::domain::*;
 
     fn test_create_template() {
         let name = Name::new("nymph".to_string());
@@ -113,7 +110,7 @@ mod tests {
         let active_skill = CardSkill::new(
             SkillName::new("Some skill".to_string()),
             SkillDescription::new("Some description".to_string()),
-            SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(300))
+            SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(300)),
         );
 
         let template = CardTemplate::new_replicate_active_skill(
@@ -124,7 +121,7 @@ mod tests {
             attack.clone(),
             active_skill.clone(),
             GrowthCurve::Percentage(2),
-            GrowthCurve::Percentage(2)
+            GrowthCurve::Percentage(2),
         );
         assert_eq!(template.stars(), &Stars::OneStar);
         assert_eq!(template.name(), &name);
@@ -132,6 +129,10 @@ mod tests {
         assert_eq!(template.health_points(), &health_points);
         assert_eq!(template.card_type(), &CardType::Camelot);
         assert_eq!(template.name(), &name);
-        assert!(template.active_skills().value().values().all(|s| s == &active_skill));
+        assert!(template
+            .active_skills()
+            .value()
+            .values()
+            .all(|s| s == &active_skill));
     }
 }

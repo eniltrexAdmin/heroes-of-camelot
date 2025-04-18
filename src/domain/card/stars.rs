@@ -21,7 +21,7 @@ impl Stars {
             5 => Ok(Self::FiveStars),
             6 => Ok(Self::SixStars),
             7 => Ok(Self::SevenStars),
-            _ => Err(StarError::InvalidNumberOfStars)
+            _ => Err(StarError::InvalidNumberOfStars),
         }
     }
 
@@ -38,10 +38,10 @@ impl Stars {
     }
 
     pub fn max_tier(&self) -> &Tier {
-        match self{
+        match self {
             Stars::OneStar => &Tier::Tier2,
             Stars::TwoStars => &Tier::Tier3,
-            _  => &Tier::Tier4,
+            _ => &Tier::Tier4,
         }
     }
 }
@@ -68,7 +68,6 @@ mod tests {
         assert!(result.is_err());
         assert_eq!(StarError::InvalidNumberOfStars, result.unwrap_err());
     }
-
 
     #[test]
     fn test_max_tier() {

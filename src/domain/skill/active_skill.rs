@@ -12,7 +12,7 @@ impl CardSkill {
         CardSkill {
             name,
             description,
-            effect
+            effect,
         }
     }
 
@@ -28,9 +28,6 @@ impl CardSkill {
         &self.effect
     }
 }
-
-
-
 
 #[cfg(test)]
 mod tests {

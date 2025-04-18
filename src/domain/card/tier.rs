@@ -1,19 +1,19 @@
 use crate::domain::Stars;
 
 #[derive(Debug, PartialEq, Clone, Ord, PartialOrd, Eq)]
-pub enum Tier{
+pub enum Tier {
     Tier1,
     Tier2,
     Tier3,
-    Tier4
+    Tier4,
 }
 
-impl Tier{
-    pub fn init() -> Self{
+impl Tier {
+    pub fn init() -> Self {
         Tier::Tier1
     }
 
-    pub fn int_value(&self)->u8 {
+    pub fn int_value(&self) -> u8 {
         match self {
             Tier::Tier1 => 1,
             Tier::Tier2 => 2,
@@ -23,16 +23,16 @@ impl Tier{
     }
 
     pub fn vec_tier(stars: &Stars) -> Vec<Tier> {
-        match stars{
+        match stars {
             Stars::OneStar => vec![Tier::Tier1, Tier::Tier2],
             Stars::TwoStars => vec![Tier::Tier1, Tier::Tier2, Tier::Tier3],
-            _  => vec![Tier::Tier1, Tier::Tier2, Tier::Tier3, Tier::Tier4]
+            _ => vec![Tier::Tier1, Tier::Tier2, Tier::Tier3, Tier::Tier4],
         }
     }
 
     pub fn evolve(tier: Tier, tier2: Tier) -> Result<Tier, TierError> {
         if tier != tier2 {
-            return Err(TierError::MismatchedTiers)
+            return Err(TierError::MismatchedTiers);
         }
         match tier {
             Tier::Tier1 => Ok(Tier::Tier2),

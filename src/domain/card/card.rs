@@ -1,6 +1,6 @@
-use std::rc::Rc;
 use super::*;
 use crate::domain::*;
+use std::rc::Rc;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Card {
@@ -15,10 +15,7 @@ pub struct Card {
     max_level: CardLevel,
 }
 impl Card {
-    pub fn new(
-        id: Id,
-        template: Rc<CardTemplate>,
-    ) -> Self {
+    pub fn new(id: Id, template: Rc<CardTemplate>) -> Self {
         let tier = Tier::init();
         let active_skill = template.active_skills().value().get(&tier).unwrap().clone();
         let max_level = max_level(template.stars(), &tier);
@@ -31,7 +28,7 @@ impl Card {
             current_level: CardLevel::new(1),
             tier,
             active_skill,
-            max_level
+            max_level,
         }
     }
     pub fn id(&self) -> &Id {
@@ -61,7 +58,7 @@ impl Card {
 
     pub fn level_up(&mut self, num_levels: u8) -> Result<(), CardManagementError> {
         if self.current_level.value() + num_levels > self.max_level.value() {
-            return Err(CardManagementError::ExceededMaxLevel)
+            return Err(CardManagementError::ExceededMaxLevel);
         }
         let lvl = self.current_level;
         self.current_level = lvl.level_up(num_levels);
@@ -75,7 +72,7 @@ impl Card {
         match self.template.attack_growth_curve() {
             GrowthCurve::Percentage(percentage) => {
                 let base = self.template.attack().value();
-                let percentage_increment = percentage * (projected_level-1);
+                let percentage_increment = percentage * (projected_level - 1);
                 let increase = base * percentage_increment as u32 / 100;
                 Attack::new(base + increase)
             }
@@ -86,27 +83,29 @@ impl Card {
         match self.template.hp_growth_curve() {
             GrowthCurve::Percentage(percentage) => {
                 let base = self.template.health_points().value();
-                let percentage_increment = percentage * (projected_level-1);
+                let percentage_increment = percentage * (projected_level - 1);
                 let increase = base * percentage_increment as u32 / 100;
 
-                println!("Result is {} + {} (+{}%)", base, increase, percentage_increment);
+                println!(
+                    "Result is {} + {} (+{}%)",
+                    base, increase, percentage_increment
+                );
                 HealthPoints::new(base + increase)
             }
         }
     }
-
 }
 
 #[derive(Debug, PartialEq)]
-pub enum CardManagementError{
-    ExceededMaxLevel
+pub enum CardManagementError {
+    ExceededMaxLevel,
 }
 
 // TODO maybe refactor to do calculation instead of data? move that inside struct.
 fn max_level(stars: &Stars, tier: &Tier) -> CardLevel {
     let mut ten_levels = stars.value() + tier.int_value() - 1;
 
-    if tier == &Tier::Tier4{
+    if tier == &Tier::Tier4 {
         ten_levels = ten_levels + 1
     }
     CardLevel::new(ten_levels * 10)
@@ -114,9 +113,9 @@ fn max_level(stars: &Stars, tier: &Tier) -> CardLevel {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use crate::data::apprentice_template;
     use crate::domain::*;
-    use super::*;
     #[test]
     fn test_new() {
         let apprentice_template = apprentice_template();
@@ -172,6 +171,5 @@ mod tests {
         assert_eq!(1272, card.health_points().value());
         assert_eq!(302, card.attack.value());
         assert_eq!(3, card.current_level().value());
-
     }
 }

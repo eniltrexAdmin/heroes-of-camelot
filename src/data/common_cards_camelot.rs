@@ -1,6 +1,4 @@
-
 use crate::domain::*;
-
 
 // TODO string should be i18n, outsourced and imported.
 pub fn apprentice_template() -> CardTemplate {
@@ -13,10 +11,10 @@ pub fn apprentice_template() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Magic Bolt".to_string()),
             SkillDescription::new("Magic damage to enemy team".to_string()),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200))
+            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
         ),
         GrowthCurve::Percentage(3),
-        GrowthCurve::Percentage(3)
+        GrowthCurve::Percentage(3),
     )
 }
 
@@ -29,11 +27,13 @@ pub fn spy_template() -> CardTemplate {
         Attack::new(205),
         CardSkill::new(
             SkillName::new("Back stab".to_string()),
-            SkillDescription::new("Lower ATK of enemy team with the highest ATK - NOT IMPLEMENTED".to_string()),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200))
+            SkillDescription::new(
+                "Lower ATK of enemy team with the highest ATK - NOT IMPLEMENTED".to_string(),
+            ),
+            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
         ),
         GrowthCurve::Percentage(3),
-        GrowthCurve::Percentage(3)
+        GrowthCurve::Percentage(3),
     )
 }
 
@@ -46,11 +46,13 @@ pub fn crossbowman() -> CardTemplate {
         Attack::new(440),
         CardSkill::new(
             SkillName::new("Piercing Bolt".to_string()),
-            SkillDescription::new("Damage enemy team with the highest HP - NOT IMPLEMENTED".to_string()),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200))
+            SkillDescription::new(
+                "Damage enemy team with the highest HP - NOT IMPLEMENTED".to_string(),
+            ),
+            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
         ),
         GrowthCurve::Percentage(3),
-        GrowthCurve::Percentage(3)
+        GrowthCurve::Percentage(3),
     )
 }
 
@@ -74,7 +76,6 @@ pub fn crossbowman() -> CardTemplate {
 // 2 level up
 // hp +97
 // attack +31
-
 
 // Mara of the sand: 11330
 // attack 4013.

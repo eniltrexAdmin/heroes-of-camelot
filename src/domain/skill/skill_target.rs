@@ -1,12 +1,12 @@
-pub enum SkillTarget{
+pub enum SkillTarget {
     EnemyParty,
-    OwnParty
+    OwnParty,
 }
 
-pub enum TeamTarget{
+pub enum TeamTarget {
     Default,
     HighestTotalHp,
     HighestAttack,
     HighestCurrentHP,
-    LowestCurrentHP
+    LowestCurrentHP,
 }

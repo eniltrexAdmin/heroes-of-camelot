@@ -19,7 +19,7 @@ fn base_attack(cards: &Vec<Card>) -> u128 {
     cards.iter().map(|card| card.attack().value() as u128).sum()
 }
 
-fn get_combo_skill_attack_bonus(skills:  &Vec<ComboSkill>) -> u32 {
+fn get_combo_skill_attack_bonus(skills: &Vec<ComboSkill>) -> u32 {
     skills
         .iter()
         .filter_map(|skill| match skill.effect() {
@@ -32,7 +32,7 @@ fn get_combo_skill_attack_bonus(skills:  &Vec<ComboSkill>) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::data::{apprentice_template};
+    use crate::data::apprentice_template;
     use crate::domain::Id;
     use std::rc::Rc;
 
@@ -55,7 +55,7 @@ mod tests {
             SkillName::new("extra attack".to_string()),
             SkillDescription::new("Increments attack 25%".to_string()),
             ComboSkillEffect::Passive(AttackIncrease(25)),
-            vec![]
+            vec![],
         );
 
         let combo_skills = vec![
@@ -81,7 +81,7 @@ mod tests {
             SkillName::new("extra attack".to_string()),
             SkillDescription::new("Increments attack 25%".to_string()),
             ComboSkillEffect::Passive(AttackIncrease(25)),
-            vec![]
+            vec![],
         );
 
         let combo_skills = vec![

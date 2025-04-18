@@ -19,7 +19,7 @@ impl ComboSkill {
             name,
             description,
             effect,
-            templates_needed
+            templates_needed,
         }
     }
 
@@ -41,7 +41,6 @@ impl ComboSkill {
 }
 
 pub type ComboSkillFinder = fn(card: &Vec<Card>) -> Vec<ComboSkill>;
-
 
 #[cfg(test)]
 mod tests {
