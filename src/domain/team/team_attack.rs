@@ -37,7 +37,7 @@ mod tests {
     use std::rc::Rc;
 
     #[test]
-    fn attack_creation() {
+    fn test_base_attack() {
         let mut cards = vec![];
         let apprentice_template = apprentice_template();
         let apprentice_card = Card::new(Id::new(), Rc::new(apprentice_template));
@@ -46,8 +46,8 @@ mod tests {
         cards.push(apprentice_card.clone());
         cards.push(apprentice_card.clone());
 
-        let team_attack = TeamAttack::new(&cards, &vec![]);
-        assert_eq!(285 * 4, team_attack.value());
+        let team_attack = base_attack(&cards);
+        assert_eq!(285 * 4, team_attack);
     }
     #[test]
     fn test_get_combo_skill_attack_bonus() {
