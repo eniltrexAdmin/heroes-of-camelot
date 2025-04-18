@@ -1,5 +1,6 @@
 use super::*;
 use crate::domain::{Card, ComboSkill};
+use crate::domain::team::team_hp::TeamHealthPoints;
 
 pub enum TeamType {
     DefaultTeam(Team),
@@ -12,6 +13,7 @@ pub struct Team {
     third: Option<Card>,
     fourth: Option<Card>,
     attack: TeamAttack,
+    health_points: TeamHealthPoints,
     combo_skills: Vec<ComboSkill>,
 }
 
@@ -33,8 +35,10 @@ impl Team {
         if let Some(ref c) = fourth {
             cards.push(c.clone());
         }
+        check_combo_skill(&cards, &combo_skills)?;
 
         let attack = TeamAttack::new(&cards, &combo_skills);
+        let health_points = TeamHealthPoints::new(&cards, &combo_skills);
 
         Ok(Team {
             captain,
@@ -42,13 +46,35 @@ impl Team {
             third,
             fourth,
             attack,
+            health_points,
             combo_skills,
         })
     }
+
+    pub fn captain(&self) -> &Card {
+        &self.captain
+    }
+}
+
+fn check_combo_skill(card: &Vec<Card>, combo_skills:  &Vec<ComboSkill>) -> Result<(), TeamCreationError> {
+    Ok(())
 }
 
 #[derive(Debug, PartialEq)]
 pub enum TeamCreationError {
     NotEnoughCards,
     TooManyCards,
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_sunny_case() {
+
+    }
+
+    #[test]
+    fn test_wrong_combo_skills() {
+
+    }
 }
