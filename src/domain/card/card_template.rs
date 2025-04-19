@@ -3,7 +3,7 @@ use crate::domain::*;
 
 #[derive(Debug, PartialEq)]
 pub struct CardTemplate {
-    name: Name,
+    identifier: Name,
     attack: Attack,
     health_points: HealthPoints,
     card_skills: TemplateSkills,
@@ -27,7 +27,7 @@ impl CardTemplate {
         Self {
             card_type,
             stars,
-            name,
+            identifier: name,
             health_points,
             attack,
             card_skills,
@@ -59,7 +59,7 @@ impl CardTemplate {
     }
 
     pub fn name(&self) -> &Name {
-        &self.name
+        &self.identifier
     }
 
     pub fn stars(&self) -> &Stars {

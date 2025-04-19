@@ -5,7 +5,7 @@ pub struct ComboSkill {
     name: SkillName,
     description: SkillDescription,
     effect: ComboSkillEffect,
-    templates_needed: Vec<Name>,
+    required_templates: Vec<Name>,
 }
 
 impl ComboSkill {
@@ -13,13 +13,13 @@ impl ComboSkill {
         name: SkillName,
         description: SkillDescription,
         effect: ComboSkillEffect,
-        templates_needed: Vec<Name>,
+        cards_team: Vec<Name>,
     ) -> Self {
         ComboSkill {
             name,
             description,
             effect,
-            templates_needed,
+            required_templates: cards_team,
         }
     }
 
@@ -35,8 +35,8 @@ impl ComboSkill {
         &self.effect
     }
 
-    pub fn templates_needed(&self) -> &[Name] {
-        &self.templates_needed
+    pub fn required_templates(&self) -> &[Name] {
+        &self.required_templates
     }
 }
 
@@ -65,6 +65,6 @@ mod tests {
         assert_eq!(&name, skill.name());
         assert_eq!(&description, skill.description());
         assert_eq!(&effect, skill.effect());
-        assert_eq!(&for_templates, skill.templates_needed())
+        assert_eq!(&for_templates, skill.required_templates())
     }
 }

@@ -41,7 +41,7 @@ mod tests {
         cards.push(apprentice_card.clone());
 
         let team = team_factory(
-            cards,
+            cards.clone(),
             combo_skill_finder
         );
 
@@ -49,7 +49,8 @@ mod tests {
         let team = team.unwrap();
         match team {
             DefaultTeam(default_team) => {
-                assert_eq!(default_team.captain(), &apprentice_card)
+                assert_eq!(default_team.captain(), &apprentice_card);
+                assert_eq!(default_team.combo_skills(), combo_skill_finder(&cards))
             }
         }
     }
