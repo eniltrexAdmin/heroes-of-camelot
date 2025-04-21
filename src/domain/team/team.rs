@@ -1,4 +1,3 @@
-use std::collections::HashSet;
 use super::*;
 use crate::domain::*;
 
@@ -7,6 +6,7 @@ pub enum TeamType {
 }
 
 //Yes verbose, but safe! Can't iterate, but it's OK.
+#[derive(Debug, Clone, PartialEq)]
 pub struct Team {
     captain: Card,
     second: Option<Card>,

@@ -7,5 +7,8 @@ pub mod skill_combo;
 pub use skill_combo::*;
 pub mod team;
 pub use team::*;
+
+pub mod party;
+pub use party::*;
 mod shiai;
-mod party;
+
