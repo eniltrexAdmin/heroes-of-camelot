@@ -6,22 +6,11 @@ pub struct Shiai {
     defense_party: BattleParty,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum ShiaiSelect {
-    AttackParty(TeamSelect),
-    DefenseParty(TeamSelect)
-}
+
 
 pub enum ShiaiEvent{
-    Attack(TeamAttackedDomainEvent)
-}
-
-pub struct TeamAttackedDomainEvent{
-    attacker: ShiaiSelect,
-    defender: ShiaiSelect,
-    attack_damage: TeamAttack,
-    attack_party: BattleParty,
-    defense_party: BattleParty,
+    Attack(TeamAttackedDomainEvent),
+    DamageReceived(DamageReceived)
 }
 
 pub struct ShiaiResult {
@@ -35,6 +24,8 @@ pub fn battle(attacker: Party, defender: Party) -> ShiaiResult {
 
 
     let mut shiai = Shiai::new(attacker.clone(), defender.clone());
+
+    println!("{}", shiai.pretty_print());
 
     while turn < 30 {
         let active_team = select_active_team(&attacker, &defender, turn);
@@ -52,56 +43,69 @@ pub fn battle(attacker: Party, defender: Party) -> ShiaiResult {
 impl Shiai {
     fn new(attacker: Party, defender: Party) -> Shiai {
         Self{
-            attack_party: BattleParty::new(attacker),
-            defense_party: BattleParty::new(defender),
+            attack_party: BattleParty::new(attacker, &PartyPosition::Attack),
+            defense_party: BattleParty::new(defender, &PartyPosition::Defense),
         }
     }
 
-    fn play_turn(&mut self, active_team: ShiaiSelect) -> Vec<ShiaiEvent>{
+    fn play_turn(&mut self, selected_team: ShiaiPosition) -> Vec<ShiaiEvent>{
         // skills part
-        //...
-        // self.execute_attack(active_team);
-        self.attack(&active_team);
+        self.attack(&selected_team);
         vec![]
     }
 
-    fn attack(&mut self, attacker: &ShiaiSelect) {
+    fn attack(&mut self, attacker: &ShiaiPosition) {
         // time to make copies, and save the results!
-        let mut attacker_team = self.select_team(&attacker);
-        let mut defender_team = self.select_team(&attacker);
-
-        attacker_team.attack(&mut defender_team);
-
-        self.set_team(attacker, attacker_team);
-        self.set_team(attacker, defender_team);
+        // let mut attacker_team = self.select_team(&attacker);
+        //
+        // attacker_team.attack_party(&mut self.defense_party);
+        //
+        // self.set_team(attacker, attacker_team);
+        // self.set_team(attacker, defender_team);
     }
 
-    fn select_team(&self, selector: &ShiaiSelect) -> BattleTeam {
+    // fn select_team_ref(&mut self, selector: &ShiaiPosition) -> &mut BattleTeam {
+    //     match  selector {
+    //         ShiaiPosition::AttackParty(team_select) => self.attack_party.get_team_mut_ref(team_select),
+    //         ShiaiPosition::DefenseParty(team_select) => self.defense_party.get_team_mut_ref(team_select)
+    //     }
+    // }
+
+    fn select_team(&self, selector: &ShiaiPosition) -> BattleTeam {
         match  selector {
-            ShiaiSelect::AttackParty(team_select) => self.attack_party.get_team_clone(team_select),
-            ShiaiSelect::DefenseParty(team_select) => self.defense_party.get_team_clone(team_select)
+            ShiaiPosition::AttackParty(team_select) => self.attack_party.get_team_clone(team_select),
+            ShiaiPosition::DefenseParty(team_select) => self.defense_party.get_team_clone(team_select)
         }
     }
 
-    fn set_team(&mut self, select: &ShiaiSelect, team: BattleTeam) {
+    fn set_team(&mut self, select: &ShiaiPosition, team: BattleTeam) {
         match select {
-            ShiaiSelect::AttackParty(team_select) => self.attack_party.set_team(team_select, team),
-            ShiaiSelect::DefenseParty(team_select) => self.defense_party.set_team(team_select, team),
+            ShiaiPosition::AttackParty(team_select) => self.attack_party.set_team(team_select, team),
+            ShiaiPosition::DefenseParty(team_select) => self.defense_party.set_team(team_select, team),
         }
+    }
+
+    pub fn pretty_print(&self) -> String {
+        format!(
+            "Defender Party:\n{}\nAttacker Party:\n{}\n",
+             self.defense_party.format_pretty(true),
+            self.attack_party.format_pretty(false),
+
+        )
     }
 }
 
 
 
-fn select_active_team(attacker: &Party, defender: &Party, turn: u8) -> ShiaiSelect {
+fn select_active_team(attacker: &Party, defender: &Party, turn: u8) -> ShiaiPosition {
     match turn %2 {
-        1 => ShiaiSelect::AttackParty(select_team(attacker, turn)),
-        0 => ShiaiSelect::DefenseParty(select_team(defender, turn)),
+        1 => ShiaiPosition::AttackParty(select_team(attacker, turn)),
+        0 => ShiaiPosition::DefenseParty(select_team(defender, turn)),
         _ => unreachable!()
     }
 }
 
-fn select_team(party: &Party, turn: u8) -> TeamSelect {
+fn select_team(party: &Party, turn: u8) -> TeamPosition {
     let mut available_teams = vec![CaptainTeam];
     if party.second_team().is_some() {
         available_teams.push(SecondTeam);
@@ -125,7 +129,7 @@ mod tests {
         let defender = stub_party();
         let selected_team = select_active_team(&attacker, &defender, 35);
 
-        assert_eq!(ShiaiSelect::DefenseParty(TeamSelect::CaptainTeam), selected_team);
+        assert_eq!(ShiaiPosition::DefenseParty(CaptainTeam), selected_team);
 
     }
     // #[test]
