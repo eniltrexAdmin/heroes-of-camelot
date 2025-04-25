@@ -1,7 +1,14 @@
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ShiaiPosition {
     AttackParty(TeamPosition),
     DefenseParty(TeamPosition)
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum TeamPosition {
+    CaptainTeam,
+    SecondTeam,
+    ThirdTeam,
 }
 impl ShiaiPosition {
     pub fn from_parts(party: &PartyPosition, team: TeamPosition) -> Self {
@@ -18,9 +25,3 @@ pub enum PartyPosition {
     Defense,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum TeamPosition {
-    CaptainTeam,
-    SecondTeam,
-    ThirdTeam,
-}
