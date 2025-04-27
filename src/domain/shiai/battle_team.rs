@@ -1,18 +1,19 @@
 use crate::domain::*;
+use crate::domain::shiai::damage::Damage::Physical;
 use super::*;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct BattleTeam {
     original_team: Team,
     position: ShiaiPosition,
-    current_hp: TeamHealthPoints,
+    current_hp: BattleTeamHealthPoints,
     current_attack: BattleTeamAttack
 }
 
 impl BattleTeam {
     pub fn new(original_team: Team, position: ShiaiPosition) -> Self {
         Self{
-            current_hp: original_team.health_points().clone(),
+            current_hp: BattleTeamHealthPoints::new(original_team.health_points().value()),
             current_attack: BattleTeamAttack::new(original_team.attack().value()),
             original_team,
             position
@@ -23,7 +24,7 @@ impl BattleTeam {
         &self.position
     }
 
-    pub fn current_hp(&self) -> &TeamHealthPoints {
+    pub fn current_hp(&self) -> &BattleTeamHealthPoints {
         &self.current_hp
     }
 
@@ -38,6 +39,14 @@ impl BattleTeam {
         self.current_hp.value() > 0
     }
     pub fn receive_damage(&mut self, damage: Damage) -> DamageReceived {
+        match damage.clone() {
+            Physical(physical_damage) => {
+                self.current_hp = self.current_hp.apply_damage(physical_damage);
+            },
+            Damage::Magical => {
+
+            }
+        }
         DamageReceived{
             team: self.position.clone(),
             damage: damage.clone()
@@ -60,7 +69,7 @@ mod tests {
         let battle_team = BattleTeam::new(team.clone(), AttackParty(CaptainTeam));
 
         assert_eq!(battle_team.original_team, team);
-        assert_eq!(team.health_points(), battle_team.current_hp());
+        assert_eq!(team.health_points().value(), battle_team.current_hp().value());
         assert_eq!(team.attack().value(), battle_team.current_attack().value());
     }
 

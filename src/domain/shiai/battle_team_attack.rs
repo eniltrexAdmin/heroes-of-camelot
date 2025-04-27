@@ -9,3 +9,15 @@ impl BattleTeamAttack{
         self.0
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn attack_creation() {
+        let value = 3000;
+        let attack = BattleTeamAttack::new(value);
+        assert_eq!(value, attack.value());
+    }
+}

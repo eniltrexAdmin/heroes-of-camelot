@@ -10,5 +10,5 @@ pub use team::*;
 
 pub mod party;
 pub use party::*;
-mod shiai;
+pub mod shiai;
 

@@ -8,8 +8,8 @@ pub enum Damage {
 // TODO refactor to value objects in the future
 #[derive(Debug, Clone, PartialEq)]
 pub enum PhysicalDamage{
-    Attack(u128),
-    Reflected(u128)
+    AttackDamage(u128),
+    ReflectedDamage(u128)
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -21,14 +21,14 @@ pub struct DamageReceived {
 impl Damage {
     pub fn new_attack_damage(amount: BattleTeamAttack) -> Self {
         Damage::Physical(
-            Attack(amount.value())
+            AttackDamage(amount.value())
         )
     }
 
     // TODO this constructor should need the skill.
     pub fn new_reflected_damage(amount: BattleTeamAttack) -> Self {
         Damage::Physical(
-            Reflected(amount.value())
+            ReflectedDamage(amount.value())
         )
     }
 
@@ -36,8 +36,8 @@ impl Damage {
         match self {
             Damage::Physical(physical_damage) => {
                 match physical_damage {
-                    Attack(amount) => *amount,
-                    Reflected(amount) => *amount
+                    AttackDamage(amount) => *amount,
+                    ReflectedDamage(amount) => *amount
                 }
             }
             Damage::Magical => 0
@@ -45,6 +45,17 @@ impl Damage {
     }
 }
 
+
+impl PhysicalDamage {
+    pub fn new_attack_damage(amount: BattleTeamAttack) -> Self {
+        AttackDamage(amount.value())
+    }
+
+    // TODO this constructor should need the skill.
+    pub fn new_reflected_damage(amount: BattleTeamAttack) -> Self {
+        ReflectedDamage(amount.value())
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -56,7 +67,7 @@ mod tests {
 
         assert!(matches!(damage, Damage::Physical(_)));
         if let Damage::Physical(inner) = damage {
-            assert!(matches!(inner, Attack(_)));
+            assert!(matches!(inner, AttackDamage(_)));
         }
     }
 
@@ -67,7 +78,7 @@ mod tests {
 
         assert!(matches!(damage, Damage::Physical(_)));
         if let Damage::Physical(inner) = damage {
-            assert!(matches!(inner, Reflected(_)));
+            assert!(matches!(inner, ReflectedDamage(_)));
         }
     }
 }

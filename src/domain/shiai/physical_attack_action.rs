@@ -7,6 +7,7 @@ pub struct TeamAttacked {
 }
 
 pub fn attack(state:  &mut HashMap<ShiaiPosition, BattleTeam>, subject: ShiaiPosition) -> TeamAttacked {
+    assert!(state.get(&subject).is_some());
     let target =   select_target(&state, subject.clone(), TargetStrategy::Default);
 
     // TODO this can panic or something if its the same target
@@ -20,7 +21,8 @@ pub fn attack(state:  &mut HashMap<ShiaiPosition, BattleTeam>, subject: ShiaiPos
 
 
 fn attack_team(subject: &mut BattleTeam, target: &mut BattleTeam) -> TeamAttacked {
-
+    let damage = Damage::new_attack_damage(subject.current_attack().clone());
+    target.receive_damage(damage);
     TeamAttacked {
         subject: subject.position().clone(),
         target: target.position().clone()
@@ -31,13 +33,13 @@ fn attack_team(subject: &mut BattleTeam, target: &mut BattleTeam) -> TeamAttacke
 
 #[cfg(test)]
 mod tests {
-    use crate::data::stub_team;
+    use crate::data::{stub_team, stub_team_2};
     use super::*;
 
     #[test]
     fn test_attack_team() {
         let mut battle_team = BattleTeam::new(stub_team(), AttackParty(CaptainTeam));
-        let mut battle_team_2 = BattleTeam::new(stub_team(), DefenseParty(CaptainTeam));
+        let mut battle_team_2 = BattleTeam::new(stub_team_2(), DefenseParty(CaptainTeam));
 
         let result = attack_team(&mut battle_team, &mut battle_team_2);
 

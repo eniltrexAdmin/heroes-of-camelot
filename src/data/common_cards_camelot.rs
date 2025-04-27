@@ -56,29 +56,78 @@ pub fn crossbowman() -> CardTemplate {
     )
 }
 
-// pub fn wood_nymph_template() -> Card {
-//     let id = Id::new();
-//     let name = Name::new("Wood Nymph".to_string());
-//     let hp = HealthPoints::new(1050);
-//     let attack = Attack::new(340);
-//
-//     Card::new(id, name, attack, hp, vec![])
-// }
+pub fn unicorn() -> CardTemplate {
+    CardTemplate::new_replicate_active_skill(
+        CardType::Camelot,
+        Stars::OneStar,
+        Name::new("Unicorn".to_string()),
+        HealthPoints::new(1480),
+        Attack::new(365),
+        CardSkill::new(
+            SkillName::new("Essence of Alicorn".to_string()),
+            SkillDescription::new(
+                "Raise ATK of your team with the highest attack - NOT IMPLEMENTED".to_string(),
+            ),
+            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+        ),
+        GrowthCurve::Percentage(3),
+        GrowthCurve::Percentage(3),
+    )
+}
 
-// 1 level up:
-// hp +31   (3%)
-// attack +10 (3%)
+pub fn hunter() -> CardTemplate {
+    CardTemplate::new_replicate_active_skill(
+        CardType::Camelot,
+        Stars::OneStar,
+        Name::new("Hunter".to_string()),
+        HealthPoints::new(1500),
+        Attack::new(360),
+        CardSkill::new(
+            SkillName::new("Trap".to_string()),
+            SkillDescription::new(
+                "Reduce attack of enemy team - NOT IMPLEMENTED".to_string(),
+            ),
+            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+        ),
+        GrowthCurve::Percentage(3),
+        GrowthCurve::Percentage(3),
+    )
+}
 
-// 2 level up
-// hp +63
-// attack +20
+pub fn footman() -> CardTemplate {
+    CardTemplate::new_replicate_active_skill(
+        CardType::Camelot,
+        Stars::OneStar,
+        Name::new("Footman".to_string()),
+        HealthPoints::new(1180),
+        Attack::new(290),
+        CardSkill::new(
+            SkillName::new("Bravery".to_string()),
+            SkillDescription::new(
+                "Raise ATK of this card's team - NOT IMPLEMENTED".to_string(),
+            ),
+            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+        ),
+        GrowthCurve::Percentage(3),
+        GrowthCurve::Percentage(3),
+    )
+}
 
-// 2 level up
-// hp +97
-// attack +31
-
-// Mara of the sand: 11330
-// attack 4013.
-// +1 level
-// +226 (2%)
-// +80  (2%)  (up to star 9% is 2%)
+pub fn squire() -> CardTemplate {
+    CardTemplate::new_replicate_active_skill(
+        CardType::Camelot,
+        Stars::OneStar,
+        Name::new("Squire".to_string()),
+        HealthPoints::new(850),
+        Attack::new(200),
+        CardSkill::new(
+            SkillName::new("Bravery".to_string()),
+            SkillDescription::new(
+                "Recover HP yo your team with the highest HP - NOT IMPLEMENTED".to_string(),
+            ),
+            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+        ),
+        GrowthCurve::Percentage(3),
+        GrowthCurve::Percentage(3),
+    )
+}

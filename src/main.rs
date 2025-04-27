@@ -1,5 +1,11 @@
-use heroes_of_camelot::start_game;
+use heroes_of_camelot::data::*;
+use heroes_of_camelot::domain::shiai::shiai;
 
 fn main() {
-    start_game()
+
+    let attacker = stub_party();
+    let defender = stub_party_2();
+
+    shiai::battle(attacker, defender);
+
 }
