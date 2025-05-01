@@ -1,13 +1,15 @@
 pub trait State {
+    fn debug(&self) -> &str;
     fn update(&mut self) -> StateTransition;
     fn draw(&self);
-    fn debug(&self) -> &str;
+
 }
 
 pub enum StateTransition {
     None,
     Pop,
-    Push(Box<dyn State>)
+    Push(Box<dyn State>),
+    Switch(Box<dyn State>)
 }
 
 pub struct StackState{
@@ -34,6 +36,10 @@ impl StackState {
                 StateTransition::None => {},
                 StateTransition::Pop => {self.pop();},
                 StateTransition::Push(state) => {
+                    self.states.push(state);
+                },
+                StateTransition::Switch(state) => {
+                    self.pop();
                     self.states.push(state);
                 }
             }

@@ -22,6 +22,10 @@ impl PresentationState {
 
 
 impl State for PresentationState {
+    fn debug(&self) -> &str {
+        "PresentationState"
+    }
+
     fn update(&mut self) -> StateTransition {
         self.fade_in += 0.01;
         if self.fade_in > 1.0 {
@@ -29,7 +33,7 @@ impl State for PresentationState {
             let battle_state = BattleState::new();
 
             // Wrap it and return
-            StateTransition::Push(Box::new(battle_state))
+            StateTransition::Switch(Box::new(battle_state))
         } else {
             StateTransition::None
         }
@@ -56,9 +60,5 @@ impl State for PresentationState {
                 ..Default::default()
             },
         );
-    }
-
-    fn debug(&self) -> &str {
-        "PresentationState"
     }
 }

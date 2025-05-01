@@ -1,12 +1,12 @@
 pub mod shiai;
 pub use shiai::*;
-mod shiai_position;
-use shiai_position::*;
-use shiai_position::ShiaiPosition;
-use shiai_position::ShiaiPosition::*;
-use shiai_position::TeamPosition::*;
-mod battle_team;
-use battle_team::BattleTeam;
+pub mod shiai_position;
+pub use shiai_position::*;
+pub use shiai_position::ShiaiPosition;
+pub use shiai_position::ShiaiPosition::*;
+pub use shiai_position::TeamPosition::*;
+pub mod battle_team;
+pub use battle_team::BattleTeam;
 mod battle_team_attack;
 use battle_team_attack::BattleTeamAttack;
 

@@ -13,6 +13,11 @@ pub struct ShiaiResult {
     shiai_events: Vec<ShiaiEvent>,
     teams: HashMap<ShiaiPosition, BattleTeam>,
 }
+impl ShiaiResult {
+    pub fn teams(&self) -> &HashMap<ShiaiPosition, BattleTeam> {
+        &self.teams
+    }
+}
 
 pub fn battle(attacker: Party, defender: Party) -> ShiaiResult {
     let mut events = Vec::new();
