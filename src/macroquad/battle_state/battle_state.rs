@@ -2,7 +2,7 @@ use macroquad::prelude::*;
 use crate::data::{stub_party, stub_party_2};
 use crate::domain::*;
 use crate::macroquad::*;
-use crate::macroquad::battle_state::macroquad_team::{MacroquadTeam, StatsTextures};
+use crate::macroquad::battle_state::macroquad_team::{MacroquadTeam, TeamTextures};
 
 pub struct BattleState {
     shiai_result: ShiaiResult,
@@ -37,7 +37,21 @@ impl BattleState {
         let stats_label_background = Texture2D::from_file_with_format(bytes, None);
         stats_label_background.set_filter(FilterMode::Linear);
 
-        let states_textures = StatsTextures{
+        let bytes = include_bytes!(
+            concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/battle_state/team/empty_life_bar.png")
+        );
+        let life_bar_container = Texture2D::from_file_with_format(bytes, None);
+        life_bar_container.set_filter(FilterMode::Linear);
+
+        let bytes = include_bytes!(
+            concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/battle_state/team/full_life_bar.png")
+        );
+        let life_bar = Texture2D::from_file_with_format(bytes, None);
+        life_bar.set_filter(FilterMode::Linear);
+
+        let states_textures = TeamTextures {
+            life_bar_container,
+            life_bar,
             stats_background_texture,
             stats_border,
             stats_label_background
