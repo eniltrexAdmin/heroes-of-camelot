@@ -15,9 +15,12 @@ pub struct MacroquadTeam {
     game_team: BattleTeam,
     textures: TeamTextures,
     team_layout: TeamLayout,
-    rotation: f32
+    rotation: f32,
+    life_bar_width_percentage: f64
+
 }
 
+const REMOVE_LIFE_SPEED: f64 = 2.0;
 
 
 impl MacroquadTeam {
@@ -30,13 +33,23 @@ impl MacroquadTeam {
             game_team: game_team.clone(),
             textures,
             team_layout: TeamLayout::new(game_team.position()),
-            rotation
+            rotation,
+            life_bar_width_percentage: 1.0
         }
     }
 
     fn team_layout(&self) -> TeamLayout {
         // let stats_rectangle_to_use = self.stats_rectangle;
         TeamLayout::new(self.game_team.position())
+    }
+
+    pub fn update(&mut self) {
+        let current = self.game_team.current_hp().value() as f64;
+        let max = self.game_team.original_team().health_points().value() as f64;
+        let expected_percentage = current / max;
+        if self.life_bar_width_percentage > expected_percentage {
+            self.life_bar_width_percentage = self.life_bar_width_percentage - 0.01 * REMOVE_LIFE_SPEED;
+        }
     }
 
     pub fn draw(&self) {
@@ -86,9 +99,6 @@ impl MacroquadTeam {
             },
         );
 
-        let current = self.game_team.current_hp().value() as f64;
-        let max = self.game_team.original_team().health_points().value() as f64;
-        let current_life = current / max;
         draw_texture_ex(
             &self.textures.life_bar,
             hp_rectangle.x,
@@ -98,10 +108,10 @@ impl MacroquadTeam {
                 source: Some(Rect::new(
                     0.0,
                     0.0,
-                    self.textures.life_bar.width() * current_life as f32,
+                    self.textures.life_bar.width() * self.life_bar_width_percentage as f32,
                     self.textures.life_bar.height())
                 ),
-                dest_size: Some(Vec2::new(hp_rectangle.w * current_life as f32, hp_rectangle.h)),
+                dest_size: Some(Vec2::new(hp_rectangle.w * self.life_bar_width_percentage as f32, hp_rectangle.h)),
                 ..Default::default()
             },
         );

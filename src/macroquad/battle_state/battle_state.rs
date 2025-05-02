@@ -78,6 +78,9 @@ impl State for BattleState {
         "BattleState"
     }
     fn update(&mut self) -> StateTransition {
+        self.teams.iter_mut().for_each(|team: &mut MacroquadTeam| {
+            team.update()
+        });
         StateTransition::None
     }
 
@@ -86,6 +89,5 @@ impl State for BattleState {
         self.teams.iter().for_each(|team: &MacroquadTeam| {
             team.draw()
         });
-
     }
 }
