@@ -27,7 +27,7 @@ pub fn battle(attacker: Party, defender: Party) -> ShiaiResult {
 
     println!("Starting Battle:");
     print_state(&shiai);
-    while turn < 5 {
+    while turn < 10 {
         println!("Turn {}:", turn);
         let active_team = select_turn_team(turn);
         play_turn(&mut shiai, active_team);

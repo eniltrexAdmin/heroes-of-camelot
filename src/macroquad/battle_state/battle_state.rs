@@ -2,7 +2,7 @@ use macroquad::prelude::*;
 use crate::data::{stub_party, stub_party_2};
 use crate::domain::*;
 use crate::macroquad::*;
-use crate::macroquad::battle_state::macroquad_team::{MacroquadTeam, TeamTextures};
+use super::*;
 
 pub struct BattleState {
     shiai_result: ShiaiResult,
@@ -18,6 +18,7 @@ impl BattleState {
         let mut teams = Vec::new();
         let result = shiai::battle(attacker, defender);
 
+        // Team Layout
 
         let bytes = include_bytes!(
             concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/battle_state/team/stats_background.png")
@@ -49,7 +50,7 @@ impl BattleState {
         let life_bar = Texture2D::from_file_with_format(bytes, None);
         life_bar.set_filter(FilterMode::Linear);
 
-        let states_textures = TeamTextures {
+        let states_textures = TeamLayoutTextures {
             life_bar_container,
             life_bar,
             stats_background_texture,
@@ -57,8 +58,25 @@ impl BattleState {
             stats_label_background
         };
 
+        let bytes = include_bytes!(
+            concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/battle_state/cards/attack_card_druid_background.png")
+        );
+        let background = Texture2D::from_file_with_format(bytes, None);
+        background.set_filter(FilterMode::Linear);
+
+        let bytes = include_bytes!(
+            concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/battle_state/cards/druid_apprentice.png")
+        );
+        let captain_template = Texture2D::from_file_with_format(bytes, None);
+        captain_template.set_filter(FilterMode::Linear);
+
+        let card_textures = CardTextures{
+            background,
+            captain_template_texture: captain_template,
+        };
+
         result.teams().iter().for_each(|team| {
-            teams.push(MacroquadTeam::new(team.1, states_textures.clone()));
+            teams.push(MacroquadTeam::new(team.1, card_textures.clone(), states_textures.clone()));
         });
 
         let bytes = include_bytes!(
