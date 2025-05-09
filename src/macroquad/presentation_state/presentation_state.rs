@@ -9,7 +9,7 @@ pub struct PresentationState {
 }
 
 impl PresentationState {
-    pub async fn new() -> Self {
+    pub fn new() -> Self {
         let bytes = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/logo.png"));
         let texture = Texture2D::from_file_with_format(bytes, None);
         texture.set_filter(FilterMode::Linear); // Smoother scaling
@@ -30,10 +30,8 @@ impl State for PresentationState {
         self.fade_in += 0.01;
         if self.fade_in > 1.0 {
             self.fade_in = 1.0;
-            let battle_state = BattleState::new();
-
             // Wrap it and return
-            StateTransition::Switch(Box::new(battle_state))
+            StateTransition::Switch(HocStates::Battle)
         } else {
             StateTransition::None
         }

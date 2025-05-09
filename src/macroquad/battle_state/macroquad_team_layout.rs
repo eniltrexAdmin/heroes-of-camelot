@@ -57,9 +57,7 @@ impl TeamLayout {
 
     pub fn update(&mut self, current_hp: u128) {
         // todo decide the resize yes or not:
-        self.background_rectangle = calculate_stats_rectangle(&self.position);
-        self.hp_rectangle = calculate_hp_rectangle(self.background_rectangle, &self.position);
-        self.attack_rectangle = calculate_attack_rectangle(self.background_rectangle, &self.position);
+        self.resize();
 
         self.current_hp = current_hp;
         let current =self.current_hp as f64;
@@ -68,6 +66,12 @@ impl TeamLayout {
         if self.life_bar_width_percentage > expected_percentage {
             self.life_bar_width_percentage = self.life_bar_width_percentage - 0.01 * REMOVE_LIFE_SPEED;
         }
+    }
+
+    pub fn resize(&mut self) {
+        self.background_rectangle = calculate_stats_rectangle(&self.position);
+        self.hp_rectangle = calculate_hp_rectangle(self.background_rectangle, &self.position);
+        self.attack_rectangle = calculate_attack_rectangle(self.background_rectangle, &self.position);
     }
 
     pub fn draw(&self) {

@@ -1,11 +1,12 @@
 use super::*;
 use crate::domain::*;
 use std::rc::Rc;
+use std::sync::Arc;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Card {
     id: Id,
-    template: Rc<CardTemplate>,
+    template: Arc<CardTemplate>,
     attack: Attack,
     health_points: HealthPoints,
     current_level: CardLevel,
@@ -15,7 +16,7 @@ pub struct Card {
     max_level: CardLevel,
 }
 impl Card {
-    pub fn new(id: Id, template: Rc<CardTemplate>) -> Self {
+    pub fn new(id: Id, template: Arc<CardTemplate>) -> Self {
         let tier = Tier::init();
         let active_skill = template.active_skills().value().get(&tier).unwrap().clone();
         let max_level = max_level(template.stars(), &tier);
@@ -119,7 +120,7 @@ mod tests {
     #[test]
     fn test_new() {
         let apprentice_template = apprentice_template();
-        let card = Card::new(Id::new(), Rc::new(apprentice_template));
+        let card = Card::new(Id::new(), Arc::new(apprentice_template));
 
         assert_eq!(card.template.name().value(), &"Apprentice".to_string());
         assert_eq!(&CardType::Camelot, card.card_type());
@@ -149,7 +150,7 @@ mod tests {
     #[test]
     fn test_exceeded_max_level() {
         let apprentice_template = apprentice_template();
-        let mut card = Card::new(Id::new(), Rc::new(apprentice_template));
+        let mut card = Card::new(Id::new(), Arc::new(apprentice_template));
 
         let result = card.level_up(100);
         assert!(result.is_err());
@@ -158,7 +159,7 @@ mod tests {
     #[test]
     fn test_level_up() {
         let apprentice_template = apprentice_template();
-        let mut card = Card::new(Id::new(), Rc::new(apprentice_template));
+        let mut card = Card::new(Id::new(), Arc::new(apprentice_template));
 
         card.level_up(1).unwrap();
 

@@ -55,6 +55,18 @@ impl Team {
         &self.captain
     }
 
+    pub fn second(&self) -> Option<&Card> {
+        self.second.as_ref()
+    }
+
+    pub fn third(&self) -> Option<&Card> {
+        self.third.as_ref()
+    }
+
+    pub fn fourth(&self) -> Option<&Card> {
+        self.fourth.as_ref()
+    }
+
     pub fn combo_skills(&self) -> &[ComboSkill] {
         &self.combo_skills
     }
@@ -108,14 +120,14 @@ pub enum TeamCreationError {
 
 #[cfg(test)]
 mod tests {
-    use std::rc::Rc;
+    use std::sync::Arc;
     use crate::data::apprentice_template;
     use crate::domain::*;
 
     #[test]
     fn test_sunny_case() {
         let apprentice_template = apprentice_template();
-        let apprentice_card = Card::new(Id::new(), Rc::new(apprentice_template));
+        let apprentice_card = Card::new(Id::new(), Arc::new(apprentice_template));
 
         let result = Team::new(
             apprentice_card.clone(),
@@ -141,7 +153,7 @@ mod tests {
         );
 
         let apprentice_template = apprentice_template();
-        let apprentice_card = Card::new(Id::new(), Rc::new(apprentice_template));
+        let apprentice_card = Card::new(Id::new(), Arc::new(apprentice_template));
 
         let result = Team::new(
             apprentice_card.clone(),

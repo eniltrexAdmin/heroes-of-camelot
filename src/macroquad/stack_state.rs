@@ -1,25 +1,33 @@
+use crate::macroquad::*;
+use crate::macroquad::textures_loader::local_fs_card_textures_repository::LocalCardTexturesRepository;
+
 pub trait State {
     fn debug(&self) -> &str;
     fn update(&mut self) -> StateTransition;
     fn draw(&self);
-
 }
 
 pub enum StateTransition {
     None,
     Pop,
-    Push(Box<dyn State>),
-    Switch(Box<dyn State>)
+    Push(HocStates),
+    Switch(HocStates)
+}
+
+pub enum HocStates{
+    Presentation,
+    Battle
 }
 
 pub struct StackState{
     states: Vec<Box<dyn State>>,
+    textures_repository: LocalCardTexturesRepository
 }
 
 
 impl StackState {
-    pub fn new() -> Self {
-        Self { states: Vec::new() }
+    pub fn new(textures_repository: LocalCardTexturesRepository) -> Self {
+        Self { states: Vec::new(), textures_repository }
     }
 
     pub fn push(&mut self, state: Box<dyn State>) {
@@ -30,18 +38,29 @@ impl StackState {
         self.states.pop();
     }
 
-    pub fn update(&mut self) {
+    pub async fn update(&mut self) {
         if let Some(top_state) = self.states.last_mut() {
             match top_state.update() {
                 StateTransition::None => {},
                 StateTransition::Pop => {self.pop();},
                 StateTransition::Push(state) => {
-                    self.states.push(state);
+                    self.states.push(self.create_state(state).await);
                 },
                 StateTransition::Switch(state) => {
                     self.pop();
-                    self.states.push(state);
+                    self.states.push(self.create_state(state).await);
                 }
+            }
+        }
+    }
+
+    async fn create_state(&self, state: HocStates) -> Box<dyn State> {
+        match state{
+            HocStates::Presentation => {
+                Box::new(PresentationState::new())
+            },
+            HocStates::Battle => {
+                Box::new(BattleState::new(&self.textures_repository).await)
             }
         }
     }

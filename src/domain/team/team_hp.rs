@@ -34,13 +34,13 @@ mod tests {
     use super::*;
     use crate::data::apprentice_template;
     use crate::domain::{HealthPointsIncrease, Id};
-    use std::rc::Rc;
+    use std::sync::Arc;
 
     #[test]
     fn test_base_attack() {
         let mut cards = vec![];
         let apprentice_template = apprentice_template();
-        let apprentice_card = Card::new(Id::new(), Rc::new(apprentice_template));
+        let apprentice_card = Card::new(Id::new(), Arc::new(apprentice_template));
         cards.push(apprentice_card.clone());
         cards.push(apprentice_card.clone());
         cards.push(apprentice_card.clone());
@@ -71,7 +71,7 @@ mod tests {
     fn team_hp_creation() {
         let mut cards = vec![];
         let apprentice_template = apprentice_template();
-        let combo_card = Card::new(Id::new(), Rc::new(apprentice_template));
+        let combo_card = Card::new(Id::new(), Arc::new(apprentice_template));
         cards.push(combo_card.clone());
         cards.push(combo_card.clone());
         cards.push(combo_card.clone());

@@ -26,7 +26,7 @@ pub fn team_factory(
 
 #[cfg(test)]
 mod tests {
-    use std::rc::Rc;
+    use std::sync::Arc;
     use crate::data::{apprentice_template, combo_skill_finder};
     use crate::domain::*;
 
@@ -34,7 +34,7 @@ mod tests {
     fn test_team_creation_with_data_combo_skill_repository() {
         let mut cards = vec![];
         let apprentice_template = apprentice_template();
-        let apprentice_card = Card::new(Id::new(), Rc::new(apprentice_template));
+        let apprentice_card = Card::new(Id::new(), Arc::new(apprentice_template));
         cards.push(apprentice_card.clone());
         cards.push(apprentice_card.clone());
         cards.push(apprentice_card.clone());

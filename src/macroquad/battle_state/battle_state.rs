@@ -1,8 +1,15 @@
+use async_trait::async_trait;
 use macroquad::prelude::*;
 use crate::data::{stub_party, stub_party_2};
 use crate::domain::*;
 use crate::macroquad::*;
 use super::*;
+
+#[async_trait]
+pub trait CardTexturesRepository {
+    async fn load_for_team(&self, team: &Team) -> CardTextures;
+}
+
 
 pub struct BattleState {
     shiai_result: ShiaiResult,
@@ -11,7 +18,7 @@ pub struct BattleState {
 }
 
 impl BattleState {
-    pub fn new() -> Self {
+    pub async fn new(card_textures_repository: &dyn CardTexturesRepository) -> Self {
         let attacker = stub_party();
         let defender = stub_party_2();
 
@@ -58,26 +65,13 @@ impl BattleState {
             stats_label_background
         };
 
-        let bytes = include_bytes!(
-            concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/battle_state/cards/attack_card_druid_background.png")
-        );
-        let background = Texture2D::from_file_with_format(bytes, None);
-        background.set_filter(FilterMode::Linear);
-
-        let bytes = include_bytes!(
-            concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/battle_state/cards/druid_apprentice.png")
-        );
-        let captain_template = Texture2D::from_file_with_format(bytes, None);
-        captain_template.set_filter(FilterMode::Linear);
-
-        let card_textures = CardTextures{
-            background,
-            captain_template_texture: captain_template,
-        };
-
-        result.teams().iter().for_each(|team| {
-            teams.push(MacroquadTeam::new(team.1, card_textures.clone(), states_textures.clone()));
-        });
+        for team in result.teams().iter() {
+            teams.push(MacroquadTeam::new(
+                team.1,
+                card_textures_repository.load_for_team(team.1.original_team()).await,
+                states_textures.clone())
+            );
+        }
 
         let bytes = include_bytes!(
             concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/background.png")

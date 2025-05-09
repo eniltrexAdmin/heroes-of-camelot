@@ -22,3 +22,27 @@ pub fn macroquad_draw_background(background: &Texture2D) {
         },
     );
 }
+
+pub fn draw_texture_in_rectangle(texture: &Texture2D, rect: Rect) {
+    draw_texture_ex(
+        texture,
+        rect.x,
+        rect.y,
+        WHITE,
+        DrawTextureParams {
+            dest_size: Some(Vec2::new(rect.w, rect.h)),
+            ..Default::default()
+        },
+    );
+}
+
+// TODO test
+pub fn scale_rectangle(input: Rect, factor: f32) -> Rect {
+    let (w,h) = (input.w * factor, input.h * factor);
+    Rect::new(
+        input.x + (input.w - w) / 2.0,
+        input.y + (input.h - h) / 2.0,
+        w,
+        h
+    )
+}
