@@ -2,7 +2,7 @@ use crate::domain::{Shiai, ShiaiAction, ShiaiCommand, ShiaiError, ShiaiEvent, Sh
 use crate::domain::shiai::select_target::{select_target, TargetStrategy};
 use crate::domain::shiai::shiai_state::ShiaiState;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct AttackCommand {
     pub subject: ShiaiPosition,
     pub target: ShiaiPosition,

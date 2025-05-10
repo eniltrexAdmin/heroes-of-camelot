@@ -16,6 +16,7 @@ pub struct MacroquadCard {
     template_rectangle: Rect,
     background_texture: Texture2D,
     template_texture: Texture2D,
+
 }
 impl MacroquadCard {
     pub fn new(

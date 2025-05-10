@@ -4,7 +4,17 @@ use super::*;
 //TODO this will be obviously out of domain!
 
 pub fn print_shiai(shiai: &Shiai) {
+    for (i, turn) in shiai.result.iter().enumerate() {
+        println!("--- Turn {} ---", i + 1);
 
+        for (j, action) in turn.actions.iter().enumerate() {
+            println!("Action {}: {:?}", j + 1, action);
+        }
+
+        println!("Resulting state:");
+        print_state(&turn.state_result.state);
+        println!();
+    }
 }
 
 pub fn print_state(state: &HashMap<ShiaiPosition, BattleTeam>) {

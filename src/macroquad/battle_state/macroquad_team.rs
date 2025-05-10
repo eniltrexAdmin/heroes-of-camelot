@@ -1,6 +1,25 @@
 use crate::domain::*;
 use super::*;
 
+pub enum CurrentAction{
+    None,
+    Attack
+}
+impl CurrentAction{
+    pub fn new(team_position: ShiaiPosition, command: ShiaiCommand)-> Self{
+        match command {
+            ShiaiCommand::Attack(attack_command) => {
+                if attack_command.subject == team_position {
+                    CurrentAction::Attack
+                } else {
+                    CurrentAction::None
+                }
+            }
+        }
+    }
+}
+
+
 pub struct MacroquadTeam {
     game_team: BattleTeam,
     cards: CardTeam,
@@ -30,7 +49,11 @@ impl MacroquadTeam {
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn game_team(&self) -> &BattleTeam {
+        &self.game_team
+    }
+
+    pub fn update(&mut self, current_action: CurrentAction) {
         self.team_layout.update(self.game_team.current_hp().value());
         self.cards.update(self.team_layout.background_rectangle());
     }

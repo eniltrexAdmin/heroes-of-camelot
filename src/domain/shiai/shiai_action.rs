@@ -2,12 +2,12 @@ use crate::domain::shiai::attack::AttackCommand;
 use crate::domain::ShiaiEvent;
 
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum ShiaiCommand {
     Attack(AttackCommand)
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ShiaiAction{
     pub command: ShiaiCommand,
     pub events: Vec<ShiaiEvent>,

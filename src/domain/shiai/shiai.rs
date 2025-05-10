@@ -1,4 +1,5 @@
 use crate::domain::*;
+use crate::domain::shiai::print_shiai::print_shiai;
 use super::*;
 
 #[derive(Debug)]
@@ -28,6 +29,7 @@ impl Shiai{
             self = self.play_turn(active_team);
             turn = turn + 1;
         }
+        print_shiai(&self);
         self
     }
 
