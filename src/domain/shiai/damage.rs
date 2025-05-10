@@ -12,12 +12,6 @@ pub enum PhysicalDamage{
     ReflectedDamage(u128)
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct DamageReceived {
-    pub team: ShiaiPosition,
-    pub damage: Damage
-}
-
 impl Damage {
     pub fn new_attack_damage(amount: BattleTeamAttack) -> Self {
         Damage::Physical(

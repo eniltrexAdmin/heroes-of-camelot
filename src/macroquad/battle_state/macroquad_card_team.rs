@@ -1,3 +1,4 @@
+use macroquad::math::Rect;
 use macroquad::prelude::Texture2D;
 use crate::domain::ShiaiPosition;
 use super::*;
@@ -16,13 +17,14 @@ pub struct CardTeam{
     cards: Vec<MacroquadCard>,
 }
 impl CardTeam {
-    pub fn new(card_textures: CardTextures, shiai_position: &ShiaiPosition)-> Self {
+    pub fn new(card_textures: CardTextures, shiai_position: &ShiaiPosition, team_layout_rectangle: Rect)-> Self {
         let mut cards = Vec::new();
         cards.push(MacroquadCard::new(
             shiai_position.clone(),
             CardPosition::Captain,
             card_textures.background.clone(),
             card_textures.captain_template_texture,
+            team_layout_rectangle
         ));
         if let Some(second_card_texture) = card_textures.second_card_texture {
             cards.push(MacroquadCard::new(
@@ -30,6 +32,7 @@ impl CardTeam {
                 CardPosition::Second,
                 card_textures.background.clone(),
                 second_card_texture,
+                team_layout_rectangle
             ));
         }
         if let Some(third_card_texture) = card_textures.third_card_texture {
@@ -38,6 +41,7 @@ impl CardTeam {
                 CardPosition::Third,
                 card_textures.background.clone(),
                 third_card_texture,
+                team_layout_rectangle
             ));
         }
         if let Some(fourth_card_texture) = card_textures.fourth_card_texture {
@@ -46,14 +50,15 @@ impl CardTeam {
                 CardPosition::Fourth,
                 card_textures.background,
                 fourth_card_texture,
+                team_layout_rectangle
             ));
         }
 
         Self{cards}
     }
-    pub fn update(&mut self) {
+    pub fn update(&mut self, team_layout_rectangle: Rect) {
        self.cards.iter_mut().for_each(|card| {
-           card.update();
+           card.update(team_layout_rectangle);
        })
     }
     pub fn draw(&self) {

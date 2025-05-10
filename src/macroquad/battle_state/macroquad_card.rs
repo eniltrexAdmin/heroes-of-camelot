@@ -3,7 +3,6 @@ use macroquad::prelude::{screen_height, screen_width, Texture2D};
 use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, ShiaiPosition, ThirdTeam};
 use crate::macroquad::{draw_texture_in_rectangle, scale_rectangle};
 
-
 pub enum CardPosition{
     Captain,
     Second,
@@ -24,9 +23,10 @@ impl MacroquadCard {
         card_position: CardPosition,
         background_texture: Texture2D,
         template_texture: Texture2D,
+        team_layout_rectangle: Rect
     ) -> Self{
         let (background_rectangle, template_rectangle) = calculate_card_rectangles(
-            &team_position, &card_position
+            &team_position, &card_position, team_layout_rectangle
         );
         Self{
             team_position,
@@ -40,13 +40,13 @@ impl MacroquadCard {
 }
 
 impl MacroquadCard {
-    pub fn update(&mut self) {
-       self.resize();
+    pub fn update(&mut self, team_layout_rectangle: Rect) {
+       self.resize(team_layout_rectangle);
     }
 
-    fn resize(&mut self) {
+    fn resize(&mut self, team_layout_rectangle: Rect) {
         let (background_rectangle, template_rectangle) = calculate_card_rectangles(
-            &self.team_position, &self.card_position
+            &self.team_position, &self.card_position, team_layout_rectangle
         );
         self.background_rectangle = background_rectangle;
         self.template_rectangle = template_rectangle;
@@ -58,13 +58,13 @@ impl MacroquadCard {
     }
 }
 
-fn calculate_card_rectangles(position: &ShiaiPosition, card_position: &CardPosition) -> (Rect, Rect) {
+fn calculate_card_rectangles(position: &ShiaiPosition, card_position: &CardPosition, team_layout_rectangle: Rect) -> (Rect, Rect) {
     let screen_w = screen_width();
     let screen_h = screen_height();
 
     let w_parts = 46.0;
 
-    let size = (screen_w/ w_parts * 3.0, screen_h/ 7.0);
+    let size = (screen_w/ w_parts * 3.0, screen_h/ 5.5);
 
     let team_x_offset = match position {
         AttackParty(team_position) | DefenseParty(team_position) => {
@@ -83,9 +83,11 @@ fn calculate_card_rectangles(position: &ShiaiPosition, card_position: &CardPosit
         CardPosition::Fourth => size.0 * 3.0,
     };
 
+    let team_layout_y_padding = team_layout_rectangle.h - team_layout_rectangle.h * 5.0/100.0;
+
     let party_y_offset = match position {
-        AttackParty(_) => screen_h - (size.1 * 2.0),
-        DefenseParty(_) => size.1,
+        AttackParty(_) => screen_h - ( team_layout_y_padding + size.1),
+        DefenseParty(_) => team_layout_y_padding,
     };
 
     let background_rectangle = Rect::new(team_x_offset + card_x_offset, party_y_offset, size.0, size.1);

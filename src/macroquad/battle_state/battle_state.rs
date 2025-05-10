@@ -12,9 +12,10 @@ pub trait CardTexturesRepository {
 
 
 pub struct BattleState {
-    shiai_result: ShiaiResult,
+    shiai: Shiai,
     background_image: Texture2D,
     teams: Vec<MacroquadTeam>,
+    current_turn: u8
 }
 
 impl BattleState {
@@ -22,8 +23,10 @@ impl BattleState {
         let attacker = stub_party();
         let defender = stub_party_2();
 
+        let shiai = Shiai::new(attacker, defender);
+        let result = shiai.battle();
+
         let mut teams = Vec::new();
-        let result = shiai::battle(attacker, defender);
 
         // Team Layout
 
@@ -65,7 +68,7 @@ impl BattleState {
             stats_label_background
         };
 
-        for team in result.teams().iter() {
+        for team in result.current_state.state.iter() {
             teams.push(MacroquadTeam::new(
                 team.1,
                 card_textures_repository.load_for_team(team.1.original_team()).await,
@@ -78,9 +81,10 @@ impl BattleState {
         );
         let texture = Texture2D::from_file_with_format(bytes, None);
         Self{
-            shiai_result: result,
+            shiai: result,
             background_image: texture,
-            teams
+            teams,
+            current_turn: 1,
         }
     }
 }

@@ -55,6 +55,10 @@ impl TeamLayout {
         }
     }
 
+    pub fn background_rectangle(&self) -> Rect {
+        self.background_rectangle
+    }
+
     pub fn update(&mut self, current_hp: u128) {
         // todo decide the resize yes or not:
         self.resize();

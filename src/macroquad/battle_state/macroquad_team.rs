@@ -24,7 +24,7 @@ impl MacroquadTeam {
         );
         Self{
             game_team: game_team.clone(),
-            cards: CardTeam::new(cards_textures, game_team.position()),
+            cards: CardTeam::new(cards_textures, game_team.position(), team_layout.background_rectangle()),
             team_layout,
             rotation,
         }
@@ -32,12 +32,12 @@ impl MacroquadTeam {
 
     pub fn update(&mut self) {
         self.team_layout.update(self.game_team.current_hp().value());
-        self.cards.update();
+        self.cards.update(self.team_layout.background_rectangle());
     }
 
     pub fn draw(&self) {
-        self.team_layout.draw();
         self.cards.draw();
+        self.team_layout.draw();
     }
 }
 

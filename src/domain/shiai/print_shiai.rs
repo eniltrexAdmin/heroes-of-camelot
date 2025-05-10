@@ -2,6 +2,11 @@ use std::collections::HashMap;
 use super::*;
 
 //TODO this will be obviously out of domain!
+
+pub fn print_shiai(shiai: &Shiai) {
+
+}
+
 pub fn print_state(state: &HashMap<ShiaiPosition, BattleTeam>) {
     let field_width = 10; // or whatever number you want
     let attack_field_width = 20;
