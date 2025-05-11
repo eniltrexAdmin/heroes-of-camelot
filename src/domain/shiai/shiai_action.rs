@@ -1,21 +1,35 @@
-use crate::domain::shiai::attack::AttackCommand;
-use crate::domain::ShiaiEvent;
-
-
-#[derive(Clone, Debug)]
-pub enum ShiaiCommand {
-    Attack(AttackCommand)
-}
+use crate::domain::*;
 
 #[derive(Clone, Debug)]
 pub struct ShiaiAction{
-    pub command: ShiaiCommand,
+    pub subject: ShiaiPosition,
+    pub command: ShiaiCommandType,
     pub events: Vec<ShiaiEvent>,
 }
 
-impl ShiaiAction{
-    pub fn new(command: ShiaiCommand, events: Vec<ShiaiEvent>) -> Self {
-        Self{command, events}
-    }
+
+#[derive(Clone, Debug)]
+pub enum ShiaiCommandType {
+    Attack
 }
 
+#[derive(Clone, Debug)]
+pub struct ShiaiEvent {
+    pub target: ShiaiPosition,
+    pub event: ShiaiEventType
+}
+
+#[derive(Clone, Debug)]
+pub enum ShiaiEventType {
+    // AttackReceived(BattleTeamAttack),
+    DamageReceived(Damage),
+}
+
+impl ShiaiEvent {
+    pub fn new_damage_received(target: ShiaiPosition, damage: Damage) -> Self {
+        Self{
+            target,
+            event: ShiaiEventType::DamageReceived(damage)
+        }
+    }
+}

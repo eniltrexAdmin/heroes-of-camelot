@@ -41,6 +41,10 @@ impl ShiaiState{
         Self { state: teams }
     }
 
+    pub fn get(&self, position: &ShiaiPosition) -> Option<&BattleTeam>{
+        self.state.get(&position)
+    }
+
 
     pub fn apply_domain_events(self, events: Vec<ShiaiEvent>) -> Result<Self, ShiaiError> {
         events.into_iter().try_fold(self, |applied_shiai, event| {

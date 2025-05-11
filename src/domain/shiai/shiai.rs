@@ -8,6 +8,13 @@ pub enum ShiaiError{
     TargetMissingError
 }
 
+#[derive(Clone)]
+pub struct ShiaiTurn{
+    pub subject: ShiaiPosition,
+    pub actions: Vec<ShiaiAction>,
+    pub state_result: ShiaiState
+}
+
 
 pub struct Shiai{
     pub current_state: ShiaiState,
@@ -25,7 +32,7 @@ impl Shiai{
     pub fn battle(mut self) -> Self{
         let mut turn = 1;
         while turn < 10 {
-            let active_team = select_turn_team(turn);
+            let active_team = ShiaiPosition::active_team(turn);
             self = self.play_turn(active_team);
             turn = turn + 1;
         }
@@ -45,50 +52,28 @@ impl Shiai{
         // active skills
 
         //attack
-        let attack_action = match attack_action(&self.current_state, subject) {
-            Ok(action) => action,
-            Err(_) => return self,
-        };
-        actions.push(attack_action.clone());
-
-        // finally apply the stuff, by creating the turn.
-        match ShiaiTurn::new(actions, self.current_state.clone()){
-            Ok(turn) =>{
-                let mut turns = self.result.clone();
-                turns.push(turn.clone());
-                Self{
-                    current_state: turn.state_result.clone(),
-                    result: turns,
-                }
-            },
+        let (new_state, action) = match attack_action(self.current_state.clone(), subject.clone()) {
+            Ok((state, action)) => (state, action),
             Err(error) => panic!("Error while applying shiai: {:?}", error),
+        };
+        actions.push(action);
+
+        // Finally construct turn played.
+
+        let mut turns = self.result.clone();
+        let turn_played = ShiaiTurn{
+            subject: subject.clone(),
+            actions,
+            state_result: new_state.clone(),
+        };
+        turns.push(turn_played);
+
+        Self{
+            current_state: new_state,
+            result: turns,
         }
     }
 }
 
-fn select_turn_team(turn: u8) -> ShiaiPosition {
-    match turn % 6 {
-        1 => AttackParty(CaptainTeam),
-        2 => DefenseParty(CaptainTeam),
-        3 => AttackParty(SecondTeam),
-        4 => DefenseParty(SecondTeam),
-        5 => AttackParty(ThirdTeam),
-        0 => DefenseParty(ThirdTeam),
-        _ => unreachable!()
-    }
-}
 
-#[cfg(test)]
-mod tests {
-    use crate::data::{stub_party};
-    use super::*;
 
-    #[test]
-    fn test_select_active_team() {
-        let attacker = stub_party();
-        let defender = stub_party();
-        let selected_team = select_turn_team(35);
-
-        assert_eq!(AttackParty(ThirdTeam), selected_team);
-    }
-}

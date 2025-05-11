@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use super::*;
 
 pub enum TargetStrategy {
@@ -6,20 +5,20 @@ pub enum TargetStrategy {
     Default,
 }
 
-pub fn select_target(current_state: &HashMap<ShiaiPosition, BattleTeam>, subject_team: ShiaiPosition, strategy: TargetStrategy) -> ShiaiPosition {
+pub fn select_target(current_state: &ShiaiState, subject_team: &ShiaiPosition, strategy: TargetStrategy) -> ShiaiPosition {
     match strategy {
-        _ => select_default_target(current_state, subject_team),
+        _ => select_default_target(current_state, subject_team.clone()),
     }
 }
 
-fn select_default_target(current_state: &HashMap<ShiaiPosition, BattleTeam>, current_team: ShiaiPosition) -> ShiaiPosition {
+fn select_default_target(current_state: &ShiaiState, current_team: ShiaiPosition) -> ShiaiPosition {
     match current_team {
         AttackParty(_) => get_defense_party_alive_team(current_state),
         DefenseParty(_) => get_attack_party_alive_team(current_state),
     }
 }
 
-fn get_defense_party_alive_team(current_state: &HashMap<ShiaiPosition, BattleTeam>) -> ShiaiPosition {
+fn get_defense_party_alive_team(current_state: &ShiaiState) -> ShiaiPosition {
     [DefenseParty(CaptainTeam), DefenseParty(SecondTeam), DefenseParty(ThirdTeam)]
         .into_iter()
         .find(|position| current_state.get(position).map_or(
@@ -28,7 +27,7 @@ fn get_defense_party_alive_team(current_state: &HashMap<ShiaiPosition, BattleTea
 
 }
 
-fn get_attack_party_alive_team(current_state: &HashMap<ShiaiPosition, BattleTeam>) -> ShiaiPosition {
+fn get_attack_party_alive_team(current_state:&ShiaiState) -> ShiaiPosition {
     [AttackParty(CaptainTeam), AttackParty(SecondTeam), AttackParty(ThirdTeam)]
         .into_iter()
         .find(|position| current_state.get(position).map_or(

@@ -15,7 +15,9 @@ pub struct BattleState {
     shiai: Shiai,
     background_image: Texture2D,
     teams: Vec<MacroquadTeam>,
-    current_action: ShiaiAction
+    current_turn: ShiaiTurn,
+    current_action: ShiaiAction,
+    current_events: Vec<ShiaiEvent>
 }
 
 impl BattleState {
@@ -83,8 +85,10 @@ impl BattleState {
         Self{
             background_image: texture,
             teams,
+            current_turn: result.result.get(0).unwrap().clone(),
             current_action: result.result.get(0).unwrap().actions.get(0).unwrap().clone(),
-            shiai: result
+            current_events: Vec::new(),
+            shiai: result,
         }
     }
 }
@@ -95,7 +99,15 @@ impl State for BattleState {
     }
     fn update(&mut self) -> StateTransition {
         self.teams.iter_mut().for_each(|team: &mut MacroquadTeam| {
-            team.update(CurrentAction::new(team.game_team().position().clone(), self.current_action.command.clone()))
+            let current_action_team = &self.current_turn.subject;
+            let current_action = match current_action_team == team.game_team().position() {
+                true => Some( self.current_action.command.clone()),
+                false =>None
+            };
+            team.update(
+                current_action.is_some(),
+                current_action,
+            )
         });
         StateTransition::None
     }
