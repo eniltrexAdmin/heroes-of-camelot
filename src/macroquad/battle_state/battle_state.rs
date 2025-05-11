@@ -1,8 +1,10 @@
+use std::collections::HashMap;
 use async_trait::async_trait;
 use macroquad::prelude::*;
 use crate::data::{stub_party, stub_party_2};
 use crate::domain::*;
 use crate::macroquad::*;
+use crate::macroquad::battle_state::battle_state::BattlePhase::StartTurn;
 use super::*;
 
 #[async_trait]
@@ -10,14 +12,21 @@ pub trait CardTexturesRepository {
     async fn load_for_team(&self, team: &Team) -> CardTextures;
 }
 
+enum BattlePhase {
+    StartTurn,
+    ActionAnimation,
+    ResolveEffects,
+    EndTurn,
+}
 
 pub struct BattleState {
     shiai: Shiai,
     background_image: Texture2D,
-    teams: Vec<MacroquadTeam>,
+    teams: HashMap<ShiaiPosition,MacroquadTeam>,
     current_turn: ShiaiTurn,
     current_action: ShiaiAction,
-    current_events: Vec<ShiaiEvent>
+    current_events: Vec<ShiaiEvent>,
+    battle_phase: BattlePhase
 }
 
 impl BattleState {
@@ -27,8 +36,6 @@ impl BattleState {
 
         let shiai = Shiai::new(attacker, defender);
         let result = shiai.battle();
-
-        let mut teams = Vec::new();
 
         // Team Layout
 
@@ -70,8 +77,10 @@ impl BattleState {
             stats_label_background
         };
 
-        for team in result.current_state.state.iter() {
-            teams.push(MacroquadTeam::new(
+        let mut teams = HashMap::new();
+
+        for team in result.init_state.state.iter() {
+            teams.insert(team.0.clone(), MacroquadTeam::new(
                 team.1,
                 card_textures_repository.load_for_team(team.1.original_team()).await,
                 states_textures.clone())
@@ -82,39 +91,67 @@ impl BattleState {
             concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/background.png")
         );
         let texture = Texture2D::from_file_with_format(bytes, None);
+
+        let first_turn =  result.result.get(0).unwrap().clone();
+
+        print_shiai_turn(&first_turn);
         Self{
             background_image: texture,
             teams,
-            current_turn: result.result.get(0).unwrap().clone(),
-            current_action: result.result.get(0).unwrap().actions.get(0).unwrap().clone(),
+            current_action: first_turn.actions.get(0).unwrap().clone(),
+            current_turn: first_turn,
             current_events: Vec::new(),
             shiai: result,
+            battle_phase: StartTurn
         }
     }
+
+    fn advance_turn(&mut self) {
+
+        let next_turn_number = self.current_turn.number;
+        println!("number is{}", next_turn_number);
+        let next_turn =  self.shiai.result.get(next_turn_number).unwrap().clone();
+
+        for team in next_turn.state_result.state.iter() {
+            self.teams.get_mut(team.0).unwrap().update_team(team.1.clone())
+        }
+        print_shiai_turn(&next_turn);
+
+        self.current_action = next_turn.actions.get(0).unwrap().clone();
+        self.current_turn = next_turn;
+
+    }
 }
+
 
 impl State for BattleState {
     fn debug(&self) -> &str {
         "BattleState"
     }
     fn update(&mut self) -> StateTransition {
-        self.teams.iter_mut().for_each(|team: &mut MacroquadTeam| {
+        self.teams.values_mut().for_each(|team: &mut MacroquadTeam| {
             let current_action_team = &self.current_turn.subject;
-            let current_action = match current_action_team == team.game_team().position() {
-                true => Some( self.current_action.command.clone()),
-                false =>None
-            };
+            let current_action =
+                match current_action_team == team.game_team().position() {
+                    true => Some( self.current_action.command.clone()),
+                    false =>None
+                };
             team.update(
                 current_action.is_some(),
                 current_action,
             )
         });
+
+        if is_mouse_button_pressed(MouseButton::Left) {
+            self.advance_turn();
+        }
+
         StateTransition::None
     }
 
     fn draw(&self) {
         macroquad_draw_background(&self.background_image);
-        self.teams.iter().for_each(|team: &MacroquadTeam| {
+        self.teams.values().for_each(|team: &MacroquadTeam| {
             team.draw()
         });
     }

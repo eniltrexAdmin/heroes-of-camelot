@@ -46,3 +46,29 @@ pub fn scale_rectangle(input: Rect, factor: f32) -> Rect {
         h
     )
 }
+
+// TODO test
+pub fn modify_rectangle(current_rectangle: Rect, target_rectangle: Rect, speed: f32) -> Rect {
+    Rect::new(
+        target_attribute(current_rectangle.x, target_rectangle.x, speed),
+        target_attribute(current_rectangle.y, target_rectangle.y, speed),
+        target_attribute(current_rectangle.w, target_rectangle.w, speed),
+        target_attribute(current_rectangle.h, target_rectangle.h, speed *2.0)
+    )
+}
+
+fn target_attribute(current: f32, target:f32, speed: f32) -> f32 {
+    let mut result = current;
+    if result < target {
+        result = result + speed;
+        if result > target {
+            result = target;
+        }
+    } else {
+        result = result - speed;
+        if result < target {
+            result = target;
+        }
+    }
+    result
+}
