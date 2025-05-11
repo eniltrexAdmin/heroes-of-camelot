@@ -33,46 +33,50 @@ impl Shiai{
 
     pub fn battle(mut self) -> Self{
         let mut turn = 1;
-        while turn < 30 {
-            self = self.play_turn();
+        while turn < 29 {
+            self = self.play_turn(turn);
             turn = turn + 1;
 
         }
-        // print_shiai(&self);
+        print_shiai(&self);
         self
     }
 
-    fn play_turn(self) -> Self {
-        let turn = self.result.len();
-
-
-        let current_state = match turn {
+    fn play_turn(self, turn_number: usize) -> Self {
+        println!("Trying to playing Turn #{}", turn_number);
+        let current_state = match self.result.len() {
             0 => self.init_state.clone(),
-            _ => self.result.get(turn-1)
+            _ => self.result.get(self.result.len()-1)
                     .map(|t| t.state_result.clone())
                     .unwrap_or(self.init_state.clone())
         };
 
-        let subject= ShiaiPosition::active_team(turn as u8 + 1);
-        match current_state.get(&subject) {
-            Some(team) if team.is_alive() => team,
-            _ => return self,
+        let subject= ShiaiPosition::active_team(turn_number as u8);
+        let team = match current_state.get(&subject) {
+            Some(team) => team,
+            None => return self,
         };
-
-        // println!("Playing Turn #{}", turn +1);
-
+        // for now not adding turn if team is dead.
+        if !team.is_alive() {
+            return self;
+        }
 
         let mut actions = vec![];
+        let mut new_state = current_state.clone();
 
         // combo skills
         // active skills
 
         //attack
-        let (new_state, action) = match attack_action(current_state, subject.clone()) {
-            Ok((state, action)) => (state, action),
+        match attack_action(current_state, subject.clone()) {
+            Ok((state, action)) => {
+                new_state = state;
+                actions.push(action);
+            }
             Err(error) => panic!("Error while applying shiai: {:?}", error),
         };
-        actions.push(action);
+
+
 
         // Finally construct turn played.
 
@@ -81,7 +85,7 @@ impl Shiai{
             subject: subject.clone(),
             actions,
             state_result: new_state,
-            number: turn + 1
+            number: turn_number
         };
         // print_shiai_turn(&turn_played);
         turns.push(turn_played);
