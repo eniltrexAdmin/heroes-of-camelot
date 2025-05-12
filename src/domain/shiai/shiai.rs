@@ -9,65 +9,67 @@ pub enum ShiaiError{
 }
 
 #[derive(Clone)]
-pub struct ShiaiTurn{
+pub struct TurnLog {
     pub subject: ShiaiPosition,
     pub actions: Vec<ShiaiAction>,
     pub state_result: ShiaiState,
-    pub number: usize,
 }
 
 
-pub struct Shiai{
+pub struct ShiaiResult {
     pub init_state: ShiaiState,
-    pub result: Vec<ShiaiTurn>,
+    pub turn_logs: Vec<TurnLog>,
 }
 
-impl Shiai{
+impl ShiaiResult {
     pub fn new(attacker: Party, defender: Party) -> Self {
         let init_state = ShiaiState::new(attacker, defender);
+
+
         Self{
             init_state: init_state.clone(),
-            result: vec![]
+            turn_logs: battle(init_state)
         }
     }
+}
 
-    pub fn battle(mut self) -> Self{
-        let mut turn = 1;
-        while turn < 29 {
-            self = self.play_turn(turn);
-            turn = turn + 1;
-
+pub fn battle(init_state: ShiaiState) -> Vec<TurnLog>{
+    let mut turn_logs = vec![];
+    let mut turn_number = 1;
+    let mut current_state = init_state;
+    loop {
+        if winner(&current_state).is_some() || turn_number > 100 {
+            break;
         }
-        print_shiai(&self);
-        self
-    }
-
-    fn play_turn(self, turn_number: usize) -> Self {
-        println!("Trying to playing Turn #{}", turn_number);
-        let current_state = match self.result.len() {
-            0 => self.init_state.clone(),
-            _ => self.result.get(self.result.len()-1)
-                    .map(|t| t.state_result.clone())
-                    .unwrap_or(self.init_state.clone())
-        };
-
         let subject= ShiaiPosition::active_team(turn_number as u8);
-        let team = match current_state.get(&subject) {
-            Some(team) => team,
-            None => return self,
-        };
-        // for now not adding turn if team is dead.
-        if !team.is_alive() {
-            return self;
+        match  play_turn(current_state.clone(), subject) {
+            Some(turn_played) => {
+                current_state = turn_played.state_result.clone();
+                turn_logs.push(turn_played);
+            },
+            None => {
+                println!("No turn played as team is not present");
+            }
         }
+        turn_number = turn_number + 1;
+    }
+    turn_logs
+}
 
-        let mut actions = vec![];
-        let mut new_state = current_state.clone();
+fn play_turn(current_state: ShiaiState, subject: ShiaiPosition) -> Option<TurnLog> {
+    let mut actions = vec![];
+    let mut new_state = current_state.clone();
 
-        // combo skills
-        // active skills
+    let team = match current_state.get(&subject) {
+        Some(team) => team,
+        None => return None,
+    };
 
-        //attack
+    // combo skills
+    // active skills
+
+    //attack
+    if team.is_alive() {
         match attack_action(current_state, subject.clone()) {
             Ok((state, action)) => {
                 new_state = state;
@@ -75,27 +77,39 @@ impl Shiai{
             }
             Err(error) => panic!("Error while applying shiai: {:?}", error),
         };
-
-
-
-        // Finally construct turn played.
-
-        let mut turns = self.result.clone();
-        let turn_played = ShiaiTurn{
-            subject: subject.clone(),
-            actions,
-            state_result: new_state,
-            number: turn_number
-        };
-        // print_shiai_turn(&turn_played);
-        turns.push(turn_played);
-
-        Self{
-            init_state: self.init_state,
-            result: turns,
-        }
     }
+
+    Some(TurnLog {
+        subject: subject.clone(),
+        actions,
+        state_result: new_state,
+    })
 }
 
+// TODO test.
+fn winner(current_state: &ShiaiState) -> Option<PartyPosition> {
+    let defense_alive = [
+        DefenseParty(CaptainTeam),
+        DefenseParty(SecondTeam),
+        DefenseParty(ThirdTeam)
+    ]
+        .iter()
+        .any(|pos| current_state.get(&pos)
+            .map_or(false, |team| team.is_alive()));
 
+    let attack_alive = [
+        AttackParty(CaptainTeam),
+        AttackParty(SecondTeam),
+        AttackParty(ThirdTeam)
+    ]
+        .iter()
+        .any(|pos| current_state.get(&pos)
+            .map_or(false, |team| team.is_alive()));
 
+    match (attack_alive, defense_alive) {
+        (true, false) => Some(PartyPosition::Attack),
+        (false, true) => Some(PartyPosition::Defense),
+        (false, false) => Some(PartyPosition::Defense),
+        (true, true) => None,   // No winner yet
+    }
+}

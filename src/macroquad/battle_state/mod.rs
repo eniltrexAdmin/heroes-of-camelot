@@ -8,6 +8,9 @@ use macroquad_team_layout::*;
 pub mod macroquad_card_team;
 pub use macroquad_card_team::*;
 mod macroquad_card;
+mod end_battle_state;
+pub use end_battle_state::EndBattleState;
+
 use macroquad_card::*;
 
 

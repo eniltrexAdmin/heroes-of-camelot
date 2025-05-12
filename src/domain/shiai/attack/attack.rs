@@ -52,7 +52,7 @@ mod tests {
         let attacker = stub_party();
         let defender = stub_party_2();
 
-        let shiai = Shiai::new(attacker.clone(), defender);
+        let shiai = ShiaiResult::new(attacker.clone(), defender);
 
         let result = attack_action(&shiai.current_state, AttackParty(CaptainTeam));
         assert!(result.is_ok());

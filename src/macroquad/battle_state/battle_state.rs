@@ -20,12 +20,12 @@ enum BattlePhase {
 }
 
 pub struct BattleState {
-    shiai: Shiai,
+    shiai: ShiaiResult,
     background_image: Texture2D,
     teams: HashMap<ShiaiPosition,MacroquadTeam>,
-    current_turn: ShiaiTurn,
-    current_action: ShiaiAction,
-    current_events: Vec<ShiaiEvent>,
+    current_turn: Option<TurnLog>,
+    current_turn_number: usize,
+    current_event: Option<ShiaiEvent>,
     battle_phase: BattlePhase
 }
 
@@ -34,8 +34,7 @@ impl BattleState {
         let attacker = stub_party();
         let defender = stub_party_2();
 
-        let shiai = Shiai::new(attacker, defender);
-        let result = shiai.battle();
+        let result = ShiaiResult::new(attacker, defender);
 
         // Team Layout
 
@@ -92,34 +91,33 @@ impl BattleState {
         );
         let texture = Texture2D::from_file_with_format(bytes, None);
 
-        let first_turn =  result.result.get(0).unwrap().clone();
+        let first_turn =  result.turn_logs.first().unwrap().clone();
 
-        print_shiai_turn(&first_turn);
+        print_shiai_turn(&first_turn, 1);
         Self{
             background_image: texture,
             teams,
-            current_action: first_turn.actions.get(0).unwrap().clone(),
-            current_turn: first_turn,
-            current_events: Vec::new(),
+            current_turn: result.turn_logs.first().cloned(),
+            current_turn_number: 1,
+            current_event: None,
             shiai: result,
             battle_phase: StartTurn
         }
     }
 
-    fn advance_turn(&mut self) {
+    fn advance_turn(&mut self) -> StateTransition {
+        if let Some(next_turn) = self.shiai.turn_logs.get(self.current_turn_number - 1) {
+            for team in next_turn.state_result.state.iter() {
+                self.teams.get_mut(team.0).unwrap().update_team(team.1.clone())
+            }
+            print_shiai_turn(&next_turn, self.current_turn_number);
 
-        let next_turn_number = self.current_turn.number;
-        println!("number is{}", next_turn_number);
-        let next_turn =  self.shiai.result.get(next_turn_number).unwrap().clone();
-
-        for team in next_turn.state_result.state.iter() {
-            self.teams.get_mut(team.0).unwrap().update_team(team.1.clone())
+            self.current_turn_number = self.current_turn_number + 1;
+            self.current_turn = Some(next_turn.clone());
+            StateTransition::None
+        } else {
+            StateTransition::Push(HocStates::EndBattle)
         }
-        print_shiai_turn(&next_turn);
-
-        self.current_action = next_turn.actions.get(0).unwrap().clone();
-        self.current_turn = next_turn;
-
     }
 }
 
@@ -129,22 +127,21 @@ impl State for BattleState {
         "BattleState"
     }
     fn update(&mut self) -> StateTransition {
+        if is_mouse_button_pressed(MouseButton::Left) {
+            return self.advance_turn()
+        }
+
         self.teams.values_mut().for_each(|team: &mut MacroquadTeam| {
-            let current_action_team = &self.current_turn.subject;
-            let current_action =
-                match current_action_team == team.game_team().position() {
-                    true => Some( self.current_action.command.clone()),
-                    false =>None
-                };
+            let is_active = self
+                .current_turn
+                .as_ref()
+                .map_or(false, |turn| &turn.subject == team.game_team().position());
+
             team.update(
-                current_action.is_some(),
-                current_action,
+                is_active,
+                None,
             )
         });
-
-        if is_mouse_button_pressed(MouseButton::Left) {
-            self.advance_turn();
-        }
 
         StateTransition::None
     }

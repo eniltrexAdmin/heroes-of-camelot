@@ -16,7 +16,8 @@ pub enum StateTransition {
 
 pub enum HocStates{
     Presentation,
-    Battle
+    Battle,
+    EndBattle
 }
 
 pub struct StackState{
@@ -61,6 +62,9 @@ impl StackState {
             },
             HocStates::Battle => {
                 Box::new(BattleState::new(&self.textures_repository).await)
+            },
+            HocStates::EndBattle => {
+                Box::new(EndBattleState{})
             }
         }
     }

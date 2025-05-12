@@ -3,14 +3,14 @@ use super::*;
 
 //TODO this will be obviously out of domain!
 
-pub fn print_shiai(shiai: &Shiai) {
-    for (_, turn) in shiai.result.iter().enumerate() {
-        print_shiai_turn(turn);
+pub fn print_shiai(shiai: &ShiaiResult) {
+    for (i, turn) in shiai.turn_logs.iter().enumerate() {
+        print_shiai_turn(turn, i);
     }
 }
 
-pub fn print_shiai_turn(shiai_turn: &ShiaiTurn) {
-    println!("--- Turn {} ---", shiai_turn.number);
+pub fn print_shiai_turn(shiai_turn: &TurnLog, turn_number: usize) {
+    println!("--- Turn {} ---", turn_number);
 
     for (j, action) in shiai_turn.actions.iter().enumerate() {
         println!("Action {}: {:?}", j + 1, action);

@@ -41,7 +41,7 @@ impl MacroquadTeam {
         self.game_team = game_team;
     }
 
-    pub fn update(&mut self, active:bool, current_action: Option<ShiaiCommandType>) {
+    pub fn update(&mut self, active:bool, current_event: Option<ShiaiEvent>) {
         self.team_layout.update(self.game_team.current_hp().value());
         self.cards.update(self.team_layout.background_rectangle(), active);
     }

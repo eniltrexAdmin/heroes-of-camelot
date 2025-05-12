@@ -21,7 +21,7 @@ pub struct ShiaiEvent {
 
 #[derive(Clone, Debug)]
 pub enum ShiaiEventType {
-    // AttackReceived(BattleTeamAttack),
+    // TeamAttacked(BattleTeamAttack),
     DamageReceived(Damage),
 }
 
