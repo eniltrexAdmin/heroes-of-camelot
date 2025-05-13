@@ -1,6 +1,5 @@
 use crate::domain::*;
 use crate::domain::shiai::damage::Damage::Physical;
-use crate::domain::ShiaiEventType::DamageReceived;
 use super::*;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -40,22 +39,12 @@ impl BattleTeam {
         self.current_hp.value() > 0
     }
 
-    pub fn receive_attack(&self, subject: &BattleTeam) -> Vec<ShiaiEvent> {
+    pub fn calculate_attack_damage(&self, attack: BattleTeamAttack) -> Damage {
         // shields etc.
-        let damage = Damage::new_attack_damage(subject.current_attack().clone());
-        vec![ShiaiEvent::new_damage_received(self.position.clone(), damage)]
+        Damage::new_attack_damage(attack.value())
     }
 
-    pub fn apply_domain_event(self, shiai_event_type: ShiaiEventType) -> Self {
-        match shiai_event_type {
-            DamageReceived(damage) => {
-                self.apply_receive_damage(damage)
-            }
-        }
-    }
-
-    // this might return other domain events...
-    fn apply_receive_damage(self, damage: Damage) -> Self {
+    pub fn receive_damage(self, damage: Damage) -> Self {
         let mut new_self = self.clone();
         new_self.current_hp = match damage {
             Physical(physical_damage) => new_self.current_hp.apply_damage(physical_damage),
@@ -86,23 +75,17 @@ mod tests {
         let mut battle_team = BattleTeam::new(team.clone(), AttackParty(CaptainTeam));
         assert!(battle_team.is_alive());
 
-        battle_team.apply_receive_damage(Damage::new_attack_damage(BattleTeamAttack::new(200000)));
+        battle_team = battle_team.receive_damage(Damage::new_attack_damage(200000));
 
         assert!(!battle_team.is_alive());
     }
 
     #[test]
-    fn test_receive_attack() {
+    fn test_calculate_damage() {
         let team = stub_team();
         let battle_team = BattleTeam::new(team.clone(), AttackParty(CaptainTeam));
 
-        let result = battle_team.receive_attack(&battle_team);
-        assert_eq!(result.len(), 1);
-        let event = result.get(0).unwrap();
-        assert_eq!(event.target, battle_team.position);
-
-        if let DamageReceived(damage) = &event.event {
-            assert_eq!(battle_team.current_attack().value(), damage.value())
-        }
+        let result = battle_team.calculate_attack_damage(battle_team.current_attack);
+        assert_eq!(battle_team.current_attack().value(), result.value())
     }
 }

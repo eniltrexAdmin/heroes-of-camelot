@@ -1,5 +1,5 @@
 use crate::domain::*;
-use crate::domain::shiai::print_shiai::{print_shiai, print_shiai_turn};
+use crate::domain::shiai::shiai_state::ShiaiEvent;
 use super::*;
 
 #[derive(Debug)]
@@ -11,7 +11,7 @@ pub enum ShiaiError{
 #[derive(Clone)]
 pub struct TurnLog {
     pub subject: ShiaiPosition,
-    pub actions: Vec<ShiaiAction>,
+    pub events: Vec<ShiaiEvent>,
     pub state_result: ShiaiState,
 }
 
@@ -57,7 +57,7 @@ pub fn battle(init_state: ShiaiState) -> Vec<TurnLog>{
 }
 
 fn play_turn(current_state: ShiaiState, subject: ShiaiPosition) -> Option<TurnLog> {
-    let mut actions = vec![];
+    let mut turn_events = vec![];
     let mut new_state = current_state.clone();
 
     let team = match current_state.get(&subject) {
@@ -70,18 +70,15 @@ fn play_turn(current_state: ShiaiState, subject: ShiaiPosition) -> Option<TurnLo
 
     //attack
     if team.is_alive() {
-        match attack_action(current_state, subject.clone()) {
-            Ok((state, action)) => {
-                new_state = state;
-                actions.push(action);
-            }
-            Err(error) => panic!("Error while applying shiai: {:?}", error),
-        };
+        // so far no errors now.
+        let (next_state, event) = attack(current_state, subject.clone());
+        new_state = next_state;
+        turn_events.extend(event);
     }
 
     Some(TurnLog {
         subject: subject.clone(),
-        actions,
+        events: turn_events,
         state_result: new_state,
     })
 }

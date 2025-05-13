@@ -2,6 +2,12 @@ use std::collections::HashMap;
 use crate::domain::*;
 
 
+#[derive(Clone, Debug)]
+pub enum ShiaiEvent {
+    Attack(TeamAttackedDomainEvent),
+}
+
+
 #[derive(Clone)]
 pub struct ShiaiState{
     pub state: HashMap<ShiaiPosition, BattleTeam>,
@@ -45,22 +51,19 @@ impl ShiaiState{
         self.state.get(&position)
     }
 
-
-    pub fn apply_domain_events(self, events: Vec<ShiaiEvent>) -> Result<Self, ShiaiError> {
-        events.into_iter().try_fold(self, |applied_shiai, event| {
-            applied_shiai.apply_domain_event(event)
-        })
+    pub fn expect_team(&self, position: &ShiaiPosition) -> &BattleTeam {
+        self.state.get(&position).expect("if you use this function you know team exists!")
     }
 
-    fn apply_domain_event(self, event: ShiaiEvent) -> Result<Self, ShiaiError> {
-        let mut state = self.state.clone();
-        if let Some(team) = self.state.get(&event.target) {
-            let updated_team = team.clone().apply_domain_event(event.event);
-            state.insert(event.target, updated_team);
-        } else {
-            return Err(ShiaiError::TargetMissingError)
-        }
-        Ok(Self{ state })
+
+    pub fn apply_domain_events(self, events: Vec<ShiaiEvent>) -> Self {
+        events.into_iter().fold(self, |applied_shiai, event| {
+            match event {
+                ShiaiEvent::Attack(domain_event) => {
+                    applied_shiai.apply_team_attacked_domain_event(domain_event)
+                }
+            }
+        })
     }
 }
 

@@ -38,5 +38,5 @@ fn get_attack_party_alive_team(current_state:&ShiaiState) -> ShiaiPosition {
 
 #[cfg(test)]
 mod tests {
-
+// TEst with empty teams etc, we might want to return REsults instead in here.
 }

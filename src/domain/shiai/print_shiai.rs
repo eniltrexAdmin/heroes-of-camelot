@@ -12,7 +12,7 @@ pub fn print_shiai(shiai: &ShiaiResult) {
 pub fn print_shiai_turn(shiai_turn: &TurnLog, turn_number: usize) {
     println!("--- Turn {} ---", turn_number);
 
-    for (j, action) in shiai_turn.actions.iter().enumerate() {
+    for (j, action) in shiai_turn.events.iter().enumerate() {
         println!("Action {}: {:?}", j + 1, action);
     }
 
