@@ -56,9 +56,9 @@ impl CardTeam {
 
         Self{cards}
     }
-    pub fn update(&mut self, team_layout_rectangle: Rect, is_active: bool) {
+    pub fn update(&mut self, is_active: bool) {
        self.cards.iter_mut().for_each(|card| {
-           card.update(team_layout_rectangle, is_active);
+           card.update(is_active);
        })
     }
     pub fn draw(&self) {

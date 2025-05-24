@@ -31,8 +31,8 @@ fn window_conf() -> Conf{
     Conf {
         window_title: "Heroes of Camelot".to_owned(),
         fullscreen: false,
-        window_width: 1280,  // Wider than tall
-        window_height: 720,  // Matches a 16:9 landscape layout
+        window_width: 1920,  // Wider than tall
+        window_height: 1080,  // Matches a 16:9 landscape layout
         ..Default::default()
     }
 }

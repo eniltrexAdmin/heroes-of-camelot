@@ -1,13 +1,14 @@
 use macroquad::math::{Rect, Vec2};
 use macroquad::prelude::*;
-use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, ShiaiPosition, ThirdTeam};
+use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, ShiaiPosition, TeamPosition, ThirdTeam};
+use crate::macroquad::{draw_texture_in_animated_rectangle, scale_rectangle, AnimatedRectangle, Default1920x1080};
 
 const REMOVE_LIFE_SPEED: f64 = 2.0;
 
 pub struct TeamLayout {
-    background_rectangle: Rect,
-    hp_rectangle: Rect,
-    attack_rectangle: Rect,
+    background_animated_rectangle: AnimatedRectangle,
+    hp_rectangle_animated: AnimatedRectangle,
+    attack_rectangle_animated: AnimatedRectangle,
     textures: TeamLayoutTextures,
     position: ShiaiPosition,
     rotation: f32,
@@ -26,6 +27,8 @@ pub struct TeamLayoutTextures {
     pub stats_label_background: Texture2D,
 }
 
+pub const SPEED: f32 = 5.0;
+
 impl TeamLayout {
     pub fn new(
         position: &ShiaiPosition,
@@ -36,15 +39,37 @@ impl TeamLayout {
     ) -> Self{
         let background_rectangle = calculate_stats_rectangle(position);
         let hp_rectangle = calculate_hp_rectangle(background_rectangle, position);
-        let attack_rectangle = calculate_attack_rectangle(background_rectangle, position);
+        let attack_rectangle = attack_rectangle_hardcoded_default(position);
         let rotation = match position {
             AttackParty(_) => 0.0,
             DefenseParty(_) => std::f32::consts::PI
         };
-        Self{
+
+        let background_animated_rectangle =  AnimatedRectangle::new(
             background_rectangle,
-            hp_rectangle,
+            scale_rectangle(background_rectangle, 120.0/100.0),
+            SPEED,
+            Default1920x1080
+        );
+
+        let attack_rectangle_animated =  AnimatedRectangle::new(
             attack_rectangle,
+            scale_rectangle(attack_rectangle, 120.0/100.0),
+            SPEED,
+            Default1920x1080
+        );
+
+        let hp_rectangle_animated =  AnimatedRectangle::new(
+            hp_rectangle,
+            scale_rectangle(hp_rectangle, 120.0/100.0),
+            SPEED,
+            Default1920x1080
+        );
+
+        Self{
+            background_animated_rectangle,
+            hp_rectangle_animated,
+            attack_rectangle_animated,
             textures,
             position: position.clone(),
             rotation,
@@ -56,12 +81,21 @@ impl TeamLayout {
     }
 
     pub fn background_rectangle(&self) -> Rect {
-        self.background_rectangle
+        self.background_animated_rectangle.rectangle().base_rect
     }
 
-    pub fn update(&mut self, current_hp: u128) {
-        // todo decide the resize yes or not:
-        self.resize();
+    pub fn update(&mut self, current_hp: u128, is_active: bool) {
+
+        if is_active {
+            self.background_animated_rectangle.animate();
+            self.hp_rectangle_animated.animate();
+            self.attack_rectangle_animated.animate();
+        } else {
+            self.background_animated_rectangle.reset();
+            self.hp_rectangle_animated.reset();
+            self.attack_rectangle_animated.reset();
+        }
+
 
         self.current_hp = current_hp;
         let current =self.current_hp as f64;
@@ -72,26 +106,23 @@ impl TeamLayout {
         }
     }
 
-    pub fn resize(&mut self) {
-        self.background_rectangle = calculate_stats_rectangle(&self.position);
-        self.hp_rectangle = calculate_hp_rectangle(self.background_rectangle, &self.position);
-        self.attack_rectangle = calculate_attack_rectangle(self.background_rectangle, &self.position);
-    }
-
     pub fn draw(&self) {
-        self.draw_team_background(self.background_rectangle);
-        self.draw_hp(self.hp_rectangle);
-        self.draw_attack(self.attack_rectangle);
+        self.draw_team_background();
+        self.draw_hp();
+        self.draw_attack();
     }
 
-    fn draw_team_background(&self, background_rectangle: Rect) {
+    fn draw_team_background(&self) {
+        let rect_to_draw = self.background_animated_rectangle.rectangle().to_screen_rect(
+            screen_width(), screen_height()
+        );
         draw_texture_ex(
             &self.textures.stats_background_texture,
-            background_rectangle.x,
-            background_rectangle.y,
+            rect_to_draw.x,
+            rect_to_draw.y,
             WHITE,
             DrawTextureParams {
-                dest_size: Some(Vec2::new(background_rectangle.w, background_rectangle.h)),
+                dest_size: Some(Vec2::new(rect_to_draw.w, rect_to_draw.h)),
                 rotation: self.rotation,
                 ..Default::default()
             },
@@ -99,33 +130,30 @@ impl TeamLayout {
 
         draw_texture_ex(
             &self.textures.stats_border,
-            background_rectangle.x,
-            background_rectangle.y,
+            rect_to_draw.x,
+            rect_to_draw.y,
             WHITE,
             DrawTextureParams {
-                dest_size: Some(Vec2::new(background_rectangle.w, background_rectangle.h)),
+                dest_size: Some(Vec2::new(rect_to_draw.w, rect_to_draw.h)),
                 rotation: self.rotation,
                 ..Default::default()
             },
         );
     }
 
-    fn draw_hp(&self, hp_rectangle: Rect) {
-        draw_texture_ex(
+    fn draw_hp(&self) {
+        let rect_to_draw = self.hp_rectangle_animated.rectangle().to_screen_rect(
+            screen_width(), screen_height()
+        );
+        draw_texture_in_animated_rectangle(
             &self.textures.life_bar_container,
-            hp_rectangle.x,
-            hp_rectangle.y,
-            WHITE,
-            DrawTextureParams {
-                dest_size: Some(Vec2::new(hp_rectangle.w, hp_rectangle.h)),
-                ..Default::default()
-            },
+            &self.hp_rectangle_animated
         );
 
         draw_texture_ex(
             &self.textures.life_bar,
-            hp_rectangle.x,
-            hp_rectangle.y,
+            rect_to_draw.x,
+            rect_to_draw.y,
             WHITE,
             DrawTextureParams {
                 source: Some(Rect::new(
@@ -134,37 +162,37 @@ impl TeamLayout {
                     self.textures.life_bar.width(),
                     self.textures.life_bar.height())
                 ),
-                dest_size: Some(Vec2::new(hp_rectangle.w * self.life_bar_width_percentage as f32, hp_rectangle.h)),
+                dest_size: Some(Vec2::new(
+                    rect_to_draw.w * self.life_bar_width_percentage as f32,
+                    rect_to_draw.h
+                )),
                 ..Default::default()
             },
         );
-        let font_size = hp_rectangle.h * 6.0/10.0;
+        let font_size = rect_to_draw.h * 6.0/10.0;
         draw_text(
             format!("HP: {}", self.current_hp.to_string()).as_str(),
-            hp_rectangle.x + hp_rectangle.w * 30.0/100.0,
-            hp_rectangle.y + hp_rectangle.h * 7.0/10.0,
+            rect_to_draw.x + rect_to_draw.w * 30.0/100.0,
+            rect_to_draw.y + rect_to_draw.h * 7.0/10.0,
             font_size,
             WHITE
         );
     }
 
-    fn draw_attack(&self, attack_rectangle: Rect) {
-        draw_texture_ex(
+    fn draw_attack(&self) {
+        draw_texture_in_animated_rectangle(
             &self.textures.stats_label_background,
-            attack_rectangle.x,
-            attack_rectangle.y,
-            WHITE,
-            DrawTextureParams {
-                dest_size: Some(Vec2::new(attack_rectangle.w, attack_rectangle.h)),
-                ..Default::default()
-            },
+            &self.attack_rectangle_animated
+        );
+        let rect_to_draw = self.attack_rectangle_animated.rectangle().to_screen_rect(
+            screen_width(), screen_height()
         );
 
-        let font_size = attack_rectangle.h * 9.0/10.0;
+        let font_size = rect_to_draw.h * 9.0/10.0;
         draw_text(
             format!("Attack: {}",&self.current_attack.to_string()).as_str(),
-            attack_rectangle.x + attack_rectangle.w * 5.0/100.0,
-            attack_rectangle.y + attack_rectangle.h * 7.0/10.0,
+            rect_to_draw.x + rect_to_draw.w * 5.0/100.0,
+            rect_to_draw.y + rect_to_draw.h * 7.0/10.0,
             font_size,
             WHITE
         );
@@ -237,5 +265,33 @@ fn calculate_attack_rectangle(stats_rectangle: Rect, position: &ShiaiPosition) -
         DefenseParty(_) => h_parts * (100.0 - label_y_position) - size_y,
     };
 
+    println!("Attack rectangle is ({},{})-{}-{}", top_left_corner_x, top_left_corner_y, size_x, size_y);
+
     Rect::new(top_left_corner_x, top_left_corner_y, size_x, size_y)
+}
+
+fn attack_rectangle_hardcoded_default(shiai_position: &ShiaiPosition) -> Rect {
+    let top_left_corner_y = match shiai_position {
+        AttackParty(_) => 995.5,
+        DefenseParty(_) => 60.2,
+    };
+
+    let top_left_corner_x = match shiai_position {
+        AttackParty(team_position) => {
+            match team_position {
+                CaptainTeam => 162.8,
+                SecondTeam => 747.13,
+                ThirdTeam => 1331.47
+            }
+        },
+        DefenseParty(team_position) => {
+            match team_position {
+                CaptainTeam => 162.8,
+                SecondTeam => 747.13,
+                ThirdTeam => 1331.47
+            }
+        }
+    };
+
+    Rect::new(top_left_corner_x, top_left_corner_y, 425.74, 32.4)
 }

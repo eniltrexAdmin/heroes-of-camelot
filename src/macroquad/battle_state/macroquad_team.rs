@@ -1,6 +1,9 @@
 use crate::domain::*;
 use super::*;
 
+pub enum TeamAnimations{
+    Attack
+}
 
 pub struct MacroquadTeam {
     game_team: BattleTeam,
@@ -8,6 +11,7 @@ pub struct MacroquadTeam {
     team_layout: TeamLayout,
     rotation: f32,
     active: bool,
+    animation: Option<TeamAnimations>
 }
 
 
@@ -29,7 +33,8 @@ impl MacroquadTeam {
             cards: CardTeam::new(cards_textures, game_team.position(), team_layout.background_rectangle()),
             team_layout,
             rotation,
-            active: false
+            active: false,
+            animation: None
         }
     }
 
@@ -42,8 +47,8 @@ impl MacroquadTeam {
     }
 
     pub fn update(&mut self, active:bool, current_event: Option<ShiaiEvent>) {
-        self.team_layout.update(self.game_team.current_hp().value());
-        self.cards.update(self.team_layout.background_rectangle(), active);
+        self.team_layout.update(self.game_team.current_hp().value(), active);
+        self.cards.update(active);
     }
 
     pub fn draw(&self) {

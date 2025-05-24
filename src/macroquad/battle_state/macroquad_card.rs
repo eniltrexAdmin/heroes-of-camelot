@@ -1,10 +1,11 @@
 use macroquad::math::Rect;
 use macroquad::prelude::{screen_height, screen_width, Texture2D};
 use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, ShiaiPosition, ThirdTeam};
-use crate::macroquad::{draw_texture_in_rectangle, modify_rectangle, scale_rectangle};
+use crate::macroquad::{draw_texture_in_animated_rectangle, scale_rectangle, AnimatedRectangle, Default1920x1080};
 
-pub const SPEED: f32 = 1.0;
+pub const SPEED: f32 = 5.0;
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum CardPosition{
     Captain,
     Second,
@@ -14,14 +15,10 @@ pub enum CardPosition{
 pub struct MacroquadCard {
     team_position: ShiaiPosition,
     card_position: CardPosition,
-    rectangle_bg: Rect,
-    rectangle: Rect,
+    rectangle_bg: AnimatedRectangle,
+    rectangle: AnimatedRectangle,
     background_texture: Texture2D,
     template_texture: Texture2D,
-    active_target_rectangle: Rect,
-    active_target_rectangle_bg: Rect,
-    current_rectangle: Rect,
-    current_rectangle_bg: Rect,
 }
 impl MacroquadCard {
     pub fn new(
@@ -39,54 +36,52 @@ impl MacroquadCard {
         ) = calculate_card_rectangles(
             &team_position, &card_position, team_layout_rectangle
         );
+        // TODO that should be a single texture...
+        let bg_rectangle = AnimatedRectangle::new(
+            background_rectangle,
+            active_target_rectangle_bg,
+            SPEED,
+            Default1920x1080
+        );
+
+        let main_rectangle = AnimatedRectangle::new(
+            template_rectangle,
+            active_target_rectangle,
+            SPEED,
+            Default1920x1080,
+        );
         Self{
             team_position,
             card_position,
             background_texture,
             template_texture,
-            rectangle_bg: background_rectangle,
-            rectangle: template_rectangle,
-            current_rectangle: template_rectangle,
-            current_rectangle_bg: background_rectangle,
-            active_target_rectangle,
-            active_target_rectangle_bg
+            rectangle_bg: bg_rectangle,
+            rectangle: main_rectangle,
         }
     }
 }
 
 impl MacroquadCard {
-    pub fn update(&mut self, team_layout_rectangle: Rect, is_active: bool) {
+    pub fn update(&mut self, is_active: bool) {
        if is_active {
-           self.current_rectangle_bg = modify_rectangle(
-               self.current_rectangle_bg,
-               self.active_target_rectangle_bg, SPEED
-           );
-           self.current_rectangle =modify_rectangle(
-               self.current_rectangle,
-               self.active_target_rectangle, SPEED
-           );
+           self.rectangle_bg.animate();
+           self.rectangle.animate();
        } else {
-           self.current_rectangle_bg = self.rectangle_bg;
-           self.current_rectangle = self.rectangle;
+           self.rectangle_bg.reset();
+           self.rectangle.reset();
        }
-       self.resize(team_layout_rectangle);
     }
 
-    fn resize(&mut self, team_layout_rectangle: Rect) {
-        let (background_rectangle, template_rectangle,
-            active_target_rectangle_bg,
-            active_target_rectangle) = calculate_card_rectangles(
-            &self.team_position, &self.card_position, team_layout_rectangle
-        );
-        self.rectangle_bg = background_rectangle;
-        self.rectangle = template_rectangle;
-        self.active_target_rectangle_bg = active_target_rectangle_bg;
-        self.active_target_rectangle = active_target_rectangle;
-    }
 
     pub fn draw(&self) {
-        draw_texture_in_rectangle(&self.background_texture, self.current_rectangle_bg);
-        draw_texture_in_rectangle(&self.template_texture, self.current_rectangle);
+        draw_texture_in_animated_rectangle(
+            &self.background_texture,
+            &self.rectangle_bg
+        );
+        draw_texture_in_animated_rectangle(
+            &self.template_texture,
+            &self.rectangle
+        );
     }
 }
 
@@ -127,6 +122,11 @@ fn calculate_card_rectangles(position: &ShiaiPosition, card_position: &CardPosit
     let card_rectangle =  scale_rectangle(background_rectangle, 95.0/100.0);
     let active_bg = scale_rectangle(background_rectangle, 150.0/100.0);
     let active = scale_rectangle(active_bg, 95.0/100.0);
-    (background_rectangle.clone(), card_rectangle, active_bg, active)
+    (
+        background_rectangle.clone(),
+        card_rectangle,
+        active_bg,
+        active
+    )
 }
 

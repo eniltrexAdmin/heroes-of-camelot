@@ -1,4 +1,5 @@
 use macroquad::prelude::*;
+use crate::macroquad::AnimatedRectangle;
 
 pub fn macroquad_draw_background(background: &Texture2D) {
     let screen_w = screen_width();
@@ -36,6 +37,16 @@ pub fn draw_texture_in_rectangle(texture: &Texture2D, rect: Rect) {
     );
 }
 
+pub fn draw_texture_in_animated_rectangle(texture: &Texture2D, rect: &AnimatedRectangle) {
+    draw_texture_in_rectangle(
+        texture,
+        rect.rectangle().to_screen_rect(
+            screen_width(),
+            screen_height()
+        )
+    );
+}
+
 // TODO test
 pub fn scale_rectangle(input: Rect, factor: f32) -> Rect {
     let (w,h) = (input.w * factor, input.h * factor);
@@ -48,12 +59,27 @@ pub fn scale_rectangle(input: Rect, factor: f32) -> Rect {
 }
 
 // TODO test
-pub fn modify_rectangle(current_rectangle: Rect, target_rectangle: Rect, speed: f32) -> Rect {
+pub fn modify_rectangle(current: Rect, target: Rect, speed: f32) -> Rect {
+    let dx = target.x - current.x;
+    let dy = target.y - current.y;
+    let dw = target.w - current.w;
+    let dh = target.h - current.h;
+
+    let distance = (dx * dx + dy * dy + dw * dw + dh * dh).sqrt();
+
+    if distance < speed || distance == 0.0 {
+        return target; // Close enough, snap to target
+    }
+
+
+    // Normalize direction vector and scale by speed
+    let scale = speed / distance;
+
     Rect::new(
-        target_attribute(current_rectangle.x, target_rectangle.x, speed),
-        target_attribute(current_rectangle.y, target_rectangle.y, speed),
-        target_attribute(current_rectangle.w, target_rectangle.w, speed),
-        target_attribute(current_rectangle.h, target_rectangle.h, speed *2.0)
+        current.x + dx * scale,
+        current.y + dy * scale,
+        current.w + dw * scale,
+        current.h + dh * scale,
     )
 }
 
