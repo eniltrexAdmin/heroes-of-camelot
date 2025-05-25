@@ -4,7 +4,7 @@ use crate::domain::*;
 
 #[derive(Clone, Debug)]
 pub enum ShiaiEvent {
-    Attack(TeamAttackedDomainEvent),
+    TeamAttacked(TeamAttackedDomainEvent),
 }
 
 
@@ -59,7 +59,7 @@ impl ShiaiState{
     pub fn apply_domain_events(self, events: Vec<ShiaiEvent>) -> Self {
         events.into_iter().fold(self, |applied_shiai, event| {
             match event {
-                ShiaiEvent::Attack(domain_event) => {
+                ShiaiEvent::TeamAttacked(domain_event) => {
                     applied_shiai.apply_team_attacked_domain_event(domain_event)
                 }
             }

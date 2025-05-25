@@ -5,9 +5,9 @@ use super::*;
 
 #[derive(Clone, Debug)]
 pub struct TeamAttackedDomainEvent{
-    attacker: ShiaiPosition,
-    target: ShiaiPosition,
-    damage_received: Damage
+    pub attacker: ShiaiPosition,
+    pub target: ShiaiPosition,
+    pub damage_received: Damage
 }
 
 pub fn attack(state: ShiaiState, attacker_pos: ShiaiPosition)
@@ -16,7 +16,7 @@ pub fn attack(state: ShiaiState, attacker_pos: ShiaiPosition)
     let target_pos = select_target(&state, &attacker_pos, Default);
     let target = state.expect_team(&target_pos).clone();
 
-    let event = ShiaiEvent::Attack(TeamAttackedDomainEvent {
+    let event = ShiaiEvent::TeamAttacked(TeamAttackedDomainEvent {
         attacker: attacker_pos,
         target: target_pos,
         damage_received: target.calculate_attack_damage(attacker.current_attack().clone()),

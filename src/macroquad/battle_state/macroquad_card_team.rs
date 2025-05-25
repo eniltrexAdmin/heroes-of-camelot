@@ -1,6 +1,6 @@
 use macroquad::math::Rect;
 use macroquad::prelude::Texture2D;
-use crate::domain::ShiaiPosition;
+use crate::domain::{ShiaiPosition};
 use super::*;
 
 
@@ -56,10 +56,23 @@ impl CardTeam {
 
         Self{cards}
     }
-    pub fn update(&mut self, is_active: bool) {
+
+    pub fn set_animation(&mut self, anim: Option<CardAnimation>) {
+        self.cards.iter_mut().for_each(|card| {
+            card.set_animation(anim.clone());
+        })
+    }
+
+    pub fn update(&mut self) {
        self.cards.iter_mut().for_each(|card| {
-           card.update(is_active);
+           card.update();
        })
+    }
+
+    pub fn animation_finished(&self) -> bool{
+        self.cards.iter().all(|card| {
+            card.animation_finished()
+        })
     }
     pub fn draw(&self) {
         self.cards.iter().for_each(|card| {

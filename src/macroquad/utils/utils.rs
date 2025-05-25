@@ -71,7 +71,6 @@ pub fn modify_rectangle(current: Rect, target: Rect, speed: f32) -> Rect {
         return target; // Close enough, snap to target
     }
 
-
     // Normalize direction vector and scale by speed
     let scale = speed / distance;
 

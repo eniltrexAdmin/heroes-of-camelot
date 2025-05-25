@@ -9,6 +9,7 @@ pub use shiai_position::TeamPosition::*;
 mod shiai_state;
 pub use shiai_state::ShiaiState;
 pub use shiai_state::ShiaiEvent;
+pub use shiai_state::ShiaiEvent::*;
 
 mod select_target;
 pub use select_target::*;

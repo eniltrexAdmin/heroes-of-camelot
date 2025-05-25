@@ -1,10 +1,15 @@
 use macroquad::math::{Rect, Vec2};
 use macroquad::prelude::*;
-use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, ShiaiPosition, TeamPosition, ThirdTeam};
+use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, ShiaiPosition, ThirdTeam};
 use crate::macroquad::{draw_texture_in_animated_rectangle, scale_rectangle, AnimatedRectangle, Default1920x1080};
 
 const REMOVE_LIFE_SPEED: f64 = 2.0;
 
+#[derive(Debug)]
+pub enum TeamLayoutAnimation{
+    Active,
+    Damage
+}
 pub struct TeamLayout {
     background_animated_rectangle: AnimatedRectangle,
     hp_rectangle_animated: AnimatedRectangle,
@@ -15,7 +20,9 @@ pub struct TeamLayout {
     total_hp: u128,
     current_hp: u128,
     life_bar_width_percentage: f64,
-    current_attack: u128
+    current_attack: u128,
+    current_animation: Option<TeamLayoutAnimation>,
+    animation_finished: bool,
 }
 
 #[derive(Clone)]
@@ -76,7 +83,9 @@ impl TeamLayout {
             life_bar_width_percentage: 1.0,
             total_hp,
             current_hp,
-            current_attack
+            current_attack,
+            current_animation: None,
+            animation_finished: true,
         }
     }
 
@@ -84,25 +93,47 @@ impl TeamLayout {
         self.background_animated_rectangle.rectangle().base_rect
     }
 
-    pub fn update(&mut self, current_hp: u128, is_active: bool) {
+    pub fn set_animation(&mut self, anim: Option<TeamLayoutAnimation>) {
+        self.animation_finished = anim.is_none();
+        self.current_animation = anim;
 
-        if is_active {
-            self.background_animated_rectangle.animate();
-            self.hp_rectangle_animated.animate();
-            self.attack_rectangle_animated.animate();
+    }
+
+    pub fn animation_finished(&self)-> bool {
+        self.animation_finished
+    }
+
+    pub fn update(&mut self, current_hp: u128) {
+        if let Some(anim) = &self.current_animation {
+            match anim {
+                TeamLayoutAnimation::Active => {
+                    self.background_animated_rectangle.animate();
+                    self.hp_rectangle_animated.animate();
+                    self.attack_rectangle_animated.animate();
+                    if    !self.background_animated_rectangle.is_moving() &&
+                        !self.hp_rectangle_animated.is_moving() &&
+                        !self.attack_rectangle_animated.is_moving() {
+                        self.animation_finished = true
+                    }
+                },
+                TeamLayoutAnimation::Damage => {
+                    self.current_hp = current_hp;
+                    let current =self.current_hp as f64;
+                    let max = self.total_hp as f64;
+                    let expected_percentage = current / max;
+                    if self.life_bar_width_percentage > expected_percentage {
+                        self.life_bar_width_percentage =
+                            self.life_bar_width_percentage - 0.01 * REMOVE_LIFE_SPEED;
+                    }
+                    if self.life_bar_width_percentage != expected_percentage {
+                        self.animation_finished = true;
+                    }
+                }
+            }
         } else {
             self.background_animated_rectangle.reset();
             self.hp_rectangle_animated.reset();
             self.attack_rectangle_animated.reset();
-        }
-
-
-        self.current_hp = current_hp;
-        let current =self.current_hp as f64;
-        let max = self.total_hp as f64;
-        let expected_percentage = current / max;
-        if self.life_bar_width_percentage > expected_percentage {
-            self.life_bar_width_percentage = self.life_bar_width_percentage - 0.01 * REMOVE_LIFE_SPEED;
         }
     }
 

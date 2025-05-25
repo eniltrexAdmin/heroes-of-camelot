@@ -1,10 +1,9 @@
-use std::collections::HashMap;
+use std::collections::{HashMap};
 use async_trait::async_trait;
 use macroquad::prelude::*;
 use crate::data::{stub_party, stub_party_2};
 use crate::domain::*;
 use crate::macroquad::*;
-use crate::macroquad::battle_state::battle_state::BattlePhase::StartTurn;
 use super::*;
 
 #[async_trait]
@@ -12,10 +11,10 @@ pub trait CardTexturesRepository {
     async fn load_for_team(&self, team: &Team) -> CardTextures;
 }
 
-enum BattlePhase {
-    StartTurn,
-    ActionAnimation,
-    ResolveEffects,
+#[derive(Debug, Clone, PartialEq)]
+pub enum BattlePhaseTurn {
+    StartTurn{active_team: ShiaiPosition},
+    Attack{attacker: ShiaiPosition, target: ShiaiPosition},
     EndTurn,
 }
 
@@ -26,7 +25,8 @@ pub struct BattleState {
     current_turn: Option<TurnLog>,
     current_turn_number: usize,
     current_event: Option<ShiaiEvent>,
-    battle_phase: BattlePhase
+    current_event_number: usize,
+    battle_phase: Option<BattlePhaseTurn>
 }
 
 impl BattleState {
@@ -97,30 +97,56 @@ impl BattleState {
         Self{
             background_image: texture,
             teams,
-            current_turn: result.turn_logs.first().cloned(),
-            current_turn_number: 1,
+            current_turn: None,
+            current_turn_number: 0,
             current_event: None,
+            current_event_number: 0,
             shiai: result,
-            battle_phase: StartTurn
+            battle_phase: None
         }
     }
 
     fn advance_turn(&mut self) -> StateTransition {
-        if let Some(next_turn) = self.shiai.turn_logs.get(self.current_turn_number - 1) {
-            for team in next_turn.state_result.state.iter() {
-                self.teams.get_mut(team.0).unwrap().update_team(team.1.clone())
-            }
-            print_shiai_turn(&next_turn, self.current_turn_number);
+        if let Some(next_turn) = self.shiai.turn_logs.get(self.current_turn_number) {
+            let current_phase = BattlePhaseTurn::StartTurn {active_team: next_turn.subject.clone()};
+            self.battle_phase = Some(current_phase);
 
+            for team in next_turn.state_result.state.iter() {
+                self.teams.get_mut(team.0).unwrap().update_team(team.1.clone());
+                self.teams.get_mut(team.0).unwrap().set_animation(self.battle_phase.clone().unwrap());
+            }
             self.current_turn_number = self.current_turn_number + 1;
             self.current_turn = Some(next_turn.clone());
+            self.current_event_number = 0;
+
+            print_shiai_turn(&next_turn, self.current_turn_number);
             StateTransition::None
         } else {
             StateTransition::Push(HocStates::EndBattle)
         }
     }
-}
 
+    fn advance_turn_event(&mut self)  {
+        if let Some(current_turn) = &self.current_turn {
+            if let Some(next_event) = current_turn.events.get(self.current_event_number) {
+                self.current_event_number = self.current_event_number + 1;
+                self.current_event = Some(next_event.clone());
+                match next_event {
+                    TeamAttacked(team_attacked) => {
+                        let current_phase = BattlePhaseTurn::Attack {
+                            attacker: team_attacked.attacker.clone(),
+                            target: team_attacked.target.clone(),
+                        };
+                        self.battle_phase = Some(current_phase);
+                        self.teams.values_mut().for_each(|team| {
+                            team.set_animation(self.battle_phase.clone().unwrap());
+                        });
+                    }
+                }
+            }
+        }
+    }
+}
 
 impl State for BattleState {
     fn debug(&self) -> &str {
@@ -132,16 +158,16 @@ impl State for BattleState {
         }
 
         self.teams.values_mut().for_each(|team: &mut MacroquadTeam| {
-            let is_active = self
-                .current_turn
-                .as_ref()
-                .map_or(false, |turn| &turn.subject == team.game_team().position());
-
-            team.update(
-                is_active,
-                None,
-            )
+            team.update()
         });
+
+        let all_animations_finished = self.teams.values().all(|team| {
+            team.animation_finished()
+        });
+
+        if all_animations_finished {
+            self.advance_turn_event();
+        }
 
         StateTransition::None
     }

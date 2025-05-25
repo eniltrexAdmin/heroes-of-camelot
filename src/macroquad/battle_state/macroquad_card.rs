@@ -2,8 +2,17 @@ use macroquad::math::Rect;
 use macroquad::prelude::{screen_height, screen_width, Texture2D};
 use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, ShiaiPosition, ThirdTeam};
 use crate::macroquad::{draw_texture_in_animated_rectangle, scale_rectangle, AnimatedRectangle, Default1920x1080};
+use crate::macroquad::battle_state::battle_state::BattlePhaseTurn;
 
 pub const SPEED: f32 = 5.0;
+
+#[derive(Clone, Debug)]
+pub enum CardAnimation{
+    StartTurn,
+    Attack,
+    AttackReturn,
+    EndTurn
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum CardPosition{
@@ -15,10 +24,12 @@ pub enum CardPosition{
 pub struct MacroquadCard {
     team_position: ShiaiPosition,
     card_position: CardPosition,
-    rectangle_bg: AnimatedRectangle,
-    rectangle: AnimatedRectangle,
+    default_rectangle: (AnimatedRectangle, AnimatedRectangle),
+    attacking_rectangle: (AnimatedRectangle, AnimatedRectangle),
     background_texture: Texture2D,
     template_texture: Texture2D,
+    current_animation: Option<CardAnimation>,
+    animation_finished: bool,
 }
 impl MacroquadCard {
     pub fn new(
@@ -50,38 +61,112 @@ impl MacroquadCard {
             SPEED,
             Default1920x1080,
         );
+
+        let attack_rectangle_target = calculate_attack_target_position(
+            &team_position,
+            active_target_rectangle
+        );
+        let attack_rectangle = AnimatedRectangle::new(
+            active_target_rectangle,
+            attack_rectangle_target,
+            8.00,
+            Default1920x1080,
+        );
+        let attack_rectangle_bg_target = calculate_attack_target_position(
+            &team_position,
+            active_target_rectangle_bg
+        );
+        let attack_rectangle_bg = AnimatedRectangle::new(
+            active_target_rectangle_bg,
+            attack_rectangle_bg_target,
+            8.00,
+            Default1920x1080,
+        );
         Self{
             team_position,
             card_position,
             background_texture,
             template_texture,
-            rectangle_bg: bg_rectangle,
-            rectangle: main_rectangle,
+            default_rectangle: (main_rectangle, bg_rectangle),
+            attacking_rectangle: (attack_rectangle, attack_rectangle_bg),
+            current_animation: None,
+            animation_finished: true
         }
     }
 }
 
 impl MacroquadCard {
-    pub fn update(&mut self, is_active: bool) {
-       if is_active {
-           self.rectangle_bg.animate();
-           self.rectangle.animate();
-       } else {
-           self.rectangle_bg.reset();
-           self.rectangle.reset();
-       }
+
+    pub fn animation_finished(&self) -> bool {
+        self.animation_finished
+    }
+    pub fn set_animation(&mut self, anim: Option<CardAnimation>) {
+        self.animation_finished = anim.is_none();
+        self.current_animation = anim;
+    }
+    pub fn update(&mut self) {
+        if let Some(anim) = &self.current_animation {
+            match anim {
+                CardAnimation::StartTurn => {
+                    self.default_rectangle.0.animate();
+                    self.default_rectangle.1.animate();
+                    if !self.default_rectangle.0.is_moving() {
+                        self.animation_finished = true;
+                    }
+                },
+                CardAnimation::Attack => {
+                    self.attacking_rectangle.0.animate();
+                    self.attacking_rectangle.1.animate();
+                    if !self.attacking_rectangle.0.is_moving() {
+                        self.animation_finished = true;
+                    }
+                },
+                CardAnimation::AttackReturn => {
+                },
+                CardAnimation::EndTurn => {
+
+                }
+            }
+        } else {
+            self.default_rectangle.0.reset();
+            self.default_rectangle.1.reset();
+        }
     }
 
-
     pub fn draw(&self) {
-        draw_texture_in_animated_rectangle(
-            &self.background_texture,
-            &self.rectangle_bg
-        );
-        draw_texture_in_animated_rectangle(
-            &self.template_texture,
-            &self.rectangle
-        );
+        if let Some(step) = &self.current_animation {
+            match step {
+                CardAnimation::Attack => {
+                    draw_texture_in_animated_rectangle(
+                        &self.background_texture,
+                        &self.attacking_rectangle.1,
+                    );
+                    draw_texture_in_animated_rectangle(
+                        &self.template_texture,
+                        &self.attacking_rectangle.0,
+                    );
+                },
+                _ => {
+                    draw_texture_in_animated_rectangle(
+                        &self.background_texture,
+                        &self.default_rectangle.1,
+                    );
+                    draw_texture_in_animated_rectangle(
+                        &self.template_texture,
+                        &self.default_rectangle.0,
+                    );
+                }
+            }
+        } else {
+            draw_texture_in_animated_rectangle(
+                &self.background_texture,
+                &self.default_rectangle.1,
+            );
+            draw_texture_in_animated_rectangle(
+                &self.template_texture,
+                &self.default_rectangle.0,
+            );
+        }
     }
 }
 
@@ -130,3 +215,11 @@ fn calculate_card_rectangles(position: &ShiaiPosition, card_position: &CardPosit
     )
 }
 
+fn calculate_attack_target_position(position: &ShiaiPosition, current_rect: Rect) -> Rect {
+    let new_y = match position {
+        AttackParty(_) => 500.0,
+        DefenseParty(_) => 300.0,
+    };
+
+    Rect::new(current_rect.x, new_y, current_rect.w, current_rect.h)
+}
