@@ -27,7 +27,7 @@ impl MacroquadTeam {
         );
         Self{
             game_team: game_team.clone(),
-            cards: CardTeam::new(cards_textures, game_team.position(), team_layout.background_rectangle()),
+            cards: CardTeam::new(cards_textures, game_team.position()),
             team_layout,
             rotation,
             active: false,
@@ -47,27 +47,27 @@ impl MacroquadTeam {
         match animation {
             BattlePhaseTurn::StartTurn{active_team} => {
                 if self.game_team.position() == &active_team {
-                    self.cards.set_animation(Some(CardAnimation::StartTurn));
+                    self.cards.set_animation(CardAnimationKind::StartTurn);
                     self.team_layout.set_animation(Some(TeamLayoutAnimation::Active));
                 } else {
-                    self.cards.set_animation(None);
+                    self.cards.set_animation(CardAnimationKind::Passive);
                     self.team_layout.set_animation(None);
                 }
             }
             BattlePhaseTurn::Attack{attacker, target} => {
                 if self.game_team.position() == &attacker {
-                    self.cards.set_animation(Some(CardAnimation::Attack));
+                    self.cards.set_animation(CardAnimationKind::Attack);
                     self.team_layout.set_animation(None);
                 } else if self.game_team.position() == &target {
-                    self.cards.set_animation(None);
+                    self.cards.set_animation(CardAnimationKind::Passive);
                     self.team_layout.set_animation(Some(TeamLayoutAnimation::Damage));
                 } else {
-                    self.cards.set_animation(None);
+                    self.cards.set_animation(CardAnimationKind::Passive);
                     self.team_layout.set_animation(None);
                 }
             }
             BattlePhaseTurn::EndTurn => {
-                self.cards.set_animation(Some(CardAnimation::EndTurn));
+                self.cards.set_animation(CardAnimationKind::EndTurn);
                 self.team_layout.set_animation(None);
             }
         }

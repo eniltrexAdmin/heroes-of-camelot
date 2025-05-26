@@ -1,6 +1,7 @@
 use macroquad::math::Rect;
-use crate::macroquad::{modify_rectangle, BaseResolution, RespRect};
+use super::*;
 
+#[derive(Clone, Debug)]
 pub struct AnimatedRectangle {
     init_rectangle: Rect,
     current_rectangle: RespRect,

@@ -17,14 +17,13 @@ pub struct CardTeam{
     cards: Vec<MacroquadCard>,
 }
 impl CardTeam {
-    pub fn new(card_textures: CardTextures, shiai_position: &ShiaiPosition, team_layout_rectangle: Rect)-> Self {
+    pub fn new(card_textures: CardTextures, shiai_position: &ShiaiPosition)-> Self {
         let mut cards = Vec::new();
         cards.push(MacroquadCard::new(
             shiai_position.clone(),
             CardPosition::Captain,
             card_textures.background.clone(),
             card_textures.captain_template_texture,
-            team_layout_rectangle
         ));
         if let Some(second_card_texture) = card_textures.second_card_texture {
             cards.push(MacroquadCard::new(
@@ -32,7 +31,6 @@ impl CardTeam {
                 CardPosition::Second,
                 card_textures.background.clone(),
                 second_card_texture,
-                team_layout_rectangle
             ));
         }
         if let Some(third_card_texture) = card_textures.third_card_texture {
@@ -41,7 +39,6 @@ impl CardTeam {
                 CardPosition::Third,
                 card_textures.background.clone(),
                 third_card_texture,
-                team_layout_rectangle
             ));
         }
         if let Some(fourth_card_texture) = card_textures.fourth_card_texture {
@@ -50,14 +47,13 @@ impl CardTeam {
                 CardPosition::Fourth,
                 card_textures.background,
                 fourth_card_texture,
-                team_layout_rectangle
             ));
         }
 
         Self{cards}
     }
 
-    pub fn set_animation(&mut self, anim: Option<CardAnimation>) {
+    pub fn set_animation(&mut self, anim: CardAnimationKind) {
         self.cards.iter_mut().for_each(|card| {
             card.set_animation(anim.clone());
         })

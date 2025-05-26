@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use crate::macroquad::AnimatedRectangle;
+use super::*;
 
 pub fn macroquad_draw_background(background: &Texture2D) {
     let screen_w = screen_width();
