@@ -9,6 +9,9 @@ pub mod macroquad_card_team;
 pub use macroquad_card_team::*;
 mod macroquad_card;
 mod end_battle_state;
+mod card_animation;
+pub use card_animation::*;
+
 pub use end_battle_state::EndBattleState;
 
 use macroquad_card::*;

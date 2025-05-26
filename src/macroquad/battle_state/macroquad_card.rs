@@ -1,18 +1,10 @@
-use macroquad::math::Rect;
-use macroquad::prelude::{screen_height, screen_width, Texture2D};
+use macroquad::prelude::{screen_height, screen_width, Texture2D, Rect};
 use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, ShiaiPosition, ThirdTeam};
-use crate::macroquad::{draw_texture_in_animated_rectangle, scale_rectangle, AnimatedRectangle, Default1920x1080};
-use crate::macroquad::battle_state::battle_state::BattlePhaseTurn;
+use crate::macroquad::utils::*;
+use super::*;
 
 pub const SPEED: f32 = 5.0;
 
-#[derive(Clone, Debug)]
-pub enum CardAnimation{
-    StartTurn,
-    Attack,
-    AttackReturn,
-    EndTurn
-}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum CardPosition{

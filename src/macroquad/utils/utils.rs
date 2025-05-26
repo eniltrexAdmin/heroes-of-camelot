@@ -81,19 +81,3 @@ pub fn modify_rectangle(current: Rect, target: Rect, speed: f32) -> Rect {
         current.h + dh * scale,
     )
 }
-
-fn target_attribute(current: f32, target:f32, speed: f32) -> f32 {
-    let mut result = current;
-    if result < target {
-        result = result + speed;
-        if result > target {
-            result = target;
-        }
-    } else {
-        result = result - speed;
-        if result < target {
-            result = target;
-        }
-    }
-    result
-}
