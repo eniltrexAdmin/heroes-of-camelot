@@ -8,7 +8,7 @@ pub enum ShiaiEvent {
 }
 
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ShiaiState{
     pub state: HashMap<ShiaiPosition, BattleTeam>,
 }

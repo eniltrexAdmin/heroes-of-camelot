@@ -65,9 +65,9 @@ impl CardTeam {
        })
     }
 
-    pub fn animation_finished(&self) -> bool{
+    pub fn is_animation_finished(&self) -> bool{
         self.cards.iter().all(|card| {
-            card.animation_finished()
+            card.is_animation_finished()
         })
     }
     pub fn draw(&self) {

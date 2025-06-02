@@ -8,7 +8,7 @@ pub enum ShiaiError{
     TargetMissingError
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct TurnLog {
     pub subject: ShiaiPosition,
     pub events: Vec<ShiaiEvent>,

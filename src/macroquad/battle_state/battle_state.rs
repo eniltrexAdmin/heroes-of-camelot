@@ -1,4 +1,4 @@
-use std::collections::{HashMap};
+use std::collections::{HashMap, VecDeque};
 use async_trait::async_trait;
 use macroquad::prelude::*;
 use crate::data::{stub_party, stub_party_2};
@@ -15,6 +15,7 @@ pub trait CardTexturesRepository {
 pub enum BattlePhaseTurn {
     StartTurn{active_team: ShiaiPosition},
     Attack{attacker: ShiaiPosition, target: ShiaiPosition},
+    AttackReturn{attacker: ShiaiPosition},
     EndTurn,
 }
 
@@ -26,7 +27,7 @@ pub struct BattleState {
     current_turn_number: usize,
     current_event: Option<ShiaiEvent>,
     current_event_number: usize,
-    battle_phase: Option<BattlePhaseTurn>
+    battle_phase_queue: VecDeque<BattlePhaseTurn>
 }
 
 impl BattleState {
@@ -102,18 +103,17 @@ impl BattleState {
             current_event: None,
             current_event_number: 0,
             shiai: result,
-            battle_phase: None
+            battle_phase_queue: VecDeque::new(),
         }
     }
 
     fn advance_turn(&mut self) -> StateTransition {
         if let Some(next_turn) = self.shiai.turn_logs.get(self.current_turn_number) {
             let current_phase = BattlePhaseTurn::StartTurn {active_team: next_turn.subject.clone()};
-            self.battle_phase = Some(current_phase);
 
             for team in next_turn.state_result.state.iter() {
                 self.teams.get_mut(team.0).unwrap().update_team(team.1.clone());
-                self.teams.get_mut(team.0).unwrap().set_animation(self.battle_phase.clone().unwrap());
+                self.teams.get_mut(team.0).unwrap().set_animation(current_phase.clone());
             }
             self.current_turn_number = self.current_turn_number + 1;
             self.current_turn = Some(next_turn.clone());
@@ -131,19 +131,34 @@ impl BattleState {
             if let Some(next_event) = current_turn.events.get(self.current_event_number) {
                 self.current_event_number = self.current_event_number + 1;
                 self.current_event = Some(next_event.clone());
+
                 match next_event {
                     TeamAttacked(team_attacked) => {
-                        let current_phase = BattlePhaseTurn::Attack {
+                        let attack_phase = BattlePhaseTurn::Attack {
                             attacker: team_attacked.attacker.clone(),
                             target: team_attacked.target.clone(),
                         };
-                        self.battle_phase = Some(current_phase);
-                        self.teams.values_mut().for_each(|team| {
-                            team.set_animation(self.battle_phase.clone().unwrap());
-                        });
+                        let attack_return = BattlePhaseTurn::AttackReturn {
+                            attacker: team_attacked.attacker.clone(),
+                        };
+                        self.battle_phase_queue = VecDeque::from(vec![
+                            attack_phase, attack_return
+                        ]);
                     }
                 }
             }
+        }
+    }
+
+    fn advance_phase_turn(&mut self) {
+        let all_done = self.teams.values().all(|t| t.is_animation_finished());
+        if !all_done { return; }
+        if let Some(phase) = self.battle_phase_queue.pop_front() {
+            self.teams.values_mut().for_each(|team| {
+                team.set_animation(phase.clone());
+            });
+        } else {
+            self.advance_turn_event(); // queue empty, move to next event
         }
     }
 }
@@ -161,13 +176,7 @@ impl State for BattleState {
             team.update()
         });
 
-        let all_animations_finished = self.teams.values().all(|team| {
-            team.animation_finished()
-        });
-
-        if all_animations_finished {
-            self.advance_turn_event();
-        }
+        self.advance_phase_turn();
 
         StateTransition::None
     }

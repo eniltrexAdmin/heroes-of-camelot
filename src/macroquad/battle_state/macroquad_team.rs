@@ -57,7 +57,7 @@ impl MacroquadTeam {
             BattlePhaseTurn::Attack{attacker, target} => {
                 if self.game_team.position() == &attacker {
                     self.cards.set_animation(CardAnimationKind::Attack);
-                    self.team_layout.set_animation(None);
+                    self.team_layout.set_animation(Some(TeamLayoutAnimation::Active));
                 } else if self.game_team.position() == &target {
                     self.cards.set_animation(CardAnimationKind::Passive);
                     self.team_layout.set_animation(Some(TeamLayoutAnimation::Damage));
@@ -65,7 +65,12 @@ impl MacroquadTeam {
                     self.cards.set_animation(CardAnimationKind::Passive);
                     self.team_layout.set_animation(None);
                 }
-            }
+            },
+            BattlePhaseTurn::AttackReturn {attacker} => {
+                if self.game_team.position() == &attacker {
+                    self.cards.set_animation(CardAnimationKind::AttackReturn);
+                }
+            },
             BattlePhaseTurn::EndTurn => {
                 self.cards.set_animation(CardAnimationKind::EndTurn);
                 self.team_layout.set_animation(None);
@@ -73,8 +78,8 @@ impl MacroquadTeam {
         }
     }
 
-    pub fn animation_finished(&self) -> bool {
-        self.team_layout.animation_finished() && self.cards.animation_finished()
+    pub fn is_animation_finished(&self) -> bool {
+        self.team_layout.animation_finished() && self.cards.is_animation_finished()
     }
 
     pub fn update(&mut self) {

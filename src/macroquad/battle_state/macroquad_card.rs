@@ -43,7 +43,7 @@ impl MacroquadCard {
 
 impl MacroquadCard {
 
-    pub fn animation_finished(&self) -> bool {
+    pub fn is_animation_finished(&self) -> bool {
         self.current_animation.is_finished()
     }
     pub fn set_animation(&mut self, anim: CardAnimationKind) {

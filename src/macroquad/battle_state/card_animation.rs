@@ -58,7 +58,7 @@ impl CardAnimationsList{
             attack_rectangle_target,
             active_target_rectangle_bg,
             attack_rectangle_bg_target,
-            speed * 2.0
+            speed * 4.0
         );
 
         let attack_return: CardAnimation = CardAnimation::new(
@@ -88,9 +88,9 @@ impl CardAnimationsList{
             background_texture.clone(),
             template_texture.clone(),
             template_rectangle,
-            active_target_rectangle,
+            template_rectangle,
             background_rectangle,
-            active_target_rectangle_bg,
+            background_rectangle,
             speed
         );
 
