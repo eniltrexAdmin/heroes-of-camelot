@@ -15,7 +15,7 @@ pub struct LocalCardTexturesRepository {
 impl LocalCardTexturesRepository {
     pub fn new(asset_root: PathBuf) -> LocalCardTexturesRepository {
         let bytes = include_bytes!(
-            concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/card_background.png")
+            concat!(env!("CARGO_MANIFEST_DIR"), "/src/assets/card_border_only_720x1080.png")
         );
         let background = Texture2D::from_file_with_format(bytes, None);
         background.set_filter(FilterMode::Linear);
@@ -23,10 +23,13 @@ impl LocalCardTexturesRepository {
     }
 
     async fn load_card_texture(&self, card: &Card) -> Texture2D {
-        let texture_path = format!("{}/{}_{}.png",
-            self.asset_root.to_str().unwrap(),
-            slugify(card.name().value()),
-            card.tier().int_value()
+        // let texture_path = format!("{}/{}_{}.png",
+        //     self.asset_root.to_str().unwrap(),
+        //     slugify(card.name().value()),
+        //     card.tier().int_value()
+        // );
+        let texture_path = format!("{}/original/apprentice_1.png",
+                                   self.asset_root.to_str().unwrap(),
         );
         match load_texture(texture_path.as_str()).await {
             Ok(texture) => texture,

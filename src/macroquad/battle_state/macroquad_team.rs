@@ -50,7 +50,7 @@ impl MacroquadTeam {
                     self.cards.set_animation(CardAnimationKind::StartTurn);
                     self.team_layout.set_animation(Some(TeamLayoutAnimation::Active));
                 } else {
-                    self.cards.set_animation(CardAnimationKind::Passive);
+                    self.cards.set_animation(CardAnimationKind::Idle);
                     self.team_layout.set_animation(None);
                 }
             }
@@ -59,10 +59,10 @@ impl MacroquadTeam {
                     self.cards.set_animation(CardAnimationKind::Attack);
                     self.team_layout.set_animation(Some(TeamLayoutAnimation::Active));
                 } else if self.game_team.position() == &target {
-                    self.cards.set_animation(CardAnimationKind::Passive);
+                    self.cards.set_animation(CardAnimationKind::Idle);
                     self.team_layout.set_animation(Some(TeamLayoutAnimation::Damage));
                 } else {
-                    self.cards.set_animation(CardAnimationKind::Passive);
+                    self.cards.set_animation(CardAnimationKind::Idle);
                     self.team_layout.set_animation(None);
                 }
             },

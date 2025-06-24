@@ -10,7 +10,7 @@ pub struct CardAnimationsList{
     pub attack: CardAnimation,
     pub attack_return: CardAnimation,
     pub end_turn: CardAnimation,
-    pub passive: CardAnimation,
+    pub idle: CardAnimation,
 }
 
 impl CardAnimationsList{
@@ -26,8 +26,8 @@ impl CardAnimationsList{
             template_rectangle,
             active_target_rectangle_bg,
             active_target_rectangle
-        ) = calculate_card_rectangles(
-            &team_position, &card_position, 100.0
+        ) = calculate_card_rectangles_static(
+            &team_position, &card_position
         );
 
         let attack_rectangle_target = calculate_attack_target_position(
@@ -38,6 +38,8 @@ impl CardAnimationsList{
             &team_position,
             active_target_rectangle_bg
         );
+
+        println!("Background rectangle: {:?}", background_rectangle);
 
         let start_turn = CardAnimation::new(
             StartTurn,
@@ -84,7 +86,7 @@ impl CardAnimationsList{
         );
 
         let passive = CardAnimation::new(
-            CardAnimationKind::Passive,
+            CardAnimationKind::Idle,
             background_texture.clone(),
             template_texture.clone(),
             template_rectangle,
@@ -99,7 +101,7 @@ impl CardAnimationsList{
             attack,
             attack_return,
             end_turn,
-            passive,
+            idle: passive,
         }
     }
 }
@@ -111,7 +113,7 @@ pub enum CardAnimationKind {
     Attack,
     AttackReturn,
     EndTurn,
-    Passive
+    Idle
 }
 
 #[derive(Clone, Debug)]
@@ -156,8 +158,8 @@ impl CardAnimation {
         }
     }
     pub fn update(&mut self) {
-        self.main_rectangle.animate();
         self.bg_rectangle.animate();
+        self.main_rectangle.animate();
     }
 
     pub fn is_finished(&self) -> bool {
@@ -165,8 +167,8 @@ impl CardAnimation {
     }
 
     pub fn draw(&self) {
-        draw_texture_in_animated_rectangle(&self.background_texture, &self.bg_rectangle);
         draw_texture_in_animated_rectangle(&self.template_texture, &self.main_rectangle);
+        draw_texture_in_animated_rectangle(&self.background_texture, &self.bg_rectangle);
     }
 }
 
@@ -208,9 +210,9 @@ fn calculate_card_rectangles(
     };
 
     let background_rectangle = Rect::new(team_x_offset + card_x_offset, party_y_offset, size.0, size.1);
-    let card_rectangle =  scale_rectangle(background_rectangle, 95.0/100.0);
+    let card_rectangle =  background_rectangle.clone();
     let active_bg = scale_rectangle(background_rectangle, 150.0/100.0);
-    let active = scale_rectangle(active_bg, 95.0/100.0);
+    let active = active_bg.clone();
     (
         background_rectangle.clone(),
         card_rectangle,
@@ -226,4 +228,45 @@ fn calculate_attack_target_position(position: &ShiaiPosition, current_rect: Rect
     };
 
     Rect::new(current_rect.x, new_y, current_rect.w, current_rect.h)
+}
+
+fn calculate_card_rectangles_static(
+    position: &ShiaiPosition,
+    card_position: &CardPosition,
+) -> (Rect, Rect, Rect, Rect) {
+
+    let size = (125.0, 187.5);
+
+    let team_x_offset = match position {
+        AttackParty(team_position) | DefenseParty(team_position) => {
+            match team_position {
+                CaptainTeam => 125.0,
+                SecondTeam => 709.0,
+                ThirdTeam => 1293.0,
+            }
+        }
+    };
+
+    let card_x_offset = match card_position {
+        CardPosition::Captain => 0.0,
+        CardPosition::Second => size.0,
+        CardPosition::Third => size.0 * 2.0,
+        CardPosition::Fourth => size.0 * 3.0,
+    };
+
+    let party_y_offset = match position {
+        AttackParty(_) => 788.63,
+        DefenseParty(_) => 95.0,
+    };
+
+    let background_rectangle = Rect::new(team_x_offset + card_x_offset, party_y_offset, size.0, size.1);
+    let card_rectangle =  background_rectangle.clone();
+    let active_bg = scale_rectangle(background_rectangle, 150.0/100.0);
+    let active = active_bg.clone();
+    (
+        background_rectangle.clone(),
+        card_rectangle,
+        active_bg,
+        active
+    )
 }

@@ -35,7 +35,7 @@ impl MacroquadCard {
         Self{
             team_position,
             card_position,
-            current_animation: animation_list.passive.clone(),
+            current_animation: animation_list.idle.clone(),
             animation_list
         }
     }
@@ -60,8 +60,8 @@ impl MacroquadCard {
             CardAnimationKind::EndTurn => {
                 self.current_animation = self.animation_list.end_turn.clone();
             },
-            CardAnimationKind::Passive => {
-                self.current_animation = self.animation_list.passive.clone();
+            CardAnimationKind::Idle => {
+                self.current_animation = self.animation_list.idle.clone();
             }
         }
     }
