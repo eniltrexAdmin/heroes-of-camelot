@@ -1,8 +1,7 @@
 use crate::domain::*;
 
-// TODO string should be i18n, outsourced and imported.
 pub fn apprentice_template() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Camelot,
         Stars::OneStar,
         Name::new("Apprentice".to_string()),
@@ -12,6 +11,8 @@ pub fn apprentice_template() -> CardTemplate {
             SkillName::new("Magic Bolt".to_string()),
             SkillDescription::new("Magic damage to enemy team".to_string()),
             SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillTrigger::PROC(25),
+            SkillTarget::Team(TeamTargetEnemyParty(Default))
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -19,7 +20,7 @@ pub fn apprentice_template() -> CardTemplate {
 }
 
 pub fn spy_template() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Camelot,
         Stars::OneStar,
         Name::new("Spy".to_string()),
@@ -28,9 +29,11 @@ pub fn spy_template() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Back stab".to_string()),
             SkillDescription::new(
-                "Lower ATK of enemy team with the highest ATK - NOT IMPLEMENTED".to_string(),
+                "Lower ATK of enemy team with the highest ATK".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::DecreaseThisTurnAttack(BasedOnCardHealthPoints(50)),
+            SkillTrigger::PROC(75),
+            SkillTarget::Team(TeamTargetEnemyParty(HighestAttack))
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -38,7 +41,7 @@ pub fn spy_template() -> CardTemplate {
 }
 
 pub fn crossbowman() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Camelot,
         Stars::OneStar,
         Name::new("Crossbowman".to_string()),
@@ -47,9 +50,11 @@ pub fn crossbowman() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Piercing Bolt".to_string()),
             SkillDescription::new(
-                "Damage enemy team with the highest HP - NOT IMPLEMENTED".to_string(),
+                "Damage enemy team with the highest HP".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::PhysicalDamage(BasedOnCardAttack(500)),
+            SkillTrigger::BasedOnCard(TriggerBasedOnCardTier(200)),
+            SkillTarget::Team(TeamTargetEnemyParty(LowestCurrentHp))
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -57,7 +62,7 @@ pub fn crossbowman() -> CardTemplate {
 }
 
 pub fn unicorn() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Camelot,
         Stars::OneStar,
         Name::new("Unicorn".to_string()),
@@ -66,9 +71,11 @@ pub fn unicorn() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Essence of Alicorn".to_string()),
             SkillDescription::new(
-                "Raise ATK of your team with the highest attack - NOT IMPLEMENTED".to_string(),
+                "Raise ATK of your team with the highest attack".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::IncreaseThisTurnAttack(BasedOnCardHealthPoints(200)),
+            SkillTrigger::PROC(75),
+            SkillTarget::Team(TeamTargetOwnParty(HighestAttack))
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -76,7 +83,7 @@ pub fn unicorn() -> CardTemplate {
 }
 
 pub fn hunter() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Camelot,
         Stars::OneStar,
         Name::new("Hunter".to_string()),
@@ -85,9 +92,11 @@ pub fn hunter() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Trap".to_string()),
             SkillDescription::new(
-                "Reduce attack of enemy team - NOT IMPLEMENTED".to_string(),
+                "Reduce attack of enemy team".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::DecreaseThisTurnAttack(BasedOnCardAttack(200)),
+            SkillTrigger::BasedOnCard(TriggerBasedOnCardLevel(100)),
+            SkillTarget::Team(TeamTargetEnemyParty(Default))
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -95,7 +104,7 @@ pub fn hunter() -> CardTemplate {
 }
 
 pub fn footman() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Camelot,
         Stars::OneStar,
         Name::new("Footman".to_string()),
@@ -104,9 +113,11 @@ pub fn footman() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Bravery".to_string()),
             SkillDescription::new(
-                "Raise ATK of this card's team - NOT IMPLEMENTED".to_string(),
+                "Raise ATK of this card's team".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(1000)),
+            SkillTrigger::PROC(10),
+            SkillTarget::Team(Itself)
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -114,7 +125,7 @@ pub fn footman() -> CardTemplate {
 }
 
 pub fn squire() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Camelot,
         Stars::OneStar,
         Name::new("Squire".to_string()),
@@ -123,9 +134,11 @@ pub fn squire() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Bravery".to_string()),
             SkillDescription::new(
-                "Recover HP yo your team with the highest HP - NOT IMPLEMENTED".to_string(),
+                "Recover HP yo your team with the highest HP".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::Heal(BasedOnCardAttack(200)),
+            SkillTrigger::PROC(100),
+            SkillTarget::Team(TeamTargetOwnParty(HighestCurrentHp))
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),

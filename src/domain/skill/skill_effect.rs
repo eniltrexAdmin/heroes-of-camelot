@@ -1,12 +1,17 @@
+use crate::domain::Percentage;
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum SkillEffect {
-    IncreaseThisTurnAttack(ValueFormula),
-    MagicDamage(ValueFormula),
+    IncreaseThisTurnAttack(SkillEffectValueFormula),
+    DecreaseThisTurnAttack(SkillEffectValueFormula),
+    MagicDamage(SkillEffectValueFormula),
+    PhysicalDamage(SkillEffectValueFormula),
+    Heal(SkillEffectValueFormula),
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum ValueFormula {
-    BasedOnCardAttack(u32),
-    BasedOnCardHealthPoints(u32),
-    BasedOnCardLevel(u32),
+pub enum SkillEffectValueFormula {
+    BasedOnCardAttack(Percentage),
+    BasedOnCardHealthPoints(Percentage),
+    EffectBasedOnCardLevel(Percentage),
 }

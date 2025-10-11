@@ -17,17 +17,16 @@ pub struct Card {
 impl Card {
     pub fn new(id: Id, template: Arc<CardTemplate>) -> Self {
         let tier = Tier::init();
-        let active_skill = template.active_skills().value().get(&tier).unwrap().clone();
         let max_level = max_level(template.stars(), &tier);
         Card {
             id,
             attack: template.attack().clone(),
             health_points: template.health_points().clone(),
             stars: template.stars().clone(),
+            active_skill: template.active_skills().clone(),
             template,
             current_level: CardLevel::new(1),
             tier,
-            active_skill,
             max_level,
         }
     }

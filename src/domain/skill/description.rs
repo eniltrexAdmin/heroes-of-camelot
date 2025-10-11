@@ -10,6 +10,12 @@ impl SkillDescription {
     }
 }
 
+// TODO this should be calculated in the card. X change to X on team X. Per language
+// the value belongs to the "card" not the template, but probably to just FE and not BE.
+// so to the game engine, and maybe to display teh variables so the user knows
+// which value belongs to, or well maybe too much, but sometinhg like "XX% chance
+// to deal 200% attack damage to team leader".
+
 #[cfg(test)]
 mod tests {
     use super::SkillDescription;

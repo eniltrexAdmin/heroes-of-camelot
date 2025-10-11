@@ -1,23 +1,23 @@
-use crate::domain::*;
+// use crate::domain::*;
 
-pub fn card_with_combo() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
-        CardType::Camelot,
-        Stars::OneStar,
-        Name::new("Spy".to_string()),
-        HealthPoints::new(5000),
-        Attack::new(205),
-        CardSkill::new(
-            SkillName::new("Back stab".to_string()),
-            SkillDescription::new(
-                "Lower ATK of enemy team with the highest ATK - NOT IMPLEMENTED".to_string(),
-            ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
-        ),
-        GrowthCurve::Percentage(3),
-        GrowthCurve::Percentage(3),
-    )
-}
+// pub fn card_with_combo() -> CardTemplate {
+//     CardTemplate::new(
+//         CardType::Camelot,
+//         Stars::OneStar,
+//         Name::new("Spy".to_string()),
+//         HealthPoints::new(5000),
+//         Attack::new(205),
+//         CardSkill::new(
+//             SkillName::new("Back stab".to_string()),
+//             SkillDescription::new(
+//                 "Lower ATK of enemy team with the highest ATK - NOT IMPLEMENTED".to_string(),
+//             ),
+//             SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+//         ),
+//         GrowthCurve::Percentage(3),
+//         GrowthCurve::Percentage(3),
+//     )
+// }
 //
 // pub fn hunter_template() -> Card {
 //     let id = Id::new();

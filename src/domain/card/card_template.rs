@@ -6,7 +6,7 @@ pub struct CardTemplate {
     identifier: Name,
     attack: Attack,
     health_points: HealthPoints,
-    card_skills: TemplateSkills,
+    card_skills: CardSkill,
     card_type: CardType,
     stars: Stars,
     hp_growth_curve: GrowthCurve,
@@ -20,7 +20,7 @@ impl CardTemplate {
         name: Name,
         health_points: HealthPoints,
         attack: Attack,
-        card_skills: TemplateSkills,
+        card_skills: CardSkill,
         hp_growth_curve: GrowthCurve,
         attack_growth_curve: GrowthCurve,
     ) -> Self {
@@ -34,28 +34,6 @@ impl CardTemplate {
             hp_growth_curve,
             attack_growth_curve,
         }
-    }
-    pub fn new_replicate_active_skill(
-        card_type: CardType,
-        stars: Stars,
-        name: Name,
-        health_points: HealthPoints,
-        attack: Attack,
-        card_skill: CardSkill,
-        hp_growth_curve: GrowthCurve,
-        attack_growth_curve: GrowthCurve,
-    ) -> Self {
-        let card_skills = TemplateSkills::new_from_one(card_skill, Tier::vec_tier(&stars));
-        CardTemplate::new(
-            card_type,
-            stars,
-            name,
-            health_points,
-            attack,
-            card_skills,
-            hp_growth_curve,
-            attack_growth_curve,
-        )
     }
 
     pub fn name(&self) -> &Name {
@@ -78,7 +56,7 @@ impl CardTemplate {
         &self.attack
     }
 
-    pub fn active_skills(&self) -> &TemplateSkills {
+    pub fn active_skills(&self) -> &CardSkill {
         &self.card_skills
     }
 
@@ -111,9 +89,11 @@ mod tests {
             SkillName::new("Some skill".to_string()),
             SkillDescription::new("Some description".to_string()),
             SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(300)),
+            SkillTrigger::PROC(25),
+            SkillTarget::Itself
         );
 
-        let template = CardTemplate::new_replicate_active_skill(
+        let template = CardTemplate::new(
             CardType::Camelot,
             Stars::OneStar,
             name.clone(),
@@ -129,10 +109,6 @@ mod tests {
         assert_eq!(template.health_points(), &health_points);
         assert_eq!(template.card_type(), &CardType::Camelot);
         assert_eq!(template.name(), &name);
-        assert!(template
-            .active_skills()
-            .value()
-            .values()
-            .all(|s| s == &active_skill));
+        assert_eq!(template.active_skills(), &active_skill);
     }
 }

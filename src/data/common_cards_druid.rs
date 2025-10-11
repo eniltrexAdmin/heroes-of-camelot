@@ -1,7 +1,7 @@
 use crate::domain::*;
 
 pub fn druid_initiae() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Druid,
         Stars::OneStar,
         Name::new("Druid Initiate".to_string()),
@@ -10,9 +10,11 @@ pub fn druid_initiae() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Alleviate Pain".to_string()),
             SkillDescription::new(
-                "Recover HP - NOT IMPLEMENTED".to_string(),
+                "Recover HP".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::Heal(BasedOnCardAttack(200)),
+            SkillTrigger::PROC(50),
+            SkillTarget::Team(Itself)
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -20,7 +22,7 @@ pub fn druid_initiae() -> CardTemplate {
 }
 
 pub fn druid_marksman() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Druid,
         Stars::OneStar,
         Name::new("Druid Marksman".to_string()),
@@ -29,9 +31,11 @@ pub fn druid_marksman() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Poisoned Arrow".to_string()),
             SkillDescription::new(
-                "Damage enemy team - NOT IMPLEMENTED".to_string(),
+                "Damage enemy team ".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::PhysicalDamage(BasedOnCardAttack(200)),
+            SkillTrigger::PROC(50),
+            SkillTarget::Team(TeamTargetEnemyParty(Default))
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -39,7 +43,7 @@ pub fn druid_marksman() -> CardTemplate {
 }
 
 pub fn water_nymph() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Druid,
         Stars::OneStar,
         Name::new("Water Nymph".to_string()),
@@ -48,9 +52,11 @@ pub fn water_nymph() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Soak".to_string()),
             SkillDescription::new(
-                "Reduce attack of enemy team - NOT IMPLEMENTED".to_string(),
+                "Reduce attack of enemy team ".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::DecreaseThisTurnAttack(BasedOnCardAttack(200)),
+            SkillTrigger::PROC(100),
+            SkillTarget::Team(TeamTargetEnemyParty(Default)),
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -58,7 +64,7 @@ pub fn water_nymph() -> CardTemplate {
 }
 
 pub fn druid_scout() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Druid,
         Stars::OneStar,
         Name::new("Druid Scout".to_string()),
@@ -67,9 +73,11 @@ pub fn druid_scout() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Intercept".to_string()),
             SkillDescription::new(
-                "Lower attack of enemy team if enemy has a spy - NOT IMPLEMENTED".to_string(),
+                "Lower attack of enemy team if enemy has a spy".to_string(),
             ),
             SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillTrigger::ShiaiCondition(EnemyHasSpy),
+            SkillTarget::Team(TeamTargetEnemyParty(Default)),
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -77,7 +85,7 @@ pub fn druid_scout() -> CardTemplate {
 }
 
 pub fn druid_sage() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Druid,
         Stars::OneStar,
         Name::new("Druid Sage".to_string()),
@@ -86,9 +94,11 @@ pub fn druid_sage() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Healing Tonic".to_string()),
             SkillDescription::new(
-                "Recover HP to this card's team - NOT IMPLEMENTED".to_string(),
+                "Recover HP to this card's team".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::Heal(BasedOnCardAttack(200)),
+            SkillTrigger::PROC(75),
+            SkillTarget::Team(Itself),
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -96,7 +106,7 @@ pub fn druid_sage() -> CardTemplate {
 }
 
 pub fn druid_warrior() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Druid,
         Stars::OneStar,
         Name::new("Druid Warrior".to_string()),
@@ -105,9 +115,11 @@ pub fn druid_warrior() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Agility".to_string()),
             SkillDescription::new(
-                "Raise ATK of this card's team always activates if at least half your party is druid - NOT IMPLEMENTED".to_string(),
+                "Raise ATK of this card's team always activates if at least half your party is druid".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(200)),
+            SkillTrigger::ShiaiCondition(OwnPartyMainlyDruid),
+            SkillTarget::Team(Itself),
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
@@ -115,7 +127,7 @@ pub fn druid_warrior() -> CardTemplate {
 }
 
 pub fn wood_nymph() -> CardTemplate {
-    CardTemplate::new_replicate_active_skill(
+    CardTemplate::new(
         CardType::Druid,
         Stars::OneStar,
         Name::new("Wood Nymph".to_string()),
@@ -124,9 +136,11 @@ pub fn wood_nymph() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Heal".to_string()),
             SkillDescription::new(
-                "Recover HP to your party if at least half is camelot- NOT IMPLEMENTED".to_string(),
+                "Recover HP to your party if at least half is camelot".to_string(),
             ),
-            SkillEffect::MagicDamage(BasedOnCardAttack(200)),
+            SkillEffect::Heal(BasedOnCardAttack(200)),
+            SkillTrigger::ShiaiCondition(OwnPartyMainlyCamelot),
+            SkillTarget::Party(OwnParty)
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),

@@ -1,12 +1,30 @@
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum SkillTarget {
-    EnemyParty,
-    OwnParty,
+    Team(TeamSkillTarget),
+    Party(PartySkillTarget)
 }
 
-pub enum TeamTarget {
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum TeamSkillTarget {
+    Itself,
+    TeamTargetOwnParty(SkillTargetStrategy),
+    TeamTargetEnemyParty(SkillTargetStrategy)
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum SkillTargetStrategy {
     Default,
-    HighestTotalHp,
+    HighestCurrentHp,
     HighestAttack,
-    HighestCurrentHP,
-    LowestCurrentHP,
+    LowestCurrentHp,
+    LowestAttack,
+}
+
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum PartySkillTarget {
+    OwnParty,
+    EnemyParty
 }

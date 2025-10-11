@@ -16,8 +16,6 @@ pub mod tier;
 pub use tier::Tier;
 pub mod stars;
 pub use stars::*;
-mod template_active_skill;
-pub use template_active_skill::TemplateSkills;
 pub mod growth_curve;
 pub use growth_curve::GrowthCurve;
 pub mod level;

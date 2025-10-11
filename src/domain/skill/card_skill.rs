@@ -1,18 +1,33 @@
 use super::*;
 
+pub type Percentage = u32;
+
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct CardSkill {
     name: SkillName,
     description: SkillDescription,
     effect: SkillEffect,
+    trigger: SkillTrigger,
+    skill_target: SkillTarget
 }
 
+
+
 impl CardSkill {
-    pub fn new(name: SkillName, description: SkillDescription, effect: SkillEffect) -> Self {
+    pub fn new(
+        name: SkillName,
+        description: SkillDescription,
+        effect: SkillEffect,
+        trigger: SkillTrigger,
+        skill_target: SkillTarget
+    ) -> Self {
         CardSkill {
             name,
             description,
             effect,
+            trigger,
+            skill_target
         }
     }
 
@@ -27,11 +42,14 @@ impl CardSkill {
     pub fn effect(&self) -> &SkillEffect {
         &self.effect
     }
+
+    pub fn trigger(&self) -> &SkillTrigger {&self.trigger}
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use domain::*;
 
     #[test]
     fn skill_creation() {
@@ -40,10 +58,20 @@ mod tests {
         let value = "Increases HP 100%".to_string();
         let description = SkillDescription::new(value.clone());
         let effect = SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(100));
+        let trigger = SkillTrigger::PROC(50);
+        let skill_target = SkillTarget::Team(Itself);
 
-        let skill = CardSkill::new(name.clone(), description.clone(), effect.clone());
+        let skill = CardSkill::new(
+            name.clone(),
+            description.clone(),
+            effect.clone(),
+            trigger.clone(),
+            skill_target.clone()
+        );
         assert_eq!(&name, skill.name());
         assert_eq!(&description, skill.description());
         assert_eq!(&effect, skill.effect());
+        assert_eq!(&trigger, skill.trigger());
+        assert_eq!(skill_target, skill_target);
     }
 }
