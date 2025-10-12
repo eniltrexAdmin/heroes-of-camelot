@@ -1,12 +1,20 @@
 ## Random ideas:
 
-* skill to change attack target
-* skill to change whatever target.
-* skill (passive) to activate more than one skill in the turn.
-* skill (passive) to add a shield directly to prevent status (x amount of times).
-* skill (passive) to bypass shields.
+1. skill to change attack target
+2. skill to change whatever target.
+3. skill (passive) to activate more than one skill in the turn.
+4. skill (passive) to add a shield directly to prevent status (x amount of times).
+5. skill (passive) to bypass shields.
 
 when I say skill -if I don't specify- , it can be active or combo/passive skill.
+
+### 3. 
+
+```rust
+pub fn choose_skill(team: Team) -> CardSkill {
+ // that should return a list not a single skill.
+}
+```
 
 
 ## Ideas I am undoing

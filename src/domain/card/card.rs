@@ -30,6 +30,30 @@ impl Card {
             max_level,
         }
     }
+
+    // TODO for now is stub, but later if I need to build from BE or DB, I might modify that
+    pub fn stub_build(
+        template: Arc<CardTemplate>,
+        attack: Attack,
+        health_points: HealthPoints,
+        current_level: CardLevel,
+        active_skill: CardSkill,
+        tier: Tier,
+        stars: Stars,
+    ) -> Self {
+        let max_level = max_level(&stars, &tier);
+        Card {
+            id: Id::new(),
+            attack,
+            health_points,
+            stars,
+            active_skill,
+            template,
+            current_level,
+            tier,
+            max_level,
+        }
+    }
     pub fn id(&self) -> &Id {
         &self.id
     }
@@ -41,6 +65,10 @@ impl Card {
     }
     pub fn health_points(&self) -> &HealthPoints {
         &self.health_points
+    }
+
+    pub fn active_skill(&self) -> &CardSkill {
+        &self.active_skill
     }
     pub fn card_type(&self) -> &CardType {
         self.template.card_type()
@@ -101,7 +129,7 @@ pub enum CardManagementError {
 }
 
 // TODO maybe refactor to do calculation instead of data? move that inside struct.
-fn max_level(stars: &Stars, tier: &Tier) -> CardLevel {
+pub fn max_level(stars: &Stars, tier: &Tier) -> CardLevel {
     let mut ten_levels = stars.value() + tier.int_value() - 1;
 
     if tier == &Tier::Tier4 {

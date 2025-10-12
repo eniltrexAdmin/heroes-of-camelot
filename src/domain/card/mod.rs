@@ -1,22 +1,25 @@
-pub mod card;
+mod card;
+mod id;
+mod name;
+mod attack;
+mod health_points;
+mod level;
+mod tier;
+mod stars;
+mod card_template;
+mod growth_curve;
+
 pub use card::*;
-pub mod id;
 pub use id::Id;
-pub mod name;
 pub use name::Name;
-pub mod attack;
 pub use attack::Attack;
-
-pub mod health_points;
 pub use health_points::HealthPoints;
-
-pub mod card_template;
-pub use card_template::*;
-pub mod tier;
-pub use tier::Tier;
-pub mod stars;
-pub use stars::*;
-pub mod growth_curve;
-pub use growth_curve::GrowthCurve;
-pub mod level;
 pub use level::*;
+pub use tier::Tier;
+pub use stars::*;
+pub use card_template::*;
+pub use growth_curve::GrowthCurve;
+
+#[cfg(any(test))]
+pub mod stubs;
+

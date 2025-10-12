@@ -35,6 +35,9 @@ use damage::PhysicalDamage::*;
 mod print_shiai;
 pub use print_shiai::*;
 mod attack;
+mod perform_skill;
+pub use perform_skill::*;
+
 pub use attack::*;
 
 

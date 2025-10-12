@@ -49,7 +49,7 @@ impl CardSkill {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use domain::*;
+    use crate::domain::*;
 
     #[test]
     fn skill_creation() {

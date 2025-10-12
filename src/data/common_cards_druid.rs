@@ -73,10 +73,10 @@ pub fn druid_scout() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Intercept".to_string()),
             SkillDescription::new(
-                "Lower attack of enemy team if enemy has a spy".to_string(),
+                "Lower attack of enemy team".to_string(),
             ),
             SkillEffect::MagicDamage(BasedOnCardAttack(200)),
-            SkillTrigger::ShiaiCondition(EnemyHasSpy),
+            SkillTrigger::PROC(50),
             SkillTarget::Team(TeamTargetEnemyParty(Default)),
         ),
         GrowthCurve::Percentage(3),
@@ -115,14 +115,26 @@ pub fn druid_warrior() -> CardTemplate {
         CardSkill::new(
             SkillName::new("Agility".to_string()),
             SkillDescription::new(
-                "Raise ATK of this card's team always activates if at least half your party is druid".to_string(),
+                "Raise ATK of this card's team".to_string(),
             ),
             SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(200)),
-            SkillTrigger::ShiaiCondition(OwnPartyMainlyDruid),
+            SkillTrigger::PROC(50),
             SkillTarget::Team(Itself),
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
+    )
+}
+
+pub fn nymph_skill() -> CardSkill {
+    CardSkill::new(
+        SkillName::new("Heal".to_string()),
+        SkillDescription::new(
+            "Recover HP to your party".to_string(),
+        ),
+        SkillEffect::Heal(BasedOnCardAttack(200)),
+        SkillTrigger::PROC(100),
+        SkillTarget::Party(OwnParty)
     )
 }
 
@@ -133,15 +145,7 @@ pub fn wood_nymph() -> CardTemplate {
         Name::new("Wood Nymph".to_string()),
         HealthPoints::new(1050),
         Attack::new(340),
-        CardSkill::new(
-            SkillName::new("Heal".to_string()),
-            SkillDescription::new(
-                "Recover HP to your party if at least half is camelot".to_string(),
-            ),
-            SkillEffect::Heal(BasedOnCardAttack(200)),
-            SkillTrigger::ShiaiCondition(OwnPartyMainlyCamelot),
-            SkillTarget::Party(OwnParty)
-        ),
+        nymph_skill(),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
     )

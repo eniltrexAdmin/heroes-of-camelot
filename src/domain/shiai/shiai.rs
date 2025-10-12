@@ -67,6 +67,7 @@ fn play_turn(current_state: ShiaiState, subject: ShiaiPosition) -> Option<TurnLo
 
     // combo skills
     // active skills
+    // we can pre calculate some stuff, and set it in "team"., but I will try without it at first.
 
     //attack
     if team.is_alive() {

@@ -90,7 +90,7 @@ mod tests {
             SkillDescription::new("Some description".to_string()),
             SkillEffect::IncreaseThisTurnAttack(BasedOnCardAttack(300)),
             SkillTrigger::PROC(25),
-            SkillTarget::Itself
+            SkillTarget::Team(Itself)
         );
 
         let template = CardTemplate::new(
