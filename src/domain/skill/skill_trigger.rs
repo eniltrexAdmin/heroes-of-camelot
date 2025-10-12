@@ -130,18 +130,48 @@ mod tests {
     #[test]
     fn test_evaluate_formula_card_tier() {
         let apprentice_template = apprentice_template();
-        let card = Card::new(Id::new(), Arc::new(apprentice_template));
+        let card = Card::stub_build(
+            Arc::new(empty_template()),
+            Attack::new(285),
+            HealthPoints::new(1200),
+            CardLevel::new(1),
+            stub_build_skill(None, None, None), // not using this one
+            // and just going faster knowing the "innards" of this code
+            // the proper interface of this module is tested above
+            // but that's a lot of boilerplate here creating a card for each test...
+            // that's why I bypass it.
+            Tier::Tier2,
+            Stars::FourStars
+        );
 
         let formula = TriggerBasedOnCardTier(50);
         let formula2 = TriggerBasedOnCardTier(100);
         let formula3 = TriggerBasedOnCardTier(150);
         let formula4 = TriggerBasedOnCardTier(200);
 
-        assert_eq!(0,  evaluate_skill_trigger_formula(&formula, &card));
-        assert_eq!(1,  evaluate_skill_trigger_formula(&formula2, &card));
-        assert_eq!(1,  evaluate_skill_trigger_formula(&formula3, &card));
-        assert_eq!(2,  evaluate_skill_trigger_formula(&formula4, &card));
+        assert_eq!(1,  evaluate_skill_trigger_formula(&formula, &card));
+        assert_eq!(2,  evaluate_skill_trigger_formula(&formula2, &card));
+        assert_eq!(3,  evaluate_skill_trigger_formula(&formula3, &card));
+        assert_eq!(4,  evaluate_skill_trigger_formula(&formula4, &card));
 
         // TODO evolve card and test again.
+        let card = Card::stub_build(
+            Arc::new(empty_template()),
+            Attack::new(285),
+            HealthPoints::new(1200),
+            CardLevel::new(1),
+            stub_build_skill(None, None, None), // not using this one
+            // and just going faster knowing the "innards" of this code
+            // the proper interface of this module is tested above
+            // but that's a lot of boilerplate here creating a card for each test...
+            // that's why I bypass it.
+            Tier::Tier4,
+            Stars::FourStars
+        );
+
+        assert_eq!(2,  evaluate_skill_trigger_formula(&formula, &card));
+        assert_eq!(4,  evaluate_skill_trigger_formula(&formula2, &card));
+        assert_eq!(6,  evaluate_skill_trigger_formula(&formula3, &card));
+        assert_eq!(8,  evaluate_skill_trigger_formula(&formula4, &card));
     }
 }
