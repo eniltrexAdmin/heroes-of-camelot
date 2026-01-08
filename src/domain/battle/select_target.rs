@@ -1,20 +1,19 @@
-use crate::domain::battle::*;
+use super::*;
 
 pub enum TargetStrategy {
-    Own,
     Default,
 }
 
-pub fn select_target(current_state: &BattleState, subject_team: &BattlePosition, strategy: TargetStrategy) -> BattlePosition {
+pub fn select_target(current_state: &BattleState, target_party: PartyPosition, strategy: TargetStrategy) -> BattlePosition {
     match strategy {
-        _ => select_default_target(current_state, subject_team.clone()),
+        _ => select_default_target(current_state, &target_party),
     }
 }
 
-fn select_default_target(current_state: &BattleState, current_team: BattlePosition) -> BattlePosition {
-    match current_team {
-        AttackParty(_) => get_defense_party_alive_team(current_state),
-        DefenseParty(_) => get_attack_party_alive_team(current_state),
+fn select_default_target(current_state: &BattleState, target_party: &PartyPosition) -> BattlePosition {
+    match target_party {
+        PartyPosition::Attack => get_defense_party_alive_team(current_state),
+        PartyPosition::Defense => get_attack_party_alive_team(current_state),
     }
 }
 

@@ -1,11 +1,13 @@
+use super::*;
+use crate::domain::management::*;
 mod battle_team_attack;
+use battle_team_attack::BattleTeamAttack;
 mod battle_team_hp;
+use battle_team_hp::BattleTeamHealthPoints;
 
 mod increase_attack_skill;
 mod attack;
-
-
-
+pub use attack::*;
 
 
 #[derive(Debug, Clone, PartialEq)]
@@ -44,13 +46,6 @@ impl BattleTeam {
     pub fn is_alive(&self) -> bool {
         self.current_hp.value() > 0
     }
-
-    pub fn calculate_attack_damage(&self, attack: BattleTeamAttack) -> Damage {
-        // shields etc.
-        Damage::new_attack_damage(attack.value())
-    }
-
-
 }
 
 #[cfg(test)]
@@ -77,7 +72,7 @@ mod tests {
         let event = TeamAttackedDomainEvent {
             attacker: battle_team.position().clone(),
             target: battle_team.position().clone(),
-            damage_received:   Damage::new_attack_damage(battle_team.current_hp.value())
+            damage_received:   AttackDamage::new_attack_damage(battle_team.current_hp.value())
         };
 
         battle_team.apply_team_attacked_domain_event(event);
@@ -85,12 +80,5 @@ mod tests {
         assert!(!battle_team.is_alive());
     }
 
-    #[test]
-    fn test_calculate_damage() {
-        let team = stub_team();
-        let battle_team = BattleTeam::new(team.clone(), AttackParty(CaptainTeam));
 
-        let result = battle_team.calculate_attack_damage(battle_team.current_attack);
-        assert_eq!(battle_team.current_attack().value(), result.value())
-    }
 }

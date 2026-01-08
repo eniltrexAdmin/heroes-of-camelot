@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use crate::domain::*;
+use super::*;
 
 
 #[derive(Clone, Debug)]
@@ -67,6 +68,13 @@ impl BattleState {
         }
     }
 
+    fn apply_team_attacked_domain_event(&mut self, event: TeamAttackedDomainEvent)
+    {
+        if let Some(target_team) = self.state.get_mut(&event.target) {
+            target_team.apply_team_attacked_domain_event(event);
+        }
+    }
+
 
 }
 
@@ -74,7 +82,7 @@ impl BattleState {
 #[cfg(test)]
 mod tests {
     use crate::data::{stub_party, stub_party_2};
-    use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, ThirdTeam};
+    use crate::domain::*;
     use super::*;
 
     #[test]

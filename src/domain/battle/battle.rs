@@ -1,5 +1,4 @@
 use crate::domain::*;
-use crate::domain::battle::battle_state::BattleEvent;
 use super::*;
 
 #[derive(Debug)]
@@ -72,7 +71,7 @@ fn play_turn(current_state: &mut BattleState, subject: BattlePosition) -> Option
         // we can pre calculate some stuff, and set it in "team"., but I will try without it at first.
 
         // so far no errors now.
-        let events = handle_attack(&current_state, subject.clone());
+        let events = team.attack(&current_state);
         turn_events.extend(events.clone());
 
         current_state.apply_domain_events(events);

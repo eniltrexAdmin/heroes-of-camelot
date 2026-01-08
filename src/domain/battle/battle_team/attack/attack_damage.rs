@@ -1,4 +1,4 @@
-
+use super::*;
 #[derive(Debug, Clone, PartialEq)]
 pub enum AttackDamage {
     Physical(PhysicalDamage),
@@ -8,21 +8,21 @@ pub enum AttackDamage {
 // TODO refactor to value objects in the future
 #[derive(Debug, Clone, PartialEq)]
 pub enum PhysicalDamage{
-    AttackDamage(u128),
+    RegularDamage(u128),
     ReflectedDamage(u128)
 }
 
 impl AttackDamage {
     pub fn new_attack_damage(amount: u128) -> Self {
         AttackDamage::Physical(
-            PhysicalDamage::AttackDamage(amount)
+            PhysicalDamage::RegularDamage(amount)
         )
     }
 
-    // TODO this constructor should need the skill.
+    // for the future.
     pub fn new_reflected_damage(amount: BattleTeamAttack) -> Self {
         AttackDamage::Physical(
-            ReflectedDamage(amount.value())
+            PhysicalDamage::ReflectedDamage(amount.value())
         )
     }
 
@@ -30,8 +30,8 @@ impl AttackDamage {
         match self {
             AttackDamage::Physical(physical_damage) => {
                 match physical_damage {
-                    AttackDamage(amount) => *amount,
-                    ReflectedDamage(amount) => *amount
+                    PhysicalDamage::RegularDamage(amount) => *amount,
+                    PhysicalDamage::ReflectedDamage(amount) => *amount
                 }
             }
             AttackDamage::Magical => 0
@@ -42,12 +42,12 @@ impl AttackDamage {
 
 impl PhysicalDamage {
     pub fn new_attack_damage(amount: BattleTeamAttack) -> Self {
-        AttackDamage(amount.value())
+        PhysicalDamage::RegularDamage(amount.value())
     }
 
-    // TODO this constructor should need the skill.
+    // for the future
     pub fn new_reflected_damage(amount: BattleTeamAttack) -> Self {
-        ReflectedDamage(amount.value())
+        PhysicalDamage::ReflectedDamage(amount.value())
     }
 }
 
@@ -59,9 +59,9 @@ mod tests {
         let damage = AttackDamage::new_attack_damage(200);
         assert_eq!(damage.value(), 200);
 
-        assert!(matches!(damage, Damage::Physical(_)));
+        assert!(matches!(damage, AttackDamage::Physical(_)));
         if let AttackDamage::Physical(inner) = damage {
-            assert!(matches!(inner, AttackDamage(_)));
+            assert!(matches!(inner, PhysicalDamage::RegularDamage(_)));
         }
     }
 
