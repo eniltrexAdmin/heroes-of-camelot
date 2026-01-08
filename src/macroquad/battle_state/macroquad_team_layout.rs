@@ -1,6 +1,6 @@
 use macroquad::math::{Rect, Vec2};
 use macroquad::prelude::*;
-use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, ShiaiPosition, ThirdTeam};
+use crate::domain::{AttackParty, CaptainTeam, DefenseParty, SecondTeam, BattlePosition, ThirdTeam};
 use crate::macroquad::{draw_texture_in_animated_rectangle, scale_rectangle, AnimatedRectangle, Default1920x1080};
 
 const REMOVE_LIFE_SPEED: f64 = 2.0;
@@ -15,7 +15,7 @@ pub struct TeamLayout {
     hp_rectangle_animated: AnimatedRectangle,
     attack_rectangle_animated: AnimatedRectangle,
     textures: TeamLayoutTextures,
-    position: ShiaiPosition,
+    position: BattlePosition,
     rotation: f32,
     total_hp: u128,
     current_hp: u128,
@@ -38,7 +38,7 @@ pub const SPEED: f32 = 5.0;
 
 impl TeamLayout {
     pub fn new(
-        position: &ShiaiPosition,
+        position: &BattlePosition,
         textures: TeamLayoutTextures,
         total_hp: u128,
         current_hp: u128,
@@ -230,7 +230,7 @@ impl TeamLayout {
     }
 }
 
-fn calculate_stats_rectangle(position: &ShiaiPosition) -> Rect {
+fn calculate_stats_rectangle(position: &BattlePosition) -> Rect {
     let screen_w = screen_width();
     let screen_h = screen_height();
 
@@ -257,7 +257,7 @@ fn calculate_stats_rectangle(position: &ShiaiPosition) -> Rect {
     Rect::new(top_left_corner.0, top_left_corner.1, size.0, size.1)
 }
 
-fn calculate_hp_rectangle(stats_rectangle: Rect, position: &ShiaiPosition)-> Rect {
+fn calculate_hp_rectangle(stats_rectangle: Rect, position: &BattlePosition) -> Rect {
     let stats_width = stats_rectangle.w;
     let w_parts = stats_width/100.0;
 
@@ -278,7 +278,7 @@ fn calculate_hp_rectangle(stats_rectangle: Rect, position: &ShiaiPosition)-> Rec
     Rect::new(top_left_corner_x, top_left_corner_y, size_x, size_y)
 }
 
-fn calculate_attack_rectangle(stats_rectangle: Rect, position: &ShiaiPosition) -> Rect {
+fn calculate_attack_rectangle(stats_rectangle: Rect, position: &BattlePosition) -> Rect {
     let stats_width = stats_rectangle.w;
     let w_parts = stats_width/100.0;
 
@@ -301,7 +301,7 @@ fn calculate_attack_rectangle(stats_rectangle: Rect, position: &ShiaiPosition) -
     Rect::new(top_left_corner_x, top_left_corner_y, size_x, size_y)
 }
 
-fn attack_rectangle_hardcoded_default(shiai_position: &ShiaiPosition) -> Rect {
+fn attack_rectangle_hardcoded_default(shiai_position: &BattlePosition) -> Rect {
     let top_left_corner_y = match shiai_position {
         AttackParty(_) => 995.5,
         DefenseParty(_) => 60.2,

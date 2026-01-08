@@ -1,5 +1,5 @@
 use macroquad::prelude::{Texture2D};
-use crate::domain::{ShiaiPosition};
+use crate::domain::{BattlePosition};
 use super::*;
 
 pub const SPEED: f32 = 5.0;
@@ -13,14 +13,14 @@ pub enum CardPosition{
     Fourth
 }
 pub struct MacroquadCard {
-    team_position: ShiaiPosition,
+    team_position: BattlePosition,
     card_position: CardPosition,
     animation_list: CardAnimationsList,
     current_animation: CardAnimation,
 }
 impl MacroquadCard {
     pub fn new(
-        team_position: ShiaiPosition,
+        team_position: BattlePosition,
         card_position: CardPosition,
         background_texture: Texture2D,
         template_texture: Texture2D,

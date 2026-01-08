@@ -3,17 +3,18 @@ use crate::domain::*;
 
 
 #[derive(Clone, Debug)]
-pub enum ShiaiEvent {
+pub enum BattleEvent {
     TeamAttacked(TeamAttackedDomainEvent),
+    IncreasedThisTurnAttack(IncreasedThisTurnAttackDomainEvent),
 }
 
 
 #[derive(Clone, Debug)]
-pub struct ShiaiState{
-    pub state: HashMap<ShiaiPosition, BattleTeam>,
+pub struct BattleState {
+    pub state: HashMap<BattlePosition, BattleTeam>,
 }
 
-impl ShiaiState{
+impl BattleState {
     pub fn new(attacker: Party, defender: Party) -> Self {
         let mut teams = HashMap::new();
         teams.insert(AttackParty(CaptainTeam), BattleTeam::new(
@@ -47,24 +48,26 @@ impl ShiaiState{
         Self { state: teams }
     }
 
-    pub fn get(&self, position: &ShiaiPosition) -> Option<&BattleTeam>{
+    pub fn get(&self, position: &BattlePosition) -> Option<&BattleTeam>{
         self.state.get(&position)
     }
 
-    pub fn expect_team(&self, position: &ShiaiPosition) -> &BattleTeam {
+    pub fn expect_team(&self, position: &BattlePosition) -> &BattleTeam {
         self.state.get(&position).expect("if you use this function you know team exists!")
     }
 
 
-    pub fn apply_domain_events(self, events: Vec<ShiaiEvent>) -> Self {
-        events.into_iter().fold(self, |applied_shiai, event| {
+    pub fn apply_domain_events(&mut self, events: Vec<BattleEvent>){
+        for event in events {
             match event {
-                ShiaiEvent::TeamAttacked(domain_event) => {
-                    applied_shiai.apply_team_attacked_domain_event(domain_event)
+                BattleEvent::TeamAttacked(domain_event) => {
+                    self.apply_team_attacked_domain_event(domain_event)
                 }
             }
-        })
+        }
     }
+
+
 }
 
 
@@ -79,7 +82,7 @@ mod tests {
         let attacker = stub_party();
         let defender = stub_party_2();
 
-        let state = ShiaiState::new(attacker.clone(), defender.clone());
+        let state = BattleState::new(attacker.clone(), defender.clone());
         assert_eq!(
             &AttackParty(CaptainTeam),
             state.state.get(&AttackParty(CaptainTeam)).unwrap().position()

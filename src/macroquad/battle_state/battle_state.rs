@@ -13,19 +13,19 @@ pub trait CardTexturesRepository {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum BattlePhaseTurn {
-    StartTurn{active_team: ShiaiPosition},
-    Attack{attacker: ShiaiPosition, target: ShiaiPosition},
-    AttackReturn{attacker: ShiaiPosition},
+    StartTurn{active_team: BattlePosition },
+    Attack{attacker: BattlePosition, target: BattlePosition },
+    AttackReturn{attacker: BattlePosition },
     EndTurn,
 }
 
 pub struct BattleState {
-    shiai: ShiaiResult,
+    shiai: BattleResult,
     background_image: Texture2D,
-    teams: HashMap<ShiaiPosition,MacroquadTeam>,
+    teams: HashMap<BattlePosition,MacroquadTeam>,
     current_turn: Option<TurnLog>,
     current_turn_number: usize,
-    current_event: Option<ShiaiEvent>,
+    current_event: Option<BattleEvent>,
     current_event_number: usize,
     battle_phase_queue: VecDeque<BattlePhaseTurn>
 }
@@ -35,7 +35,7 @@ impl BattleState {
         let attacker = stub_party();
         let defender = stub_party_2();
 
-        let result = ShiaiResult::new(attacker, defender);
+        let result = BattleResult::new(attacker, defender);
 
         // Team Layout
 
@@ -94,7 +94,7 @@ impl BattleState {
 
         let first_turn =  result.turn_logs.first().unwrap().clone();
 
-        print_shiai_turn(&first_turn, 1);
+        print_battle_turn(&first_turn, 1);
         Self{
             background_image: texture,
             teams,
@@ -119,7 +119,7 @@ impl BattleState {
             self.current_turn = Some(next_turn.clone());
             self.current_event_number = 0;
 
-            print_shiai_turn(&next_turn, self.current_turn_number);
+            print_battle_turn(&next_turn, self.current_turn_number);
             StateTransition::None
         } else {
             StateTransition::Push(HocStates::EndBattle)

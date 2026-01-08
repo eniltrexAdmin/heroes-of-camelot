@@ -76,8 +76,8 @@ pub fn stub_party_2() -> Party {
     )
 }
 
-pub fn shiai_state_stub() -> ShiaiState {
+pub fn shiai_state_stub() -> BattleState {
     let attacker = stub_party();
     let defender = stub_party_2();
-    ShiaiState::new(attacker, defender)
+    BattleState::new(attacker, defender)
 }

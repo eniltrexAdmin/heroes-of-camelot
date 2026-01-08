@@ -3,13 +3,13 @@ use super::*;
 
 //TODO this will be obviously out of domain!
 
-pub fn print_shiai(shiai: &ShiaiResult) {
+pub fn print_battle(shiai: &BattleResult) {
     for (i, turn) in shiai.turn_logs.iter().enumerate() {
-        print_shiai_turn(turn, i);
+        print_battle_turn(turn, i);
     }
 }
 
-pub fn print_shiai_turn(shiai_turn: &TurnLog, turn_number: usize) {
+pub fn print_battle_turn(shiai_turn: &TurnLog, turn_number: usize) {
     println!("--- Turn {} ---", turn_number);
 
     for (j, action) in shiai_turn.events.iter().enumerate() {
@@ -21,7 +21,7 @@ pub fn print_shiai_turn(shiai_turn: &TurnLog, turn_number: usize) {
     println!();
 }
 
-pub fn print_state(state: &HashMap<ShiaiPosition, BattleTeam>) {
+pub fn print_state(state: &HashMap<BattlePosition, BattleTeam>) {
     let field_width = 10; // or whatever number you want
     let attack_field_width = 20;
 
@@ -63,7 +63,7 @@ pub fn print_state(state: &HashMap<ShiaiPosition, BattleTeam>) {
     );
 }
 
-fn get_team_attack_string(state: &HashMap<ShiaiPosition, BattleTeam>, position: &ShiaiPosition) -> String {
+fn get_team_attack_string(state: &HashMap<BattlePosition, BattleTeam>, position: &BattlePosition) -> String {
     if let Some(team) = state.get(&position) {
         team.current_attack().value().to_string()
     } else {
@@ -71,7 +71,7 @@ fn get_team_attack_string(state: &HashMap<ShiaiPosition, BattleTeam>, position: 
     }
 }
 
-fn get_team_current_hp_string(state: &HashMap<ShiaiPosition, BattleTeam>, position: &ShiaiPosition) -> String {
+fn get_team_current_hp_string(state: &HashMap<BattlePosition, BattleTeam>, position: &BattlePosition) -> String {
     if let Some(team) = state.get(&position) {
         team.current_hp().value().to_string()
     } else {
@@ -79,7 +79,7 @@ fn get_team_current_hp_string(state: &HashMap<ShiaiPosition, BattleTeam>, positi
     }
 }
 
-fn get_team_total_hp_string(state: &HashMap<ShiaiPosition, BattleTeam>, position: &ShiaiPosition) -> String {
+fn get_team_total_hp_string(state: &HashMap<BattlePosition, BattleTeam>, position: &BattlePosition) -> String {
     if let Some(team) = state.get(&position) {
         team.original_team().health_points().value().to_string()
     } else {

@@ -1,24 +1,24 @@
-use super::*;
+use crate::domain::battle::*;
 
 pub enum TargetStrategy {
     Own,
     Default,
 }
 
-pub fn select_target(current_state: &ShiaiState, subject_team: &ShiaiPosition, strategy: TargetStrategy) -> ShiaiPosition {
+pub fn select_target(current_state: &BattleState, subject_team: &BattlePosition, strategy: TargetStrategy) -> BattlePosition {
     match strategy {
         _ => select_default_target(current_state, subject_team.clone()),
     }
 }
 
-fn select_default_target(current_state: &ShiaiState, current_team: ShiaiPosition) -> ShiaiPosition {
+fn select_default_target(current_state: &BattleState, current_team: BattlePosition) -> BattlePosition {
     match current_team {
         AttackParty(_) => get_defense_party_alive_team(current_state),
         DefenseParty(_) => get_attack_party_alive_team(current_state),
     }
 }
 
-fn get_defense_party_alive_team(current_state: &ShiaiState) -> ShiaiPosition {
+fn get_defense_party_alive_team(current_state: &BattleState) -> BattlePosition {
     [DefenseParty(CaptainTeam), DefenseParty(SecondTeam), DefenseParty(ThirdTeam)]
         .into_iter()
         .find(|position| current_state.get(position).map_or(
@@ -27,7 +27,7 @@ fn get_defense_party_alive_team(current_state: &ShiaiState) -> ShiaiPosition {
 
 }
 
-fn get_attack_party_alive_team(current_state:&ShiaiState) -> ShiaiPosition {
+fn get_attack_party_alive_team(current_state:&BattleState) -> BattlePosition {
     [AttackParty(CaptainTeam), AttackParty(SecondTeam), AttackParty(ThirdTeam)]
         .into_iter()
         .find(|position| current_state.get(position).map_or(

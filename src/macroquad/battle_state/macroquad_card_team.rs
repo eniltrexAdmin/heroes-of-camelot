@@ -1,6 +1,6 @@
 use macroquad::math::Rect;
 use macroquad::prelude::Texture2D;
-use crate::domain::{ShiaiPosition};
+use crate::domain::{BattlePosition};
 use super::*;
 
 
@@ -17,7 +17,7 @@ pub struct CardTeam{
     cards: Vec<MacroquadCard>,
 }
 impl CardTeam {
-    pub fn new(card_textures: CardTextures, shiai_position: &ShiaiPosition)-> Self {
+    pub fn new(card_textures: CardTextures, shiai_position: &BattlePosition) -> Self {
         let mut cards = Vec::new();
         cards.push(MacroquadCard::new(
             shiai_position.clone(),

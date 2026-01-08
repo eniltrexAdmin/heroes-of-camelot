@@ -17,6 +17,18 @@ pub fn choose_skill(team: Team) -> CardSkill {
 ```
 
 
+## About Shiai State and events
+
+![shiai_state](architecture.png)
+
+What I don't like is that we have shiai state "open". Normally event
+sourced entities still have regular 'command' like methods, and internally
+they apply the domain event.
+
+Here we have shiai state quite open, and implementing the "apply domain event"
+on each "module".
+
+
 ## Ideas I am undoing
 
 I added a way to change the active skill depending on tier of the card.

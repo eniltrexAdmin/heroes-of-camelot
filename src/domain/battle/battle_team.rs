@@ -1,17 +1,23 @@
-use crate::domain::*;
-use crate::domain::shiai::damage::Damage::Physical;
-use super::*;
+mod battle_team_attack;
+mod battle_team_hp;
+
+mod increase_attack_skill;
+mod attack;
+
+
+
+
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct BattleTeam {
     original_team: Team,
-    position: ShiaiPosition,
+    position: BattlePosition,
     current_hp: BattleTeamHealthPoints,
     current_attack: BattleTeamAttack
 }
 
 impl BattleTeam {
-    pub fn new(original_team: Team, position: ShiaiPosition) -> Self {
+    pub fn new(original_team: Team, position: BattlePosition) -> Self {
         Self{
             current_hp: BattleTeamHealthPoints::new(original_team.health_points().value()),
             current_attack: BattleTeamAttack::new(original_team.attack().value()),
@@ -20,7 +26,7 @@ impl BattleTeam {
         }
     }
 
-    pub fn position(&self) -> &ShiaiPosition {
+    pub fn position(&self) -> &BattlePosition {
         &self.position
     }
 
@@ -44,14 +50,7 @@ impl BattleTeam {
         Damage::new_attack_damage(attack.value())
     }
 
-    pub fn receive_damage(self, damage: Damage) -> Self {
-        let mut new_self = self.clone();
-        new_self.current_hp = match damage {
-            Physical(physical_damage) => new_self.current_hp.apply_damage(physical_damage),
-            Damage::Magical => new_self.current_hp.clone(),
-        };
-        new_self
-    }
+
 }
 
 #[cfg(test)]
@@ -75,7 +74,13 @@ mod tests {
         let mut battle_team = BattleTeam::new(team.clone(), AttackParty(CaptainTeam));
         assert!(battle_team.is_alive());
 
-        battle_team = battle_team.receive_damage(Damage::new_attack_damage(200000));
+        let event = TeamAttackedDomainEvent {
+            attacker: battle_team.position().clone(),
+            target: battle_team.position().clone(),
+            damage_received:   Damage::new_attack_damage(battle_team.current_hp.value())
+        };
+
+        battle_team.apply_team_attacked_domain_event(event);
 
         assert!(!battle_team.is_alive());
     }

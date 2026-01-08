@@ -1,6 +1,6 @@
 use macroquad::math::Rect;
 use macroquad::prelude::{screen_height, screen_width, Texture2D};
-use crate::domain::{AttackParty, DefenseParty, ShiaiPosition, CaptainTeam, SecondTeam, ThirdTeam};
+use crate::domain::{AttackParty, DefenseParty, BattlePosition, CaptainTeam, SecondTeam, ThirdTeam};
 use crate::macroquad::battle_state::macroquad_card::CardPosition;
 use crate::macroquad::CardAnimationKind::StartTurn;
 use crate::macroquad::utils::*;
@@ -15,7 +15,7 @@ pub struct CardAnimationsList{
 
 impl CardAnimationsList{
     pub fn new(
-        team_position: ShiaiPosition,
+        team_position: BattlePosition,
         card_position: CardPosition,
         background_texture: Texture2D,
         template_texture: Texture2D,
@@ -174,7 +174,7 @@ impl CardAnimation {
 
 
 fn calculate_card_rectangles(
-    position: &ShiaiPosition,
+    position: &BattlePosition,
     card_position: &CardPosition,
     team_layout_rectangle_height: f32
 ) -> (Rect, Rect, Rect, Rect) {
@@ -221,7 +221,7 @@ fn calculate_card_rectangles(
     )
 }
 
-fn calculate_attack_target_position(position: &ShiaiPosition, current_rect: Rect) -> Rect {
+fn calculate_attack_target_position(position: &BattlePosition, current_rect: Rect) -> Rect {
     let new_y = match position {
         AttackParty(_) => 500.0,
         DefenseParty(_) => 300.0,
@@ -231,7 +231,7 @@ fn calculate_attack_target_position(position: &ShiaiPosition, current_rect: Rect
 }
 
 fn calculate_card_rectangles_static(
-    position: &ShiaiPosition,
+    position: &BattlePosition,
     card_position: &CardPosition,
 ) -> (Rect, Rect, Rect, Rect) {
 

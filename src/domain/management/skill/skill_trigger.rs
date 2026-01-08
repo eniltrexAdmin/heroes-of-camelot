@@ -44,7 +44,7 @@ mod tests {
     use std::sync::Arc;
     use crate::data::apprentice_template;
     use crate::domain::*;
-    use crate::domain::stubs::{empty_template, stub_build_skill};
+    use crate::domain::stubs::{empty_template, skill_builder};
     use super::*;
     use rand::Rng;
 
@@ -52,7 +52,7 @@ mod tests {
     fn test_trigger_effective_chance() {
         let mut rng = rand::rng();
         let random_number: u32 = rng.random_range( ..100);
-        let skill =  stub_build_skill(None, Some(SkillTrigger::PROC(random_number)), None);
+        let skill =  skill_builder(None, Some(SkillTrigger::PROC(random_number)), None);
         let card = Card::stub_build(
             Arc::new(empty_template()),
             Attack::new(285),
@@ -65,7 +65,7 @@ mod tests {
         let result = trigger_effective_chance(&card);
         assert_eq!(result, random_number);
 
-        let skill =  stub_build_skill(
+        let skill =  skill_builder(
             None,
             Some(SkillTrigger::BasedOnCard(TriggerBasedOnCardLevel(100))),
             None
@@ -85,13 +85,12 @@ mod tests {
 
 
     fn test_evaluate_formula_card_level() {
-        let apprentice_template = apprentice_template();
         let mut card = Card::stub_build(
             Arc::new(empty_template()),
             Attack::new(285),
             HealthPoints::new(1200),
             CardLevel::new(1),
-            stub_build_skill(None, None, None), // not using this one
+            skill_builder(None, None, None), // not using this one
             // and just going faster knowing the "innards" of this code
             // the proper interface of this module is tested above
             // but that's a lot of boilerplate here creating a card for each test...
@@ -129,17 +128,12 @@ mod tests {
 
     #[test]
     fn test_evaluate_formula_card_tier() {
-        let apprentice_template = apprentice_template();
         let card = Card::stub_build(
             Arc::new(empty_template()),
             Attack::new(285),
             HealthPoints::new(1200),
             CardLevel::new(1),
-            stub_build_skill(None, None, None), // not using this one
-            // and just going faster knowing the "innards" of this code
-            // the proper interface of this module is tested above
-            // but that's a lot of boilerplate here creating a card for each test...
-            // that's why I bypass it.
+            skill_builder(None, None, None), // not using this one
             Tier::Tier2,
             Stars::FourStars
         );
@@ -160,11 +154,8 @@ mod tests {
             Attack::new(285),
             HealthPoints::new(1200),
             CardLevel::new(1),
-            stub_build_skill(None, None, None), // not using this one
-            // and just going faster knowing the "innards" of this code
-            // the proper interface of this module is tested above
-            // but that's a lot of boilerplate here creating a card for each test...
-            // that's why I bypass it.
+            skill_builder(None, None, None), // not using this one-testing the
+            // other one
             Tier::Tier4,
             Stars::FourStars
         );

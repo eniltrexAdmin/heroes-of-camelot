@@ -10,6 +10,9 @@ pub struct CardSkill {
     effect: SkillEffect,
     trigger: SkillTrigger,
     skill_target: SkillTarget
+    //skill_duration: num of turns (belongs to skilleffect?)
+    // skill_cooldown: num of turns (cannot trigger again.) - belongs to trigger?
+    // skill_num_of_Triggers: once per battle/twice, etc.
 }
 
 

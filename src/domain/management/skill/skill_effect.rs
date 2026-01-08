@@ -1,4 +1,4 @@
-use crate::domain::Percentage;
+use crate::domain::*;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum SkillEffect {
@@ -15,3 +15,5 @@ pub enum SkillEffectValueFormula {
     BasedOnCardHealthPoints(Percentage),
     EffectBasedOnCardLevel(Percentage),
 }
+
+

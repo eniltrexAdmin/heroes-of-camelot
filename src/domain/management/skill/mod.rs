@@ -18,3 +18,5 @@ pub use SkillTriggerValueFormula::*;
 
 mod skill_target;
 mod skill_trigger;
+mod increase_attack;
+pub use increase_attack::*;

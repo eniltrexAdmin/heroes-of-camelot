@@ -1,5 +1,5 @@
 use std::cmp::min;
-use crate::domain::shiai::damage::PhysicalDamage;
+use crate::domain::battle::battle_team::attack::damage::PhysicalDamage;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct BattleTeamHealthPoints(u128);
@@ -12,7 +12,7 @@ impl BattleTeamHealthPoints{
         self.0
     }
 
-    // TODO not sure this goes here, probably not, on battle_team.
+    // TODO not sure this goes here, probably not, on battle_team. Here's just an anemic constructor.
     pub fn apply_damage(self, damage: PhysicalDamage) -> Self {
         match damage {
             PhysicalDamage::AttackDamage(amount) => {
@@ -30,7 +30,7 @@ impl BattleTeamHealthPoints{
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::shiai::battle_team_attack::BattleTeamAttack;
+    use crate::domain::battle::battle_team_attack::BattleTeamAttack;
     use super::*;
 
     #[test]

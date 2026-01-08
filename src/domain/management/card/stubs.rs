@@ -1,6 +1,7 @@
+use std::sync::Arc;
 use crate::domain::*;
 
-pub fn stub_build_skill(
+pub fn skill_builder(
     effect: Option<SkillEffect>,
     trigger: Option<SkillTrigger>,
     skill_target: Option<SkillTarget>
@@ -35,5 +36,17 @@ pub fn empty_template() -> CardTemplate {
         ),
         GrowthCurve::Percentage(3),
         GrowthCurve::Percentage(3),
+    )
+}
+
+pub fn empty_card_with_skill(skill: CardSkill) -> Card {
+   Card::stub_build(
+        Arc::new(empty_template()),
+        Attack::new(285),
+        HealthPoints::new(1200),
+        CardLevel::new(1),
+        skill,
+        Tier::Tier2,
+        Stars::FourStars
     )
 }

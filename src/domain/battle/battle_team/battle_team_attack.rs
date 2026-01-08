@@ -1,3 +1,5 @@
+
+
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct BattleTeamAttack(u128);
 
@@ -7,6 +9,10 @@ impl BattleTeamAttack{
     }
     pub fn value(&self) -> u128 {
         self.0
+    }
+
+    pub fn increase(self, value: AttackIncreaseValue) -> Self {
+        Self(self.0 + value.value())
     }
 }
 

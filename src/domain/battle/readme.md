@@ -38,3 +38,9 @@ Events will be applied at team level, probably produce more event, and have buse
 until everything is resolved.
 
 (when we have skills like re-reflect damage to a third team, and complicated things like that.)
+
+or a loop to relistne to event.
+
+also many domain events will get "richer" if we have reflect damage and so on, all of that is
+"atomic" in one operation all of that happened, so all of that info should be in the 
+same domain event. (I can't have several as there's only one aggregate root here -> "game/partida")
