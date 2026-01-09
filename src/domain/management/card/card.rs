@@ -83,6 +83,23 @@ impl Card {
         &self.current_level
     }
 
+    pub fn skill_effect_base_value(&self) -> SkillBaseValue {
+        // TODO test
+        let formula = self.active_skill.effect();
+        let base = match formula {
+            BasedOnCardAttack(p) => {
+                self.attack().value() * p.value() / 100
+            }
+            BasedOnCardHealthPoints(p) => {
+                self.health_points().value() * p.value() / 100
+            }
+            EffectBasedOnCardLevel(p) => {
+                self.level() as u128 * p.value() / 100
+            }
+        };
+        SkillBaseValue::new(base)
+    }
+
     pub fn level_up(&mut self, num_levels: u8) -> Result<(), CardManagementError> {
         if self.current_level.value() + num_levels > self.max_level.value() {
             return Err(CardManagementError::ExceededMaxLevel);

@@ -1,8 +1,8 @@
 #[derive(Debug, PartialEq, Clone, Copy)]
-pub struct AttackIncreaseValue(u128);
+pub struct SkillBaseValue(u128);
 
 
-impl AttackIncreaseValue {
+impl SkillBaseValue {
     pub fn new(value: u128) -> Self {
         Self(value)
     }

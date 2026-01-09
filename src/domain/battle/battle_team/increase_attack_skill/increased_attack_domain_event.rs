@@ -1,4 +1,4 @@
-use crate::domain::{BattlePosition, BattleTeam, Card};
+use crate::domain::Card;
 use super::*;
 
 #[derive(Clone, Debug)]

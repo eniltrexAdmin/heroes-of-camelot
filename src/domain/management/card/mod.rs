@@ -22,4 +22,6 @@ pub use growth_curve::GrowthCurve;
 
 #[cfg(any(test))]
 pub mod stubs;
+mod skill_base_value;
+pub use skill_base_value::*;
 
