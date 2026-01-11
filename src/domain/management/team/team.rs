@@ -67,6 +67,17 @@ impl Team {
         self.fourth.as_ref()
     }
 
+    pub fn card_iterator(&self) -> impl Iterator<Item = &Card> {
+        [
+            Some(&self.captain), // captain is always present
+            self.second.as_ref(),
+            self.third.as_ref(),
+            self.fourth.as_ref(),
+        ]
+            .into_iter()
+            .flatten()
+    }
+
     pub fn combo_skills(&self) -> &[ComboSkill] {
         &self.combo_skills
     }

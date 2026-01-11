@@ -1,5 +1,6 @@
 use heroes_of_camelot::data::{stub_party, stub_party_2};
-use heroes_of_camelot::domain::{print_battle_turn, BattleResult};
+use heroes_of_camelot::domain::*;
+use heroes_of_camelot::domain::print_battle::print_battle;
 
 fn main() {
     let attacker = stub_party();
@@ -7,7 +8,5 @@ fn main() {
 
     let result = BattleResult::new(attacker, defender);
 
-    for (i, turn) in result.turn_logs.iter().enumerate() {
-        print_battle_turn(turn, i + 1);
-    }
+    print_battle(&result);
 }

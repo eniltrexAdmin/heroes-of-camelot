@@ -1,4 +1,4 @@
-pub mod battle;
+mod battle;
 pub use battle::*;
 mod management;
 pub use management::*;

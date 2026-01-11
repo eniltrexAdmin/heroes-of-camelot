@@ -6,7 +6,11 @@ use super::*;
 #[derive(Clone, Debug)]
 pub enum BattleEvent {
     TeamAttacked(TeamAttackedDomainEvent),
-    IncreasedThisTurnAttack(IncreasedThisTurnAttackDomainEvent),
+    ActiveSkillExecuted(ActiveSkillExecutedDomainEvent)
+}
+
+pub trait Target{
+    fn target(&self) -> BattlePosition;
 }
 
 
@@ -57,25 +61,23 @@ impl BattleState {
         self.state.get(&position).expect("if you use this function you know team exists!")
     }
 
+    pub fn expect_team_mut(&mut self, position: &BattlePosition) -> &mut BattleTeam {
+        self.state.get_mut(&position).expect("if you use this function you know team exists!")
+    }
+
 
     pub fn apply_domain_events(&mut self, events: Vec<BattleEvent>){
         for event in events {
             match event {
                 BattleEvent::TeamAttacked(domain_event) => {
-                    self.apply_team_attacked_domain_event(domain_event)
+                    self.expect_team_mut(&domain_event.target()).apply_team_attacked_domain_event(domain_event);
+                },
+                BattleEvent::ActiveSkillExecuted(domain_event) => {
+                    self.expect_team_mut(&domain_event.target()).apply_active_skill_executed_domain_event(domain_event)
                 }
             }
         }
     }
-
-    fn apply_team_attacked_domain_event(&mut self, event: TeamAttackedDomainEvent)
-    {
-        if let Some(target_team) = self.state.get_mut(&event.target) {
-            target_team.apply_team_attacked_domain_event(event);
-        }
-    }
-
-
 }
 
 

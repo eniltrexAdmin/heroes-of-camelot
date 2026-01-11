@@ -9,7 +9,7 @@ mod battle_state;
 pub use battle_state::*;
 
 mod battle_team;
-use battle_team::*;
+pub use battle_team::*;
 
 mod select_target;
 pub use select_target::*;

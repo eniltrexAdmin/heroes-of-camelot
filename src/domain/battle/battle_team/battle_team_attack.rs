@@ -1,3 +1,5 @@
+use super::*;
+
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct BattleTeamAttack(u128);
 

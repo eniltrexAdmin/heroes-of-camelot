@@ -3,12 +3,7 @@ use super::*;
 
 impl BattleTeam{
     pub fn choose_active_skill(&self) -> Option<&Card> {
-        let team = &self.original_team;
-        std::iter::once(&team.captain())
-            .chain(team.second())
-            .chain(team.third())
-            .chain(team.fourth())
-            .find(|card| skill_procs(card))
+        self.original_team.card_iterator().find(|card| skill_procs(card))
     }
 }
 

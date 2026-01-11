@@ -2,7 +2,6 @@ use std::path::PathBuf;
 use async_trait::async_trait;
 use macroquad::miniquad::FilterMode;
 use macroquad::prelude::{load_texture, Texture2D};
-use slug::slugify;
 use crate::domain::{Card, Team};
 use crate::macroquad::CardTexturesRepository;
 use crate::macroquad::CardTextures;
@@ -22,7 +21,7 @@ impl LocalCardTexturesRepository {
         Self{asset_root, background}
     }
 
-    async fn load_card_texture(&self, card: &Card) -> Texture2D {
+    async fn load_card_texture(&self, _card: &Card) -> Texture2D {
         // let texture_path = format!("{}/{}_{}.png",
         //     self.asset_root.to_str().unwrap(),
         //     slugify(card.name().value()),

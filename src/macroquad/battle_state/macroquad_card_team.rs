@@ -1,4 +1,3 @@
-use macroquad::math::Rect;
 use macroquad::prelude::Texture2D;
 use crate::domain::{BattlePosition};
 use super::*;

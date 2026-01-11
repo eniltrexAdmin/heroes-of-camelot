@@ -8,4 +8,4 @@ pub use combo_skill_repository::*;
 
 
 
-pub use template_3_stars::*;
+// pub use template_3_stars::*;

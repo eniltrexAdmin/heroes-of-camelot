@@ -3,6 +3,7 @@ use async_trait::async_trait;
 use macroquad::prelude::*;
 use crate::data::{stub_party, stub_party_2};
 use crate::domain::*;
+use crate::domain::print_battle::print_battle_turn;
 use crate::macroquad::*;
 use super::*;
 
@@ -133,7 +134,7 @@ impl BattleState {
                 self.current_event = Some(next_event.clone());
 
                 match next_event {
-                    TeamAttacked(team_attacked) => {
+                    BattleEvent::TeamAttacked(team_attacked) => {
                         let attack_phase = BattlePhaseTurn::Attack {
                             attacker: team_attacked.attacker.clone(),
                             target: team_attacked.target.clone(),
@@ -144,6 +145,9 @@ impl BattleState {
                         self.battle_phase_queue = VecDeque::from(vec![
                             attack_phase, attack_return
                         ]);
+                    },
+                    BattleEvent::ActiveSkillExecuted(domain_event) => {
+                        // TODO
                     }
                 }
             }

@@ -2,7 +2,7 @@ use std::sync::Arc;
 use crate::data::*;
 use crate::domain::*;
 
-pub fn combo_skill_finder(card: &Vec<Card>) -> Vec<ComboSkill> {
+pub fn combo_skill_finder(_card: &Vec<Card>) -> Vec<ComboSkill> {
 
     vec![]
 }

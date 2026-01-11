@@ -8,9 +8,7 @@ mod attack;
 pub use attack::*;
 
 mod active_skill;
-
-mod increase_attack_skill;
-pub use increase_attack_skill::IncreasedThisTurnAttackDomainEvent;
+pub use active_skill::*;
 
 
 #[derive(Debug, Clone, PartialEq)]

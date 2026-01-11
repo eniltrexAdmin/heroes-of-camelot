@@ -17,3 +17,14 @@ pub enum SkillEffectValueFormula {
 }
 
 
+impl SkillEffect {
+    pub fn formula(&self) -> &SkillEffectValueFormula {
+        match self {
+            SkillEffect::IncreaseThisTurnAttack(f)
+            | SkillEffect::DecreaseThisTurnAttack(f)
+            | SkillEffect::MagicDamage(f)
+            | SkillEffect::PhysicalDamage(f)
+            | SkillEffect::Heal(f) => f,
+        }
+    }
+}

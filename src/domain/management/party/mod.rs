@@ -1,3 +1,3 @@
-pub mod party;
+mod party;
 pub use party::Party;
 

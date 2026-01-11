@@ -56,33 +56,47 @@ pub fn battle(init_state: BattleState) -> Vec<TurnLog>{
 }
 
 fn play_turn(current_state: &mut BattleState, subject: BattlePosition) -> Option<TurnLog> {
+    {
+        let team_alive = current_state
+            .state
+            .get(&subject)
+            .map(|team| team.is_alive())
+            .unwrap_or(false);
+
+        if !team_alive {
+            return None;
+        }
+    }
+
     let mut turn_events = vec![];
 
-    let team = match current_state.get(&subject) {
-        Some(team) => team,
-        None => return None,
-    };
 
-    //attack
-    if team.is_alive() {
-
-        // combo skills
-        // active skills
-        // we can pre calculate some stuff, and set it in "team"., but I will try without it at first.
-
-        // so far no errors now.
-        let events = team.attack(&current_state);
-        turn_events.extend(events.clone());
-
-        current_state.apply_domain_events(events);
-
-        return Some(TurnLog {
-            subject: subject.clone(),
-            events: turn_events,
-            state_result: current_state.clone(),
-        })
+    // --- Perform skill ---
+    {
+        // Take a mutable borrow of the team to perform skill
+        // Short-lived borrow: the scope ends after this block
+        if let Some(team) = current_state.state.get(&subject) {
+            let events = team.perform_skill(&current_state); // pass current_state immutably
+            turn_events.extend(events.clone());
+            current_state.apply_domain_events(events); // mutable borrow allowed here
+        }
     }
-    None
+
+    // --- Perform attack ---
+    {
+        // Another short-lived mutable borrow
+        if let Some(team) = current_state.state.get(&subject) {
+            let events = team.attack(&current_state); // again, current_state immutably
+            turn_events.extend(events.clone());
+            current_state.apply_domain_events(events);
+        }
+    }
+
+    Some(TurnLog {
+        subject,
+        events: turn_events,
+        state_result: current_state.clone(),
+    })
 }
 
 // TODO test.

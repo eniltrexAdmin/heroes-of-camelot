@@ -85,19 +85,19 @@ impl Card {
 
     pub fn skill_effect_base_value(&self) -> SkillBaseValue {
         // TODO test
-        let formula = self.active_skill.effect();
+        let formula = self.active_skill.effect().formula();
         let base = match formula {
             BasedOnCardAttack(p) => {
-                self.attack().value() * p.value() / 100
+                self.attack().value() * p / 100
             }
             BasedOnCardHealthPoints(p) => {
-                self.health_points().value() * p.value() / 100
+                self.health_points().value() * p / 100
             }
             EffectBasedOnCardLevel(p) => {
-                self.level() as u128 * p.value() / 100
+                self.current_level().value() as u32 * p / 100
             }
         };
-        SkillBaseValue::new(base)
+        SkillBaseValue::new(base as u128)
     }
 
     pub fn level_up(&mut self, num_levels: u8) -> Result<(), CardManagementError> {

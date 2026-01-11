@@ -6,3 +6,9 @@ pub struct TeamAttackedDomainEvent{
     pub target: BattlePosition,
     pub damage_received: AttackDamage
 }
+
+impl Target for TeamAttackedDomainEvent {
+    fn target(&self) -> BattlePosition {
+        self.target.clone()
+    }
+}
