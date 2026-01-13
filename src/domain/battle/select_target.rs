@@ -6,14 +6,12 @@ pub enum TargetStrategy {
 
 pub fn select_target(current_state: &BattleState, target_party: PartyPosition, strategy: TargetStrategy) -> BattlePosition {
     match strategy {
-        _ => select_default_target(current_state, &target_party),
-    }
-}
-
-fn select_default_target(current_state: &BattleState, target_party: &PartyPosition) -> BattlePosition {
-    match target_party {
-        PartyPosition::Attack => get_defense_party_alive_team(current_state),
-        PartyPosition::Defense => get_attack_party_alive_team(current_state),
+        _ => {
+            match target_party {
+                PartyPosition::Attack => get_attack_party_alive_team(current_state),
+                PartyPosition::Defense => get_defense_party_alive_team(current_state),
+            }
+        }
     }
 }
 

@@ -2,6 +2,8 @@ use crate::domain::*;
 use crate::macroquad::battle_state::battle_state::BattlePhaseTurn;
 use super::*;
 
+
+
 pub struct MacroquadTeam {
     game_team: BattleTeam,
     cards: CardTeam,
@@ -53,7 +55,21 @@ impl MacroquadTeam {
                     self.cards.set_animation(CardAnimationKind::Idle);
                     self.team_layout.set_animation(None);
                 }
-            }
+            },
+            BattlePhaseTurn::CardSkillStart{card} => {
+                let position =  self.game_team.original_team()
+                    .find_card_position(&card);
+                if let Some(pos) = position {
+                    self.cards.set_card_animation_by_pos(&pos, CardAnimationKind::StartActiveSkill);
+                }
+            },
+            BattlePhaseTurn::CardSkillFinish{card}  => {
+                let position =  self.game_team.original_team()
+                    .find_card_position(&card);
+                if let Some(pos) = position {
+                    self.cards.set_card_animation_by_pos(&pos, CardAnimationKind::FinishActiveSKill);
+                }
+            },
             BattlePhaseTurn::Attack{attacker, target} => {
                 if self.game_team.position() == &attacker {
                     self.cards.set_animation(CardAnimationKind::Attack);

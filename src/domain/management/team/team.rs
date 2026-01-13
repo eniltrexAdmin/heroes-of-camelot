@@ -17,6 +17,14 @@ pub struct Team {
     combo_skills: Vec<ComboSkill>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum CardPosition{
+    Captain,
+    Second,
+    Third,
+    Fourth
+}
+
 impl Team {
     pub fn new(
         captain: Card,
@@ -76,6 +84,27 @@ impl Team {
         ]
             .into_iter()
             .flatten()
+    }
+
+    pub fn find_card_position(&self, card_id: &Id) -> Option<CardPosition> {
+        // 1. Check Captain (always exists)
+        if self.captain.id().equals(card_id) {
+            return Some(CardPosition::Captain);
+        }
+
+        // 2. Check Optionals using a helper or explicit checks
+        // we use .as_ref() to look at the Card inside the Option
+        if self.second.as_ref().map_or(false, |c| c.id().equals(card_id)) {
+            return Some(CardPosition::Second);
+        }
+        if self.third.as_ref().map_or(false, |c| c.id().equals(card_id)) {
+            return Some(CardPosition::Third);
+        }
+        if self.fourth.as_ref().map_or(false, |c| c.id().equals(card_id)) {
+            return Some(CardPosition::Fourth);
+        }
+
+        None
     }
 
     pub fn combo_skills(&self) -> &[ComboSkill] {

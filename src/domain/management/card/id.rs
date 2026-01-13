@@ -10,6 +10,10 @@ impl Id {
     pub fn value(&self) -> &Uuid {
         &self.0
     }
+
+    pub fn equals(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
 }
 
 #[cfg(test)]

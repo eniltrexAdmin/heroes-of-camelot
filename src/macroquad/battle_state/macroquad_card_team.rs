@@ -1,5 +1,5 @@
 use macroquad::prelude::Texture2D;
-use crate::domain::{BattlePosition};
+use crate::domain::{BattlePosition, CardPosition};
 use super::*;
 
 
@@ -56,6 +56,14 @@ impl CardTeam {
         self.cards.iter_mut().for_each(|card| {
             card.set_animation(anim.clone());
         })
+    }
+
+    pub fn set_card_animation_by_pos(&mut self, pos: &CardPosition, anim: CardAnimationKind) {
+        // Find the specific card that matches the enum variant
+        if let Some(card) = self.cards.iter_mut()
+            .find(|c| c.card_position == *pos) {
+            card.set_animation(anim);
+        }
     }
 
     pub fn update(&mut self) {

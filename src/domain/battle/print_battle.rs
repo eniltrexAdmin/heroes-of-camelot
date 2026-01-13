@@ -14,6 +14,7 @@ pub fn print_battle_turn(shiai_turn: &TurnLog, turn_number: usize) {
 
     for (j, action) in shiai_turn.events.iter().enumerate() {
         println!("Action {}: {:?}", j + 1, action);
+        println!("-");
     }
 
     println!("Resulting state:");

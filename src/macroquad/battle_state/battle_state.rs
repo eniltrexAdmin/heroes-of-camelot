@@ -17,6 +17,8 @@ pub enum BattlePhaseTurn {
     StartTurn{active_team: BattlePosition },
     Attack{attacker: BattlePosition, target: BattlePosition },
     AttackReturn{attacker: BattlePosition },
+    CardSkillStart{card: Id},
+    CardSkillFinish{card: Id},
     EndTurn,
 }
 
@@ -147,7 +149,18 @@ impl BattleState {
                         ]);
                     },
                     BattleEvent::ActiveSkillExecuted(domain_event) => {
-                        // TODO
+                        let card_id = domain_event.card.id();
+                        let start_skill_phase = BattlePhaseTurn::CardSkillStart {
+                            card: card_id.clone()
+                        };
+                        // missing skill actual animation.
+
+                        let finish_skill_phase = BattlePhaseTurn::CardSkillFinish {
+                            card: card_id.clone()
+                        };
+                        self.battle_phase_queue = VecDeque::from(vec![
+                            start_skill_phase, finish_skill_phase
+                        ]);
                     }
                 }
             }

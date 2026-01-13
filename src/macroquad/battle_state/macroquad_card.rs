@@ -1,20 +1,14 @@
 use macroquad::prelude::{Texture2D};
-use crate::domain::{BattlePosition};
+use crate::domain::{BattlePosition, CardPosition};
 use super::*;
 
 pub const SPEED: f32 = 5.0;
 
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum CardPosition{
-    Captain,
-    Second,
-    Third,
-    Fourth
-}
+
 pub struct MacroquadCard {
     team_position: BattlePosition,
-    card_position: CardPosition,
+    pub card_position: CardPosition,
     animation_list: CardAnimationsList,
     current_animation: CardAnimation,
 }
@@ -62,6 +56,12 @@ impl MacroquadCard {
             },
             CardAnimationKind::Idle => {
                 self.current_animation = self.animation_list.idle.clone();
+            },
+            CardAnimationKind::StartActiveSkill => {
+                self.current_animation = self.animation_list.start_active_skill.clone();
+            },
+            CardAnimationKind::FinishActiveSKill => {
+                self.current_animation = self.animation_list.finish_active_skill.clone();
             }
         }
     }

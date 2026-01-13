@@ -1,7 +1,6 @@
 use macroquad::math::Rect;
 use macroquad::prelude::{screen_height, screen_width, Texture2D};
-use crate::domain::{AttackParty, DefenseParty, BattlePosition, CaptainTeam, SecondTeam, ThirdTeam};
-use crate::macroquad::battle_state::macroquad_card::CardPosition;
+use crate::domain::{AttackParty, DefenseParty, BattlePosition, CaptainTeam, SecondTeam, ThirdTeam, CardPosition};
 use crate::macroquad::CardAnimationKind::StartTurn;
 use crate::macroquad::utils::*;
 
@@ -11,6 +10,8 @@ pub struct CardAnimationsList{
     pub attack_return: CardAnimation,
     pub end_turn: CardAnimation,
     pub idle: CardAnimation,
+    pub start_active_skill: CardAnimation,
+    pub finish_active_skill: CardAnimation,
 }
 
 impl CardAnimationsList{
@@ -85,7 +86,7 @@ impl CardAnimationsList{
             speed
         );
 
-        let passive = CardAnimation::new(
+        let idle = CardAnimation::new(
             CardAnimationKind::Idle,
             background_texture.clone(),
             template_texture.clone(),
@@ -96,12 +97,36 @@ impl CardAnimationsList{
             speed
         );
 
+        let start_active_skill = CardAnimation::new(
+            CardAnimationKind::StartActiveSkill,
+            background_texture.clone(),
+            template_texture.clone(),
+            active_target_rectangle,
+            attack_rectangle_target,
+            active_target_rectangle_bg,
+            attack_rectangle_bg_target,
+            speed
+        );
+
+        let finish_active_skill = CardAnimation::new(
+            CardAnimationKind::FinishActiveSKill,
+            background_texture.clone(),
+            template_texture.clone(),
+            attack_rectangle_target,
+            active_target_rectangle,
+            attack_rectangle_bg_target,
+            active_target_rectangle_bg,
+            speed
+        );
+
         Self{
             start_turn,
             attack,
             attack_return,
             end_turn,
-            idle: passive,
+            idle,
+            start_active_skill,
+            finish_active_skill
         }
     }
 }
@@ -112,6 +137,8 @@ pub enum CardAnimationKind {
     StartTurn,
     Attack,
     AttackReturn,
+    StartActiveSkill,
+    FinishActiveSKill,
     EndTurn,
     Idle
 }
